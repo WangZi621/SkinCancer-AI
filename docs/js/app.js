@@ -406,10 +406,11 @@ function renderResult() {
 
   el.form.hidden = true;
   el.result.hidden = false;
-  if (window.matchMedia('(max-width: 960px)').matches) {
+  el.result.focus({ preventScroll: true });
+  const top = el.result.getBoundingClientRect().top;
+  if (top < 80 || top > window.innerHeight * 0.6) {
     el.result.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
-  el.result.focus({ preventScroll: true });
 }
 
 // ---------------------------------------------------------------- heat map
