@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SkinScan AI</title>
+  <meta name="description" content="Skin lesion triage that runs entirely in your browser. Add a dermoscopic photo and a few patient details; SkinScan AI suggests how soon to refer.">
+  <meta name="theme-color" content="#f5f4fa" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#16142b" media="(prefers-color-scheme: dark)">
+  <meta property="og:title" content="SkinScan AI">
+  <meta property="og:description" content="On-device skin lesion triage from a dermoscopic photo and patient details.">
+  <meta property="og:image" content="https://wangzi621.github.io/SkinCancer-AI/img/og.jpg">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="preload" href="fonts/ahn-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/ahn-800.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="app.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="topbar">
+    <a class="brand" href="#/scan" aria-label="SkinScan AI home">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <path d="M16 2v5M16 25v5M2 16h5M25 16h5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        <circle class="brand-dot" cx="16" cy="16" r="5"/>
+      </svg>
+      <span>SkinScan AI</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#/scan" data-route="scan">Scan</a>
+      <a href="#/history" data-route="history">History</a>
+      <a href="#/how" data-route="how">How it works</a>
+      <a href="#/kiosk" data-route="kiosk">The kiosk</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- SCAN ---------------------------------------------------------------->
+    <section class="view view-scan" id="view-scan" data-view="scan">
+      <div class="intro">
+        <h1>Which skin lesions need a dermatologist first?</h1>
+        <p>Add a dermoscopic photo and a few details about the patient. SkinScan AI estimates whether the lesion looks like melanoma, another skin cancer, or a benign spot, and suggests how soon to refer. It runs entirely in this browser, so the photo never leaves your device.</p>
+      </div>
+
+      <div class="bench">
+        <div class="bench-scope">
+          <div class="scope" id="scope" data-state="empty">
+            <canvas class="scope-canvas" id="scope-canvas" width="720" height="720" aria-hidden="true"></canvas>
+            <canvas class="scope-heat" id="scope-heat" width="720" height="720" aria-hidden="true"></canvas>
+            <svg class="scope-reticle" viewBox="0 0 400 400" aria-hidden="true">
+              <g class="ticks" id="ticks"></g>
+              <path d="M200 176v-26M200 224v26M176 200h-26M224 200h26" class="cross"/>
+              <circle class="ring-track" cx="200" cy="200" r="194"/>
+              <circle class="ring" id="ring" cx="200" cy="200" r="194" pathLength="100"/>
+            </svg>
+            <div class="scope-empty" id="scope-empty">
+              <p class="scope-empty-title">Drop a dermoscopic photo here</p>
+              <p class="scope-empty-sub">or choose one below. JPEG or PNG, one lesion, in focus.</p>
+            </div>
+            <p class="scope-status" id="scope-status" role="status" aria-live="polite"></p>
+          </div>
+
+          <div class="scope-actions">
+            <label class="btn btn-quiet" for="file-input">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0-4.5 4.5M12 4l4.5 4.5M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+              Upload photo
+            </label>
+            <input class="visually-hidden" type="file" id="file-input" accept="image/jpeg,image/png,image/webp">
+            <label class="btn btn-quiet" for="camera-input">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+              Take photo
+            </label>
+            <input class="visually-hidden" type="file" id="camera-input" accept="image/*" capture="environment">
+            <button class="btn btn-quiet" type="button" id="heat-btn" hidden>Show where it looked</button>
+          </div>
+
+          <div class="samples">
+            <h2 class="h-small">Try a sample</h2>
+            <ul class="sample-list" id="sample-list"></ul>
+            <p class="fine" id="sample-note">Dermoscopic images from the ISIC Archive that were added after the training data was collected, so the model never saw them. Each one has a biopsy result.</p>
+          </div>
+        </div>
+
+        <div class="bench-panel">
+          <form class="patient" id="patient-form" novalidate>
+            <div class="panel-head">
+              <h2>Patient details</h2>
+              <p>Optional, but the model is more accurate with them. Leave anything you don't know.</p>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="age">Age</label>
+                <div class="input-unit">
+                  <input id="age" name="age" type="number" inputmode="numeric" min="1" max="110" placeholder="e.g. 54">
+                  <span>years</span>
+                </div>
+              </div>
+              <fieldset class="field">
+                <legend>Sex</legend>
+                <div class="seg" role="radiogroup">
+                  <label><input type="radio" name="sex" value="female"><span>Female</span></label>
+                  <label><input type="radio" name="sex" value="male"><span>Male</span></label>
+                  <label><input type="radio" name="sex" value="unknown" checked><span>Not recorded</span></label>
+                </div>
+              </fieldset>
+            </div>
+
+            <fieldset class="field">
+              <legend>Where is the lesion?</legend>
+              <div class="bodymap-wrap">
+                <div class="bodymap" id="bodymap"></div>
+                <div class="bodymap-side">
+                  <label class="visually-hidden" for="site">Body site</label>
+                  <select id="site" name="site">
+                    <option value="">Not recorded</option>
+                    <option value="head/neck">Head or neck</option>
+                    <option value="anterior torso">Chest or abdomen</option>
+                    <option value="posterior torso">Back</option>
+                    <option value="lateral torso">Side of torso</option>
+                    <option value="upper extremity">Arm</option>
+                    <option value="lower extremity">Leg</option>
+                    <option value="palms/soles">Palm or sole</option>
+                    <option value="oral/genital">Mouth or genitals</option>
+                  </select>
+                  <p class="hint">Tap the figure or pick from the list.</p>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="field">
+              <legend>Skin type <span class="legend-note">(Fitzpatrick)</span></legend>
+              <div class="fitz" role="radiogroup">
+                <label class="fitz-1"><input type="radio" name="fitz" value="1"><span>I</span></label>
+                <label class="fitz-2"><input type="radio" name="fitz" value="2"><span>II</span></label>
+                <label class="fitz-3"><input type="radio" name="fitz" value="3"><span>III</span></label>
+                <label class="fitz-4"><input type="radio" name="fitz" value="4"><span>IV</span></label>
+                <label class="fitz-5"><input type="radio" name="fitz" value="5"><span>V</span></label>
+                <label class="fitz-6"><input type="radio" name="fitz" value="6"><span>VI</span></label>
+                <label class="fitz-x"><input type="radio" name="fitz" value="" checked><span>Not sure</span></label>
+              </div>
+              <p class="hint" id="fitz-note" hidden>Types V and VI were rare in the training data, so treat this result with extra caution.</p>
+            </fieldset>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="diameter">Largest diameter</label>
+                <div class="input-unit">
+                  <input id="diameter" name="diameter" type="number" inputmode="decimal" min="0.5" max="80" step="0.5" placeholder="e.g. 6">
+                  <span>mm</span>
+                </div>
+              </div>
+              <fieldset class="field">
+                <legend>Looks melanocytic?</legend>
+                <div class="seg" role="radiogroup">
+                  <label><input type="radio" name="melanocytic" value="yes"><span>Yes</span></label>
+                  <label><input type="radio" name="melanocytic" value="no"><span>No</span></label>
+                  <label><input type="radio" name="melanocytic" value="unsure" checked><span>Not sure</span></label>
+                </div>
+              </fieldset>
+            </div>
+            <p class="hint">Melanocytic lesions, such as moles and melanoma, usually show a pigment network, dots and globules, or streaks under dermoscopy.</p>
+
+            <div class="analyze-bar">
+              <button class="btn btn-primary" type="submit" id="analyze-btn" disabled>Analyze lesion</button>
+              <p class="analyze-note" id="analyze-note">Add a photo to start.</p>
+            </div>
+          </form>
+
+          <div class="result" id="result" hidden tabindex="-1">
+            <div class="verdict" id="verdict">
+              <p class="verdict-title" id="verdict-title"></p>
+              <h2 class="verdict-finding" id="verdict-finding"></h2>
+              <p class="verdict-why" id="verdict-why"></p>
+            </div>
+
+            <div class="result-block">
+              <h3 class="h-small">Model scores</h3>
+              <ul class="scores" id="scores"></ul>
+              <p class="fine" id="close-note" hidden>The top two scores are close, so the model is unsure between them.</p>
+            </div>
+
+            <div class="result-block">
+              <h3 class="h-small">What the patient details changed</h3>
+              <p id="meta-effect"></p>
+            </div>
+
+            <div class="result-block truth" id="truth" hidden>
+              <h3 class="h-small">Biopsy result for this sample</h3>
+              <p id="truth-text"></p>
+            </div>
+
+            <div class="result-actions">
+              <button class="btn btn-primary" type="button" id="save-btn">Save to history</button>
+              <button class="btn btn-quiet" type="button" id="print-btn">Print referral note</button>
+              <button class="btn btn-quiet" type="button" id="edit-btn">Edit details</button>
+              <button class="btn btn-quiet" type="button" id="new-btn">New scan</button>
+            </div>
+            <p class="fine" id="run-info"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HISTORY -------------------------------------------------------------->
+    <section class="view view-history" id="view-history" data-view="history" hidden>
+      <div class="page-head">
+        <h1>History</h1>
+        <p>Scans you save stay in this browser on this device. Nothing is sent anywhere.</p>
+      </div>
+      <div class="history-tools" id="history-tools" hidden>
+        <button class="btn btn-quiet" type="button" id="export-btn">Export CSV</button>
+        <button class="btn btn-quiet btn-danger" type="button" id="clear-btn">Delete all</button>
+      </div>
+      <ul class="history-list" id="history-list"></ul>
+      <div class="empty" id="history-empty">
+        <p>No saved scans yet. Run a scan and choose <strong>Save to history</strong> to keep it here.</p>
+        <a class="btn btn-primary" href="#/scan">Start a scan</a>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS --------------------------------------------------------->
+    <section class="view view-how" id="view-how" data-view="how" hidden>
+      <div class="page-head">
+        <h1>How SkinScan AI works</h1>
+        <p>A dermatologist never judges a lesion from the picture alone. Age, body site, and skin type change what a spot is likely to be. SkinScan AI reads the image and those details together.</p>
+      </div>
+
+      <figure class="pipeline" aria-label="Model diagram">
+        <div class="pipe pipe-img">
+          <h3>Image branch</h3>
+          <p>Dermoscopic photo, resized to 380 by 380 pixels</p>
+          <ol>
+            <li>EfficientNet-B4 backbone, 1,792 feature maps</li>
+            <li>Channel attention picks the useful features</li>
+            <li>GeM pooling, a learned mix of average and max</li>
+          </ol>
+        </div>
+        <div class="pipe pipe-meta">
+          <h3>Patient branch</h3>
+          <p>17 inputs built from age, sex, body site, lesion size, skin type, and melanocytic look</p>
+          <p>Dense layers of 256, 128, and 64 units learn how those details interact.</p>
+        </div>
+        <div class="pipe pipe-fuse">
+          <h3>Fusion</h3>
+          <p>Both branches join, then pass through layers of 768, 384, and 128 units to three scores: melanoma, benign, and other skin cancer.</p>
+        </div>
+      </figure>
+
+      <div class="cols">
+        <article>
+          <h2>Training data</h2>
+          <p>45,400 dermoscopic and close-up images from the public <a href="https://www.isic-archive.com" rel="noopener">ISIC Archive</a>, every one confirmed by a biopsy rather than a visual impression. They come from clinics in Europe, the Americas, and Australia.</p>
+          <table class="facts">
+            <tbody>
+              <tr><th scope="row">Benign</th><td>20,344</td><td>moles, benign keratoses, dermatofibromas</td></tr>
+              <tr><th scope="row">Other skin cancer</th><td>14,210</td><td>basal and squamous cell carcinoma</td></tr>
+              <tr><th scope="row">Melanoma</th><td>10,846</td><td></td></tr>
+            </tbody>
+          </table>
+          <p>The model trained on 36,320 images and was checked on 9,080 it never trained on, over 218 epochs in six stages on an RTX 5070 Ti.</p>
+        </article>
+        <article>
+          <h2>Results on 9,080 validation images</h2>
+          <table class="facts">
+            <tbody>
+              <tr><th scope="row">AUC, all three classes</th><td>93.2%</td></tr>
+              <tr><th scope="row">AUC, melanoma</th><td>0.940</td></tr>
+              <tr><th scope="row">Melanoma sensitivity</th><td>90.0%</td></tr>
+              <tr><th scope="row">Melanoma specificity</th><td>81.5%</td></tr>
+              <tr><th scope="row">Overall accuracy</th><td>78.6%</td></tr>
+            </tbody>
+          </table>
+          <p>Sensitivity and specificity use a melanoma cutoff of 0.278 instead of the usual 0.5. Missing a melanoma costs far more than an extra referral, so the cutoff trades some false alarms for catching 9 in 10 melanomas.</p>
+        </article>
+      </div>
+
+      <div class="cols">
+        <article>
+          <h2>What it can't do</h2>
+          <ul class="plain">
+            <li>It does not diagnose. Only a biopsy does. Use the result to help decide who to refer first.</li>
+            <li>Darker skin is under-represented. Only 10 of the 3,219 training records that list a skin type are type V or VI.</li>
+            <li>It expects a dermoscopic close-up of a single lesion. Ordinary phone photos from far away are outside what it learned.</li>
+            <li>The validation set also chose the best training epoch and the cutoff, so real-world numbers may be a little lower. It has not been tested on patients prospectively.</li>
+          </ul>
+        </article>
+        <article>
+          <h2>Privacy</h2>
+          <p>The model file downloads once, about 22.5 MB, and then every scan runs on your device with <a href="https://ai.google.dev/edge/litert/web" rel="noopener">LiteRT.js</a>. Photos and patient details are never uploaded. Saved scans live in this browser until you delete them. After the first visit the app also works offline.</p>
+          <p>The same INT8 model runs on the <a href="#/kiosk">SkinScan kiosk</a>, a Raspberry Pi device built for clinics.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- KIOSK ---------------------------------------------------------------->
+    <section class="view view-kiosk" id="view-kiosk" data-view="kiosk" hidden>
+      <div class="page-head">
+        <h1>The SkinScan kiosk</h1>
+        <p>Some clinics have no reliable internet and no spare computer. The kiosk is a self-contained version of SkinScan AI that costs about $300 in parts and runs with no network at all.</p>
+      </div>
+      <figure class="kiosk-photo">
+        <img src="img/kiosk.jpg" alt="Left: the 3D printed SkinScan case with a touchscreen on top and a Raspberry Pi inside, connected by a ribbon cable to a small camera board. Right: the camera held over a spot on a leg while the touchscreen shows the captured image." width="1600" height="376" loading="lazy">
+        <figcaption>The assembled kiosk and the device in use.</figcaption>
+      </figure>
+      <div class="cols">
+        <article>
+          <h2>Hardware</h2>
+          <table class="facts">
+            <tbody>
+              <tr><th scope="row">Computer</th><td>Raspberry Pi 5, 8 GB</td></tr>
+              <tr><th scope="row">AI accelerator</th><td>Hailo-8L, 13 TOPS, on an M.2 HAT+</td></tr>
+              <tr><th scope="row">Camera</th><td>Raspberry Pi Camera Module 3</td></tr>
+              <tr><th scope="row">Screen</th><td>3.5 inch touchscreen</td></tr>
+              <tr><th scope="row">Case</th><td>3D printed</td></tr>
+              <tr><th scope="row">Parts cost</th><td>About $300</td></tr>
+            </tbody>
+          </table>
+        </article>
+        <article>
+          <h2>Software</h2>
+          <p>A Python Flask service runs the INT8 model with LiteRT. A pygame interface shows the result on the touchscreen, and the Pi starts both automatically at boot, so staff only have to plug it in.</p>
+          <p>Capture, preprocessing, inference, and display all happen on the board. No image is uploaded anywhere.</p>
+          <p><a href="https://github.com/WangZi621/SkinCancer-AI/tree/main/kiosk" rel="noopener">Kiosk source code on GitHub</a></p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p><strong>SkinScan AI is a research prototype, not a medical device.</strong> It has not been cleared by the FDA and it does not diagnose skin cancer. Clinical judgment and biopsy decide.</p>
+    <p>Built by Jason Xiao. <a href="https://github.com/WangZi621/SkinCancer-AI" rel="noopener">Source on GitHub</a>. Sample images: ISIC Archive, CC BY.</p>
+  </footer>
+
+  <!-- Filled in just before printing -->
+  <section class="print-note" id="print-note" aria-hidden="true"></section>
+
+  <template id="tpl-sample">
+    <li><button type="button" class="sample"><img alt="" width="72" height="72" loading="lazy"><span></span></button></li>
+  </template>
+</body>
+</html>
