@@ -2,18 +2,34 @@
  "note": "Dermoscopic images from the ISIC Archive (isic-archive.com) that are not in the SkinScan training CSV. Labels are biopsy-confirmed.",
  "samples": [
   {
-   "id": "ISIC_8730498",
-   "image": "samples/ISIC_8730498.jpg",
-   "thumb": "samples/ISIC_8730498_thumb.jpg",
+   "id": "ISIC_5700648",
+   "image": "samples/ISIC_5700648.jpg",
+   "thumb": "samples/ISIC_5700648_thumb.jpg",
    "diagnosis": "Melanoma in situ",
    "truth": 0,
    "attribution": "Memorial Sloan Kettering Cancer Center",
    "license": "CC BY",
    "patient": {
-    "age": 25,
+    "age": 65,
     "sex": "female",
-    "site": "posterior torso",
+    "site": "head/neck",
     "melanocytic": "yes"
+   }
+  },
+  {
+   "id": "ISIC_3099700",
+   "image": "samples/ISIC_3099700.jpg",
+   "thumb": "samples/ISIC_3099700_thumb.jpg",
+   "diagnosis": "Seborrheic keratosis",
+   "truth": 1,
+   "attribution": "Dr. Cristian Navarrete et al.",
+   "license": "CC BY",
+   "patient": {
+    "age": 30,
+    "sex": "female",
+    "site": "anterior torso",
+    "diameterMm": 8.0,
+    "melanocytic": "unsure"
    }
   },
   {
@@ -29,6 +45,37 @@
     "sex": "female",
     "site": "upper extremity",
     "melanocytic": "unsure"
+   }
+  },
+  {
+   "id": "ISIC_9178598",
+   "image": "samples/ISIC_9178598.jpg",
+   "thumb": "samples/ISIC_9178598_thumb.jpg",
+   "diagnosis": "Seborrheic keratosis",
+   "truth": 1,
+   "attribution": "Dr. Cristian Navarrete et al.",
+   "license": "CC BY",
+   "patient": {
+    "age": 60,
+    "sex": "male",
+    "site": "lateral torso",
+    "diameterMm": 3.0,
+    "melanocytic": "unsure"
+   }
+  },
+  {
+   "id": "ISIC_9154271",
+   "image": "samples/ISIC_9154271.jpg",
+   "thumb": "samples/ISIC_9154271_thumb.jpg",
+   "diagnosis": "Basal cell carcinoma",
+   "truth": 2,
+   "attribution": "Memorial Sloan Kettering Cancer Center",
+   "license": "CC BY",
+   "patient": {
+    "age": 70,
+    "sex": "male",
+    "site": "upper extremity",
+    "melanocytic": "no"
    }
   },
   {
@@ -48,24 +95,9 @@
    }
   },
   {
-   "id": "ISIC_5700648",
-   "image": "samples/ISIC_5700648.jpg",
-   "thumb": "samples/ISIC_5700648_thumb.jpg",
-   "diagnosis": "Melanoma in situ",
-   "truth": 0,
-   "attribution": "Memorial Sloan Kettering Cancer Center",
-   "license": "CC BY",
-   "patient": {
-    "age": 65,
-    "sex": "female",
-    "site": "head/neck",
-    "melanocytic": "yes"
-   }
-  },
-  {
-   "id": "ISIC_7262547",
-   "image": "samples/ISIC_7262547.jpg",
-   "thumb": "samples/ISIC_7262547_thumb.jpg",
+   "id": "ISIC_6249262",
+   "image": "samples/ISIC_6249262.jpg",
+   "thumb": "samples/ISIC_6249262_thumb.jpg",
    "diagnosis": "Basal cell carcinoma",
    "truth": 2,
    "attribution": "Memorial Sloan Kettering Cancer Center",
@@ -73,53 +105,23 @@
    "patient": {
     "age": 70,
     "sex": "male",
-    "site": "head/neck",
-    "melanocytic": "unsure"
+    "site": "upper extremity",
+    "melanocytic": "no"
    }
   },
   {
-   "id": "ISIC_7621123",
-   "image": "samples/ISIC_7621123.jpg",
-   "thumb": "samples/ISIC_7621123_thumb.jpg",
-   "diagnosis": "Nevus",
-   "truth": 1,
-   "attribution": "Memorial Sloan Kettering Cancer Center",
-   "license": "CC BY",
-   "patient": {
-    "age": 65,
-    "sex": "male",
-    "site": "head/neck",
-    "melanocytic": "yes"
-   }
-  },
-  {
-   "id": "ISIC_4683164",
-   "image": "samples/ISIC_4683164.jpg",
-   "thumb": "samples/ISIC_4683164_thumb.jpg",
+   "id": "ISIC_6991057",
+   "image": "samples/ISIC_6991057.jpg",
+   "thumb": "samples/ISIC_6991057_thumb.jpg",
    "diagnosis": "Seborrheic keratosis",
    "truth": 1,
    "attribution": "Dr. Cristian Navarrete et al.",
    "license": "CC BY",
    "patient": {
-    "age": 60,
+    "age": 50,
     "sex": "female",
-    "site": "head/neck",
-    "diameterMm": 6.0,
-    "melanocytic": "unsure"
-   }
-  },
-  {
-   "id": "ISIC_3397948",
-   "image": "samples/ISIC_3397948.jpg",
-   "thumb": "samples/ISIC_3397948_thumb.jpg",
-   "diagnosis": "Basal cell carcinoma",
-   "truth": 2,
-   "attribution": "Memorial Sloan Kettering Cancer Center",
-   "license": "CC BY",
-   "patient": {
-    "age": 45,
-    "sex": "female",
-    "site": "head/neck",
+    "site": "lower extremity",
+    "diameterMm": 3.0,
     "melanocytic": "unsure"
    }
   }

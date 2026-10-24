@@ -1,13 +1,15 @@
-// SkinScan AI: on-device inference with LiteRT.js.
+// SkinScan AI: on-device inference with ONNX Runtime Web (WebAssembly).
 // Preprocessing mirrors the training notebook exactly:
 //   image  -> RGB, bilinear resize (half-pixel centers, like cv2.resize / tf.image.resize)
 //             to the model's input size, raw 0-255 floats (EfficientNet normalizes internally)
 //   patient -> the same 17 metadata features, in the same order, as META_COLS in training.
 
-import { loadLiteRt, loadAndCompile, Tensor } from '../vendor/litert.bundle.mjs';
+import * as ort from '../vendor/ort/ort.wasm.min.mjs';
 
-export const MODEL_URL = 'model/skinscan-v3.tflite';
-const WASM_DIR = new URL('../vendor/wasm/', import.meta.url).href;
+// skinscan-v3.onnx is skin_cancer_v3.tflite with its INT8 activation quantization removed
+// (tools/make_weight_only_onnx.py). Weights stay int8; all activations run in float32.
+export const MODEL_URL = 'model/skinscan-v3.onnx';
+const WASM_DIR = new URL('../vendor/ort/', import.meta.url).href;
 
 // Output order from training: CLASS_NAMES = ['Melanoma', 'Benign Nevi', 'Other Malignant']
 export const CLASSES = [
@@ -132,16 +134,16 @@ export function resizeToInput(imageData, size) {
 // ---- runtime ----------------------------------------------------------------
 export class SkinScanModel {
   constructor() {
-    this.model = null;
+    this.session = null;
     this.inputSize = 380;
-    this.imageIndex = 0;
-    this.metaIndex = 1;
-    this.inputShapes = [];
+    this.imageName = null;
+    this.metaName = null;
+    this.outputName = null;
     this.queue = Promise.resolve();
     this.loading = null;
   }
 
-  /** Download (with progress) and compile the model. Safe to call more than once. */
+  /** Download (with progress) and prepare the model. Safe to call more than once. */
   load(onProgress = () => {}) {
     if (!this.loading) {
       this.loading = this.#load(onProgress).catch((err) => {
@@ -153,25 +155,21 @@ export class SkinScanModel {
   }
 
   async #load(onProgress) {
-    onProgress({ phase: 'runtime' });
-    await loadLiteRt(WASM_DIR);
+    ort.env.wasm.wasmPaths = WASM_DIR;
+    // Threads need cross-origin isolation, which sw.js turns on after the first visit.
+    ort.env.wasm.numThreads = self.crossOriginIsolated ? Math.min(4, navigator.hardwareConcurrency || 1) : 1;
     const bytes = await fetchWithProgress(MODEL_URL, (loaded, total) =>
       onProgress({ phase: 'download', loaded, total }),
     );
     onProgress({ phase: 'compile' });
-    this.model = await loadAndCompile(bytes, { accelerator: 'wasm' });
-
-    // Find the image and metadata inputs by shape, not by position.
-    const details = this.model.getInputDetails();
-    this.inputShapes = details.map((d) => Array.from(d.shape, (v) => (v < 0 ? 1 : v)));
-    details.forEach((d, i) => {
-      if (d.shape.length === 4) {
-        this.imageIndex = i;
-        this.inputSize = d.shape[1];
-      } else {
-        this.metaIndex = i;
-      }
+    this.session = await ort.InferenceSession.create(bytes, {
+      executionProviders: ['wasm'],
+      graphOptimizationLevel: 'all',
     });
+    // Find the image and patient inputs by name, not by position.
+    this.imageName = this.session.inputNames.find((n) => /image/i.test(n)) || this.session.inputNames[0];
+    this.metaName = this.session.inputNames.find((n) => n !== this.imageName);
+    this.outputName = this.session.outputNames[0];
     onProgress({ phase: 'ready' });
     return this;
   }
@@ -184,21 +182,15 @@ export class SkinScanModel {
   }
 
   async #run(imageTensorData, metaVector) {
-    const inputs = [];
-    inputs[this.imageIndex] = new Tensor(imageTensorData, this.inputShapes[this.imageIndex]);
-    inputs[this.metaIndex] = new Tensor(metaVector, this.inputShapes[this.metaIndex]);
+    const s = this.inputSize;
+    const feeds = {
+      [this.imageName]: new ort.Tensor('float32', imageTensorData, [1, s, s, 3]),
+      [this.metaName]: new ort.Tensor('float32', metaVector, [1, metaVector.length]),
+    };
     const t0 = performance.now();
-    let outputs;
-    try {
-      outputs = await this.model.run(inputs);
-      const host = await outputs[0].moveTo('wasm');
-      const probs = Float32Array.from(host.toTypedArray());
-      host.delete();
-      return { probs, ms: performance.now() - t0 };
-    } finally {
-      inputs.forEach((t) => t && t.delete());
-      if (outputs) outputs.slice(1).forEach((t) => t.delete());
-    }
+    const out = await this.session.run(feeds);
+    const probs = Float32Array.from(out[this.outputName].data);
+    return { probs, ms: performance.now() - t0 };
   }
 }
 

@@ -54,23 +54,27 @@ export async function occlusionMap(model, tensor, size, meta, target, baseProb, 
   return { heat: sum, size, max };
 }
 
-/** Paint the heat values into a small canvas: violet (low) to yellow (high), transparent at zero. */
+/** Paint the strongest areas only: transparent below the median, then orange to yellow. */
 export function heatToCanvas({ heat, size, max }) {
   const c = document.createElement('canvas');
   c.width = size;
   c.height = size;
   const ctx = c.getContext('2d');
   const img = ctx.createImageData(size, size);
-  const lo = [69, 52, 181];
-  const hi = [255, 222, 89];
-  const scale = max > 0.005 ? 1 / max : 0;
+  const sorted = Float32Array.from(heat).sort();
+  const lo = Math.max(0, sorted[Math.floor(sorted.length * 0.5)]);
+  const span = max - lo;
+  if (max <= 0.005 || span <= 0) return c;
+  const a = [255, 122, 69];
+  const b = [255, 232, 102];
   for (let i = 0; i < heat.length; i++) {
-    const v = Math.max(0, Math.min(1, heat[i] * scale));
-    const t = Math.pow(v, 0.8);
-    img.data[i * 4] = lo[0] + (hi[0] - lo[0]) * t;
-    img.data[i * 4 + 1] = lo[1] + (hi[1] - lo[1]) * t;
-    img.data[i * 4 + 2] = lo[2] + (hi[2] - lo[2]) * t;
-    img.data[i * 4 + 3] = v < 0.15 ? 0 : 60 + 170 * t;
+    const v = Math.max(0, Math.min(1, (heat[i] - lo) / span));
+    if (v < 0.25) continue;
+    const t = (v - 0.25) / 0.75;
+    img.data[i * 4] = a[0] + (b[0] - a[0]) * t;
+    img.data[i * 4 + 1] = a[1] + (b[1] - a[1]) * t;
+    img.data[i * 4 + 2] = a[2] + (b[2] - a[2]) * t;
+    img.data[i * 4 + 3] = 70 + 150 * t;
   }
   ctx.putImageData(img, 0, 0);
   return c;

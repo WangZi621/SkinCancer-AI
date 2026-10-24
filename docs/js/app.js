@@ -11,9 +11,10 @@ const model = new SkinScanModel();
 
 const el = {
   scope: $('#scope'),
+  bench: $('#workbench'),
+  heatLabel: $('#heat-btn span'),
   canvas: $('#scope-canvas'),
   heat: $('#scope-heat'),
-  ticks: $('#ticks'),
   status: $('#scope-status'),
   file: $('#file-input'),
   camera: $('#camera-input'),
@@ -56,23 +57,6 @@ const state = {
 };
 
 const pct = (p, digits = 0) => `${(p * 100).toFixed(digits)}%`;
-
-// ---------------------------------------------------------------- reticle
-(function drawTicks() {
-  const parts = [];
-  for (let i = 0; i < 72; i++) {
-    const a = (i / 72) * Math.PI * 2;
-    const major = i % 6 === 0;
-    const r1 = 186;
-    const r2 = major ? 168 : 177;
-    const x1 = 200 + r1 * Math.cos(a);
-    const y1 = 200 + r1 * Math.sin(a);
-    const x2 = 200 + r2 * Math.cos(a);
-    const y2 = 200 + r2 * Math.sin(a);
-    parts.push(`<line ${major ? 'class="major" ' : ''}x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"/>`);
-  }
-  el.ticks.innerHTML = parts.join('');
-})();
 
 // ---------------------------------------------------------------- routing
 const VIEWS = ['scan', 'history', 'how', 'kiosk'];
@@ -128,6 +112,7 @@ idle(() => loadModel().catch(() => {}));
 // ---------------------------------------------------------------- photo input
 function setScopeState(s) {
   el.scope.dataset.state = s;
+  el.bench.dataset.step = s === 'empty' ? '1' : s === 'done' || s === 'mapping' ? '3' : '2';
 }
 
 function drawScope() {
@@ -148,7 +133,7 @@ function clearHeat() {
   state.heat = null;
   el.scope.dataset.heat = 'off';
   el.heat.getContext('2d').clearRect(0, 0, el.heat.width, el.heat.height);
-  el.heatBtn.textContent = 'Show where it looked';
+  el.heatLabel.textContent = 'Show where it looked';
 }
 
 async function setImage(blob, sample = null) {
@@ -378,17 +363,15 @@ function renderResult() {
   });
   el.closeNote.hidden = !t.close;
 
-  const m0 = r.probsPhotoOnly[0];
+  const q = r.probsPhotoOnly;
+  const qScores = `melanoma ${pct(q[0])}, benign ${pct(q[1])}, other skin cancer ${pct(q[2])}`;
   if (!r.detailsGiven) {
     el.metaEffect.textContent = 'No patient details were entered, so this result comes from the photo alone. Adding age, body site, and the other details usually makes the model more accurate.';
   } else {
-    const dir = mel > m0 + 0.005 ? 'up' : mel < m0 - 0.005 ? 'down' : null;
-    let txt = dir
-      ? `With the photo alone, the melanoma score would be ${pct(m0)}. The details you entered moved it ${dir} to ${pct(mel)}.`
-      : `The details you entered barely changed the melanoma score, which stays near ${pct(mel)}.`;
-    if (r.triagePhotoOnly.level !== t.level) {
-      txt += ` Without them, the suggestion would have been: ${r.triagePhotoOnly.title.toLowerCase()}.`;
-    }
+    let txt = `With every detail left blank, the same photo scores ${qScores}.`;
+    txt += r.triagePhotoOnly.level !== t.level
+      ? ` That would change the suggestion to ${r.triagePhotoOnly.title.toLowerCase()}, so the details you entered matter here.`
+      : ' The suggestion would stay the same.';
     el.metaEffect.textContent = txt;
   }
 
@@ -399,7 +382,7 @@ function renderResult() {
     el.truth.hidden = true;
   }
 
-  el.runInfo.textContent = `Analyzed on this device in ${(r.ms / 1000).toFixed(2)} s. Model: SkinScan v3, INT8, running with LiteRT.js.`;
+  el.runInfo.textContent = `Analyzed on this device in ${(r.ms / 1000).toFixed(2)} s. Model: SkinScan v3, running with ONNX Runtime Web.`;
   el.save.disabled = false;
   el.save.textContent = 'Save to history';
   el.heatBtn.hidden = false;
@@ -419,7 +402,7 @@ el.heatBtn.addEventListener('click', async () => {
   if (state.heat) {
     const on = el.scope.dataset.heat !== 'on';
     el.scope.dataset.heat = on ? 'on' : 'off';
-    el.heatBtn.textContent = on ? 'Hide heat map' : 'Show where it looked';
+    el.heatLabel.textContent = on ? 'Hide heat map' : 'Show where it looked';
     return;
   }
   state.busy = true;
@@ -430,20 +413,21 @@ el.heatBtn.addEventListener('click', async () => {
   el.scope.style.setProperty('--progress', 0);
   try {
     const map = await occlusionMap(model, state.tensor, model.inputSize, encodeMetadata(state.result.patient), target, baseProb, {
-      grid: 5,
+      grid: 4,
+      frac: 0.4,
       onProgress: (f) => {
         el.scope.style.setProperty('--progress', (f * 100).toFixed(1));
-        el.status.textContent = `Mapping ${Math.round(f * 25)} of 25`;
+        el.status.textContent = `Mapping ${Math.round(f * 16)} of 16`;
       },
     });
     state.heat = map;
     const ctx = el.heat.getContext('2d');
     ctx.clearRect(0, 0, el.heat.width, el.heat.height);
-    ctx.filter = 'blur(14px)';
+    ctx.filter = 'blur(34px)';
     ctx.drawImage(heatToCanvas(map), ...state.drawRect);
     ctx.filter = 'none';
     el.scope.dataset.heat = 'on';
-    el.heatBtn.textContent = 'Hide heat map';
+    el.heatLabel.textContent = 'Hide heat map';
     el.runInfo.textContent = map.max > 0.005
       ? `Heat map: the bright areas are the parts of the image that, when covered up, lowered the ${CLASSES[target].short.toLowerCase()} score the most.`
       : 'Covering any one part of the image barely changed the score, so no single area stands out.';
