@@ -12,7 +12,8 @@
       font-family: "Geist", sans-serif;
       background: #f5f7f8;
     }
-    #hm-cam {
+    /* the camera: page coordinates (the 1920 x 1080 viewport of the recording) */
+    .cam {
       position: absolute;
       left: 0;
       top: 0;
@@ -20,27 +21,26 @@
       height: 1080px;
       transform-origin: 0 0;
     }
-    #hm-window {
+    .win {
       position: absolute;
-      left: 240px;
-      top: 40px;
-      width: 1440px;
-      height: 856px;
-      border-radius: 18px;
+      left: 0;
+      top: -46px;
+      width: 1920px;
+      height: 1126px;
+      border-radius: 22px;
       overflow: hidden;
       background: #ffffff;
-      box-shadow: 0 0 0 1px #e2e7eb, 0 2px 4px rgba(15, 27, 36, 0.04), 0 40px 90px -30px rgba(15, 27, 36, 0.35);
+      box-shadow: 0 0 0 1px #e2e7eb, 0 40px 90px -30px rgba(15, 27, 36, 0.35);
     }
-    .hm-bar {
+    .win-bar {
       position: absolute;
       left: 0;
       top: 0;
       right: 0;
       height: 46px;
-      background: #ffffff;
       border-bottom: 1px solid #e2e7eb;
     }
-    .hm-dot {
+    .win-dot {
       position: absolute;
       top: 17px;
       width: 12px;
@@ -48,13 +48,12 @@
       border-radius: 50%;
       background: #cfd7dd;
     }
-    .hm-url {
+    .win-url {
       position: absolute;
-      left: 50%;
+      left: 660px;
       top: 8px;
-      width: 560px;
+      width: 600px;
       height: 30px;
-      margin-left: -280px;
       border-radius: 9px;
       background: #f0f3f5;
       color: #4a5a66;
@@ -63,108 +62,301 @@
       line-height: 30px;
       text-align: center;
     }
-    #hm-video,
-    .hm-still {
+    .win-video {
       position: absolute;
       left: 0;
       top: 46px;
-      width: 1440px;
-      height: 810px;
-      object-fit: cover;
+      width: 1920px;
+      height: 1080px;
     }
-    #hm-wipe {
+    /* the app's own scanning ring and status pill, rebuilt from docs/app.css: the recording
+       drops frames while the model runs, so this is the one part redrawn on the footage */
+    .app-ring {
       position: absolute;
-      left: 0;
-      top: 46px;
-      width: 4px;
-      height: 810px;
-      margin-left: -2px;
-      background: #ffffff;
-      box-shadow: 0 0 12px rgba(15, 27, 36, 0.35);
+      left: 457.6px;
+      top: 121.3px;
+      width: 400px;
+      height: 400px;
       opacity: 0;
     }
-    #hm-cap {
+    .app-ring circle {
+      fill: none;
+      stroke: #0e7c7b;
+      stroke-width: 4;
+      stroke-linecap: round;
+    }
+    .app-status {
+      position: absolute;
+      left: 657.6px;
+      top: 452px;
+      transform: translateX(-50%);
+      padding: 0 14px;
+      white-space: nowrap;
+      height: 33px;
+      border-radius: 999px;
+      background: rgba(15, 27, 36, 0.78);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 33px;
+      text-align: center;
+      opacity: 0;
+    }
+    /* labels pinned to the part they name */
+    .lb {
+      position: absolute;
+      width: 0;
+      height: 0;
+    }
+    .lb-w {
       position: absolute;
       left: 0;
-      right: 0;
-      top: 934px;
-      display: flex;
-      justify-content: center;
+      top: 0;
+      transform-origin: 0 0;
     }
-    .hm-pill {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      padding: 14px 32px 14px 18px;
-      border-radius: 999px;
-      background: #ffffff;
-      box-shadow: 0 0 0 1px #e2e7eb, 0 12px 30px -14px rgba(15, 27, 36, 0.3);
-      color: #0f1b24;
-      font-size: 44px;
-      font-weight: 650;
-      letter-spacing: -0.02em;
-    }
-    .hm-swatch {
-      width: 46px;
-      height: 46px;
+    .lb-dot {
+      position: absolute;
+      left: -10px;
+      top: -10px;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
-      background: radial-gradient(circle at 50% 50%, #ffe866 0%, #ff7a45 60%, rgba(255, 122, 69, 0.15) 100%);
-      box-shadow: 0 0 0 4px #ffffff, 0 0 0 6px #d92d20;
+      background: #0e7c7b;
+      box-shadow: 0 0 0 4px #ffffff, 0 4px 10px rgba(15, 27, 36, 0.3);
+    }
+    .lb-line {
+      position: absolute;
+      background: #0e7c7b;
+    }
+    .lb-card {
+      position: absolute;
+      white-space: nowrap;
+      padding: 14px 26px;
+      border-radius: 16px;
+      background: #ffffff;
+      color: #0f1b24;
+      font-size: 40px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      box-shadow: 0 0 0 1px #e2e7eb, 0 14px 34px -14px rgba(15, 27, 36, 0.4);
+    }
+    .lb[data-side="left"] .lb-line {
+      right: 0;
+      top: -1.5px;
+      height: 3px;
+      width: var(--len);
+      transform-origin: 100% 50%;
+    }
+    .lb[data-side="left"] .lb-card {
+      right: var(--len);
+      top: 0;
+      transform: translateY(-50%);
+    }
+    .lb[data-side="bottom"] .lb-line {
+      left: -1.5px;
+      top: 0;
+      width: 3px;
+      height: var(--len);
+      transform-origin: 50% 0;
+    }
+    .lb[data-side="bottom"] .lb-card {
+      left: 0;
+      top: var(--len);
+      transform: translateX(-50%);
+    }
+    .lb[data-side="top"] .lb-line {
+      left: -1.5px;
+      bottom: 0;
+      width: 3px;
+      height: var(--len);
+      transform-origin: 50% 100%;
+    }
+    .lb[data-side="top"] .lb-card {
+      left: 0;
+      bottom: var(--len);
+      transform: translateX(-50%);
+    }
+    .lb-red .lb-dot,
+    .lb-red .lb-line {
+      background: #d92d20;
+    }
+    .still {
+      position: absolute;
+      left: 0;
+      top: 46px;
+      width: 1920px;
+      height: 1080px;
+    }
+    .app-track circle {
+      stroke: #e7ecef;
+    }
+    #hm-divider {
+      position: absolute;
+      left: 0;
+      top: 121.3px;
+      width: 0;
+      height: 400px;
+      opacity: 0;
+    }
+    #hm-divider i {
+      position: absolute;
+      left: -2px;
+      top: 0;
+      width: 4px;
+      height: 400px;
+      background: #ffffff;
+      box-shadow: 0 0 10px rgba(15, 27, 36, 0.35);
+    }
+    #hm-divider b {
+      position: absolute;
+      left: -15px;
+      top: 185px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px #0e7c7b, 0 4px 10px rgba(15, 27, 36, 0.35);
+    }
+    #hm-whip {
+      position: absolute;
+      inset: 0;
     }
   </style>
-  <div id="root" data-composition-id="heatmap" data-width="1920" data-height="1080" data-start="0" data-duration="8.5">
-    <div id="hm-cam">
-      <div id="hm-window">
-        <div class="hm-bar">
-          <span class="hm-dot" style="left: 20px"></span>
-          <span class="hm-dot" style="left: 40px"></span>
-          <span class="hm-dot" style="left: 60px"></span>
-          <span class="hm-url" data-layout-ignore>wangzi621.github.io/SkinCancer-AI</span>
+  <div id="root" data-composition-id="heatmap" data-width="1920" data-height="1080" data-start="0" data-duration="8.5" data-motion-blur="on">
+    <div id="hm-whip">
+    <div id="hm-cam" class="cam" data-layout-allow-overflow>
+      <div class="win">
+        <div class="win-bar">
+          <span class="win-dot" style="left: 22px"></span>
+          <span class="win-dot" style="left: 42px"></span>
+          <span class="win-dot" style="left: 62px"></span>
+          <span class="win-url" data-layout-ignore>wangzi621.github.io/SkinCancer-AI</span>
         </div>
-        <video
-          id="hm-video"
-          class="clip"
-          src="assets/capture/rec2_heatmap.mp4"
-          data-start="0"
-          data-duration="4.85"
-          data-media-start="0.4"
-          data-playback-rate="4"
-          data-track-index="1"
-          muted
-          playsinline
-        ></video>
-        <img id="hm-before" class="hm-still clip" src="assets/capture/03_result_card.png" alt="" data-start="3.95" data-duration="4.55" data-track-index="2" />
-        <img id="hm-after" class="hm-still clip" src="assets/capture/04_heatmap_on.png" alt="" data-start="3.95" data-duration="4.55" data-track-index="3" />
-        <div id="hm-wipe"></div>
+        <!-- recording 2, in three speeds: the click, the 16 passes at 5x, the map landing -->
+        <video id="hm-va" class="win-video clip" src="assets/capture/rec2_heatmap.mp4" data-start="0" data-duration="2.5" data-media-start="0" data-track-index="1" muted playsinline></video>
+        <video id="hm-vb" class="win-video clip" src="assets/capture/rec2_heatmap.mp4" data-start="2.5" data-duration="2.18" data-media-start="2.5" data-playback-rate="5" data-track-index="1" muted playsinline></video>
+        <video id="hm-vc" class="win-video clip" src="assets/capture/rec2_heatmap.mp4" data-start="4.68" data-duration="2.9" data-media-start="13.5" data-track-index="1" muted playsinline></video>
+        <!-- before and after stills of the same frame, for the wipe (adapted from the registry's before-after-wipe) -->
+        <img id="hm-before" class="still clip" src="assets/capture/03_result_card.png" alt="" data-start="4.68" data-duration="3.82" data-track-index="2" />
+        <img id="hm-after" class="still clip" src="assets/capture/04_heatmap_on.png" alt="" data-start="4.68" data-duration="3.82" data-track-index="3" />
+      </div>
+      <!-- the app's mapping state, rebuilt from docs/app.css (the recording drops frames while the 16 passes run) -->
+      <svg id="hm-track" class="app-ring app-track" viewBox="0 0 400 400"><circle cx="200" cy="200" r="196" /></svg>
+      <svg id="hm-ring" class="app-ring" viewBox="0 0 400 400"><circle cx="200" cy="200" r="196" pathLength="100" transform="rotate(-90 200 200)" style="stroke: #d92d20" /></svg>
+      <div id="hm-status" class="app-status">Mapping 1 of 16</div>
+      <div id="hm-divider"><i></i><b></b></div>
+
+      <div id="hm-lb" class="lb" data-at="457.6,321.3" data-z="2.2" data-side="left" style="--len: 64px">
+        <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Where the model looked</span></div>
       </div>
     </div>
-    <div id="hm-cap" class="clip" data-start="4.2" data-duration="4.3" data-track-index="4">
-      <div class="hm-pill"><span class="hm-swatch"></span>Where the model looked</div>
     </div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    tl.fromTo("#hm-window", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out" }, 0);
+    const D = 8.5;
 
-    // magnify the scope while the 16 occlusion passes run (scope centre in frame: 733, 327)
-    const s = 2.3;
+    // Camera on the real page, adapted from the registry's cursor-zoom-follow: the aim steps
+    // between shots and a critically damped spring (in log zoom) turns each step into a move
+    // that leads, settles and then holds still while the app works.
+    function pageCamera(el, shots, duration, omega = 7) {
+      const W = 1920, H = 1080, FPS = 60, SUB = 4, dt = 1 / (FPS * SUB);
+      const aim = (t) => {
+        let s = shots[0];
+        for (const k of shots) if (t >= k.t) s = k;
+        return { x: s.x, y: s.y, z: Math.log(s.z) };
+      };
+      const n = Math.ceil(duration * FPS) + 1;
+      const out = [];
+      const s = aim(0);
+      const v = { x: 0, y: 0, z: 0 };
+      for (let f = 0; f <= n; f++) {
+        out.push({ x: s.x, y: s.y, z: s.z });
+        for (let j = 0; j < SUB; j++) {
+          const a = aim((f * SUB + j) * dt);
+          for (const k of ["x", "y", "z"]) {
+            v[k] += (omega * omega * (a[k] - s[k]) - 2 * omega * v[k]) * dt;
+            s[k] += v[k] * dt;
+          }
+        }
+      }
+      const at = (t) => {
+        const p = Math.max(0, Math.min(n, t * FPS));
+        const i = Math.floor(p);
+        const u = p - i;
+        const a = out[i];
+        const b = out[Math.min(n, i + 1)];
+        return { x: a.x + (b.x - a.x) * u, y: a.y + (b.y - a.y) * u, z: Math.exp(a.z + (b.z - a.z) * u) };
+      };
+      const render = (t) => {
+        const c = at(t);
+        el.style.transform = `translate(${(W / 2 - c.x * c.z).toFixed(2)}px,${(H / 2 - c.y * c.z).toFixed(2)}px) scale(${c.z.toFixed(4)})`;
+      };
+      return { at, render };
+    }
+    // Labels ride the camera and are counter-scaled to the zoom they are read at.
+    function pinLabels() {
+      document.querySelectorAll("#root .lb").forEach((el) => {
+        const [x, y] = el.dataset.at.split(",").map(Number);
+        el.style.left = x + "px";
+        el.style.top = y + "px";
+        el.firstElementChild.style.transform = `scale(${1 / Number(el.dataset.z)})`;
+      });
+    }
+    function showLabel(sel, tin, tout) {
+      const side = document.querySelector(sel).dataset.side;
+      const axis = side === "left" || side === "right" ? "scaleX" : "scaleY";
+      tl.fromTo(sel + " .lb-dot", { scale: 0 }, { scale: 1, duration: 0.3, ease: "expo.out" }, tin);
+      tl.fromTo(sel + " .lb-line", { [axis]: 0 }, { [axis]: 1, duration: 0.3, ease: "power2.out" }, tin + 0.06);
+      tl.fromTo(sel + " .lb-card", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.28, ease: "power2.out" }, tin + 0.22);
+      if (tout != null) tl.to([sel + " .lb-dot", sel + " .lb-line", sel + " .lb-card"], { opacity: 0, duration: 0.2, ease: "power2.in" }, tout);
+    }
+
+    // Shots. Recording 2 starts on the last frame of recording 1, so this opens on 02's last framing.
+    // Heat map click 2.19 s; the 16 passes run 2.35-4.68 s (5x); the map lands at 4.68 s.
+    const cam = pageCamera(document.getElementById("hm-cam"), [
+      { t: 0, x: 1233, y: 285, z: 2.15 }, // the verdict, as 02 left it
+      { t: 0.35, x: 720, y: 440, z: 1.75 }, // the scope and "Show where it looked"
+      { t: 2.25, x: 600, y: 321.3, z: 2.2 }, // the scope while it maps
+    ], D);
+    pinLabels();
+    const clock = { t: 0 };
+    tl.to(clock, { t: D, duration: D, ease: "none", onUpdate: () => cam.render(clock.t) }, 0);
+    cam.render(0);
+
+    // mapping: the red ring fills pass by pass, with the app's own status text
+    const status = document.getElementById("hm-status");
+    const prog = { p: 0 };
+    tl.fromTo(["#hm-track", "#hm-ring", "#hm-status"], { opacity: 0 }, { opacity: 1, duration: 0.1 }, 2.35);
     tl.fromTo(
-      "#hm-cam",
-      { x: 0, y: 0, scale: 1 },
-      { x: 960 - s * 733, y: 470 - s * 327, scale: s, duration: 2.3, ease: "power2.inOut" },
-      0.5,
+      prog,
+      { p: 0 },
+      {
+        p: 16,
+        duration: 2.33,
+        ease: "none",
+        onUpdate: () => {
+          const n = Math.max(1, Math.min(16, Math.ceil(prog.p)));
+          status.textContent = `Mapping ${n} of 16`;
+        },
+      },
+      2.35,
     );
+    tl.fromTo("#hm-ring circle", { strokeDasharray: "0 100" }, { strokeDasharray: "100 0", duration: 2.33, ease: "none" }, 2.35);
+    tl.to(["#hm-track", "#hm-ring", "#hm-status"], { opacity: 0, duration: 0.08 }, 4.68);
 
-    // when the map lands, wipe from the plain photo to the heat map across the scope
-    const W = 1440;
-    tl.fromTo("#hm-after", { clipPath: `inset(0px ${W - 300}px 0px 0px)` }, { clipPath: `inset(0px ${W - 700}px 0px 0px)`, duration: 1.5, ease: "power2.inOut" }, 4.3);
-    tl.to("#hm-after", { clipPath: "inset(0px 0px 0px 0px)", duration: 0.3, ease: "power2.in" }, 5.8);
-    tl.set("#hm-wipe", { x: 300 }, 0);
-    tl.fromTo("#hm-wipe", { opacity: 0 }, { opacity: 1, duration: 0.15 }, 4.15);
-    tl.to("#hm-wipe", { x: 700, duration: 1.5, ease: "power2.inOut" }, 4.3);
-    tl.to("#hm-wipe", { opacity: 0, duration: 0.2 }, 5.8);
+    // the wipe across the scope: the plain photo gives way to where the model looked
+    const W = 1920;
+    tl.fromTo("#hm-after", { clipPath: `inset(0px ${W - 440}px 0px 0px)` }, { clipPath: `inset(0px ${W - 875}px 0px 0px)`, duration: 1.5, ease: "sine.inOut" }, 4.9);
+    tl.to("#hm-after", { clipPath: "inset(0px 0px 0px 0px)", duration: 0.25, ease: "power2.in" }, 6.45);
+    tl.fromTo("#hm-divider", { x: 440, opacity: 0 }, { x: 440, opacity: 1, duration: 0.15 }, 4.75);
+    tl.to("#hm-divider", { x: 875, duration: 1.5, ease: "sine.inOut" }, 4.9);
+    tl.to("#hm-divider", { opacity: 0, duration: 0.2 }, 6.45);
 
-    tl.fromTo("#hm-cap .hm-pill", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out" }, 4.2);
+    showLabel("#hm-lb", 5.6);
+
+    // whip out to the next sample (10 lands the other half of the whip)
+    tl.to("#hm-whip", { x: -1100, duration: 0.28, ease: "power3.in" }, 8.22);
     window.__timelines["heatmap"] = tl;
   </script>
 </template>

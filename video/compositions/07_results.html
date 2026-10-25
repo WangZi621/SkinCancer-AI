@@ -13,16 +13,16 @@
       color: #ffffff;
       background: radial-gradient(ellipse 80% 90% at 35% 45%, #16928e 0%, #0f6f6f 46%, #093f46 100%);
     }
-    #rs-scope {
+    #rs-lens {
       position: absolute;
-      left: 250px;
+      left: 230px;
       top: 230px;
-      width: 520px;
-      height: 520px;
+      width: 560px;
+      height: 560px;
     }
     #rs-face {
       position: absolute;
-      inset: 50px;
+      inset: 54px;
       border-radius: 50%;
       overflow: hidden;
       box-shadow: 0 0 0 9px #ffffff, 0 40px 80px -30px rgba(0, 0, 0, 0.55);
@@ -43,105 +43,128 @@
       stroke-width: 6;
     }
     #rs-track {
-      stroke: rgba(255, 255, 255, 0.18);
+      stroke: rgba(255, 255, 255, 0.2);
     }
     #rs-arc {
       stroke: #ffffff;
       stroke-linecap: round;
     }
-    .rs-stat {
+    /* the number window: numbers swap inside it mid-move */
+    #rs-win {
       position: absolute;
       left: 880px;
-      top: 330px;
-      width: 900px;
+      top: 300px;
+      width: 960px;
+      height: 230px;
+      overflow: hidden;
     }
     .rs-num {
-      transform-origin: 0 60%;
-      font-size: 190px;
+      position: absolute;
+      left: 0;
+      top: 18px;
+      font-size: 200px;
       font-weight: 650;
-      letter-spacing: -0.045em;
+      letter-spacing: -0.05em;
       line-height: 1;
       font-variant-numeric: tabular-nums;
     }
     .rs-label {
-      margin-top: 22px;
-      font-size: 50px;
+      position: absolute;
+      left: 884px;
+      top: 548px;
+      width: 960px;
+      font-size: 52px;
       font-weight: 500;
       letter-spacing: -0.02em;
-      color: rgba(255, 255, 255, 0.88);
       line-height: 1.2;
+    }
+    .rs-label span {
+      display: inline-block;
+      white-space: pre;
     }
     #rs-foot {
       position: absolute;
       left: 0;
       right: 0;
-      top: 880px;
+      top: 900px;
       text-align: center;
-      font-size: 40px;
+      font-size: 42px;
       font-weight: 500;
-      color: rgba(255, 255, 255, 0.86);
+      color: rgba(255, 255, 255, 0.88);
+    }
+    #rs-dip {
+      position: absolute;
+      inset: 0;
+      background: #000000;
+      opacity: 0;
     }
   </style>
-  <div id="root" data-composition-id="results" data-width="1920" data-height="1080" data-start="0" data-duration="10">
-    <div id="rs-stage" class="clip" data-start="0" data-duration="10" data-track-index="1">
-      <div id="rs-scope">
-        <div id="rs-face"><img src="assets/img/lesion_from_capture.jpg" alt="" /></div>
+  <div id="root" data-composition-id="results" data-width="1920" data-height="1080" data-start="0" data-duration="10" data-motion-blur="on">
+    <div id="rs-stage" class="clip" data-start="0" data-duration="10" data-track-index="1" data-layout-allow-overlap>
+      <div id="rs-lens">
+        <div id="rs-face"><img src="assets/img/samples/s1.jpg" alt="" /></div>
         <svg id="rs-ring" viewBox="0 0 400 400">
-          <circle id="rs-track" cx="200" cy="200" r="196" />
-          <circle id="rs-arc" cx="200" cy="200" r="196" pathLength="100" transform="rotate(-90 200 200)" />
+          <circle id="rs-track" cx="200" cy="200" r="194" />
+          <circle id="rs-arc" cx="200" cy="200" r="194" pathLength="100" transform="rotate(-90 200 200)" />
         </svg>
       </div>
 
-      <div id="rs-a" class="rs-stat">
-        <p class="rs-num"><span id="rs-a-n">45,400</span></p>
-        <p class="rs-label">biopsy-confirmed images</p>
+      <div id="rs-win" data-layout-allow-overflow>
+        <p id="rs-n1" class="rs-num">45,400</p>
+        <p id="rs-n2" class="rs-num" style="opacity: 0">93.2%</p>
+        <p id="rs-n3" class="rs-num" style="opacity: 0">90%</p>
       </div>
-      <div id="rs-b" class="rs-stat">
-        <p class="rs-num"><span id="rs-b-n">93.2%</span></p>
-        <p class="rs-label">AUC</p>
-      </div>
-      <div id="rs-c" class="rs-stat">
-        <p class="rs-num"><span id="rs-c-n">90%</span></p>
-        <p class="rs-label">of melanomas caught at a 0.278 cutoff</p>
-      </div>
+      <p id="rs-l1" class="rs-label"><span>biopsy-confirmed </span><span>images</span></p>
+      <p id="rs-l2" class="rs-label"><span>AUC </span><span>across </span><span>the </span><span>three </span><span>classes</span></p>
+      <p id="rs-l3" class="rs-label"><span>of </span><span>melanomas </span><span>caught </span><br /><span>at </span><span>a </span><span>0.278 </span><span>cutoff</span></p>
 
       <p id="rs-foot">Tested on 9,080 images it never trained on.</p>
     </div>
+    <div id="rs-dip" class="clip" data-start="9.85" data-duration="0.15" data-track-index="2"></div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    // Each number lands whole, so only the real figure is ever on screen; the ring carries the motion.
-    const statIn = (sel, t) => {
-      tl.fromTo(sel + " .rs-num", { opacity: 0, scale: 0.96, filter: "blur(12px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.5, ease: "power3.out" }, t);
-      tl.fromTo(sel + " .rs-label", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out" }, t + 0.25);
-    };
-    const statOut = (sel, t) => tl.to(sel, { opacity: 0, filter: "blur(8px)", duration: 0.22, ease: "power2.in" }, t);
-    const ring = (to, t, d = 1.3) => tl.to("#rs-arc", { strokeDasharray: to + " " + (100 - to), duration: d, ease: "power3.out" }, t);
-
-    tl.fromTo("#rs-scope", { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1, duration: 0.9, ease: "expo.out" }, 0);
     tl.set("#rs-arc", { strokeDasharray: "0 100" }, 0);
-    tl.set(["#rs-a", "#rs-b", "#rs-c"], { opacity: 1 }, 0);
+    tl.fromTo("#rs-lens", { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1, duration: 0.9, ease: "expo.out" }, 0);
+
+    const words = (sel, t) =>
+      tl.fromTo(sel + " span", { opacity: 0, color: "#8fc7c3", filter: "blur(6px)" }, { opacity: 1, color: "#ffffff", filter: "blur(0px)", duration: 0.16, ease: "power2.out", stagger: 0.08 }, t);
+    const wordsOut = (sel, t) => tl.to(sel, { opacity: 0, filter: "blur(6px)", duration: 0.18, ease: "power2.in" }, t);
+    const ring = (to, t, color) => {
+      tl.to("#rs-arc", { strokeDasharray: `${to} ${100 - to}`, duration: 1.2, ease: "power3.out" }, t);
+      if (color) tl.to("#rs-arc", { stroke: color, duration: 0.4, ease: "power2.out" }, t);
+    };
+    const ringReset = (t) => tl.to("#rs-arc", { strokeDasharray: "0 100", duration: 0.3, ease: "power2.in" }, t);
+    // text match cut: the old number accelerates up and out, the new one arrives on the same curve
+    const swap = (from, to, t) => {
+      tl.to(from, { y: -230, duration: 0.3, ease: "power3.in" }, t);
+      tl.set(from, { opacity: 0 }, t + 0.3);
+      tl.fromTo(to, { y: 230, opacity: 1 }, { y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, t + 0.3);
+    };
 
     // 45,400 biopsy-confirmed images: the ring closes all the way
-    statIn("#rs-a", 0.25);
-    ring(100, 0.25);
-    statOut("#rs-a", 2.75);
-    tl.to("#rs-arc", { strokeDasharray: "0 100", duration: 0.3, ease: "power2.in" }, 2.7);
+    tl.fromTo("#rs-n1", { y: 230 }, { y: 0, duration: 0.55, ease: "power3.out" }, 0.25);
+    words("#rs-l1", 0.55);
+    ring(100, 0.3);
 
-    // 93.2% AUC
-    statIn("#rs-b", 3.05);
-    ring(93.2, 3.05);
-    statOut("#rs-b", 5.4);
-    tl.to("#rs-arc", { strokeDasharray: "0 100", duration: 0.3, ease: "power2.in" }, 5.35);
+    // 93.2% AUC across the three classes
+    wordsOut("#rs-l1", 2.6);
+    ringReset(2.62);
+    swap("#rs-n1", "#rs-n2", 2.62);
+    words("#rs-l2", 3.05);
+    ring(93.2, 2.95);
 
-    // 90% of melanomas caught: the ring lands in the urgent colour
-    statIn("#rs-c", 5.7);
-    tl.set("#rs-arc", { stroke: "#ffffff" }, 0);
-    tl.to("#rs-arc", { stroke: "#d92d20", duration: 0.4, ease: "power2.out" }, 5.7);
-    ring(90, 5.7);
+    // 90% of melanomas caught at a 0.278 cutoff: the ring lands in the urgent colour
+    wordsOut("#rs-l2", 5.15);
+    ringReset(5.17);
+    swap("#rs-n2", "#rs-n3", 5.17);
+    words("#rs-l3", 5.6);
+    ring(90, 5.5, "#d92d20");
 
-    // source line
-    tl.fromTo("#rs-foot", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 7.0);
+    tl.fromTo("#rs-foot", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.35, ease: "power2.out" }, 7.0);
+
+    // dip cut into 06
+    tl.fromTo("#rs-dip", { opacity: 0 }, { opacity: 0.4, duration: 0.1, ease: "none" }, 9.85);
     window.__timelines["results"] = tl;
   </script>
 </template>

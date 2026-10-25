@@ -7,22 +7,22 @@ import { fileURLToPath } from 'node:url';
 
 export const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const CLIPS = [
-  { n: '01', id: 'open', dur: 7.5 },
-  { n: '02', id: 'scan', dur: 18 },
-  { n: '03', id: 'branches', file: '03_two_branches', dur: 11.5 },
+  { n: '01', id: 'open', dur: 8 },
+  { n: '02', id: 'scan', dur: 14.2 },
+  { n: '03', id: 'branches', file: '03_two_branches', dur: 12 },
   { n: '04', id: 'heatmap', dur: 8.5 },
   { n: '05', id: 'private', dur: 8 },
-  { n: '06', id: 'kiosk', dur: 9 },
+  { n: '06', id: 'small', file: '06_small_model', dur: 10 },
   { n: '07', id: 'results', dur: 10 },
   { n: '08', id: 'outro', dur: 5 },
   { n: '09', id: 'mobile', dur: 8 },
   { n: '10', id: 'form', dur: 13 },
-  { n: '11', id: 'training', dur: 12 },
-  { n: '12', id: 'limits', dur: 16 },
+  { n: '11', id: 'training', dur: 10 },
+  { n: '12', id: 'limits', dur: 13 },
 ].map((c) => ({ ...c, file: c.file || `${c.n}_${c.id}` }));
 
 // The order the clips play in the assembled film (index.html, rendered to out/skinscan_demo.mp4).
-export const FILM = ['open', 'scan', 'form', 'branches', 'heatmap', 'mobile', 'private', 'kiosk', 'training', 'results', 'limits', 'outro'];
+export const FILM = ['open', 'scan', 'heatmap', 'form', 'branches', 'training', 'results', 'small', 'private', 'mobile', 'limits', 'outro'];
 
 const host = (c, start) => `      <div
         id="${c.id}"

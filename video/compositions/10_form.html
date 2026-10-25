@@ -12,27 +12,35 @@
       font-family: "Geist", sans-serif;
       background: #f5f7f8;
     }
-    #fm-window {
+    /* the camera: page coordinates (the 1920 x 1080 viewport of the recording) */
+    .cam {
       position: absolute;
-      left: 240px;
-      top: 40px;
-      width: 1440px;
-      height: 856px;
-      border-radius: 18px;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      transform-origin: 0 0;
+    }
+    .win {
+      position: absolute;
+      left: 0;
+      top: -46px;
+      width: 1920px;
+      height: 1126px;
+      border-radius: 22px;
       overflow: hidden;
       background: #ffffff;
-      box-shadow: 0 0 0 1px #e2e7eb, 0 2px 4px rgba(15, 27, 36, 0.04), 0 40px 90px -30px rgba(15, 27, 36, 0.35);
+      box-shadow: 0 0 0 1px #e2e7eb, 0 40px 90px -30px rgba(15, 27, 36, 0.35);
     }
-    .fm-bar {
+    .win-bar {
       position: absolute;
       left: 0;
       top: 0;
       right: 0;
       height: 46px;
-      background: #ffffff;
       border-bottom: 1px solid #e2e7eb;
     }
-    .fm-dot {
+    .win-dot {
       position: absolute;
       top: 17px;
       width: 12px;
@@ -40,13 +48,12 @@
       border-radius: 50%;
       background: #cfd7dd;
     }
-    .fm-url {
+    .win-url {
       position: absolute;
-      left: 50%;
+      left: 660px;
       top: 8px;
-      width: 560px;
+      width: 600px;
       height: 30px;
-      margin-left: -280px;
       border-radius: 9px;
       background: #f0f3f5;
       color: #4a5a66;
@@ -55,77 +62,243 @@
       line-height: 30px;
       text-align: center;
     }
-    #fm-video {
+    .win-video {
       position: absolute;
       left: 0;
       top: 46px;
-      width: 1440px;
-      height: 810px;
-      object-fit: cover;
+      width: 1920px;
+      height: 1080px;
     }
-    .fm-cap {
+    /* the app's own scanning ring and status pill, rebuilt from docs/app.css: the recording
+       drops frames while the model runs, so this is the one part redrawn on the footage */
+    .app-ring {
+      position: absolute;
+      left: 457.6px;
+      top: 121.3px;
+      width: 400px;
+      height: 400px;
+      opacity: 0;
+    }
+    .app-ring circle {
+      fill: none;
+      stroke: #0e7c7b;
+      stroke-width: 4;
+      stroke-linecap: round;
+    }
+    .app-status {
+      position: absolute;
+      left: 657.6px;
+      top: 452px;
+      transform: translateX(-50%);
+      padding: 0 14px;
+      white-space: nowrap;
+      height: 33px;
+      border-radius: 999px;
+      background: rgba(15, 27, 36, 0.78);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 33px;
+      text-align: center;
+      opacity: 0;
+    }
+    /* labels pinned to the part they name */
+    .lb {
+      position: absolute;
+      width: 0;
+      height: 0;
+    }
+    .lb-w {
       position: absolute;
       left: 0;
-      right: 0;
-      top: 934px;
-      display: flex;
-      justify-content: center;
+      top: 0;
+      transform-origin: 0 0;
     }
-    .fm-pill {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      padding: 14px 32px 14px 18px;
-      border-radius: 999px;
-      background: #ffffff;
-      box-shadow: 0 0 0 1px #e2e7eb, 0 12px 30px -14px rgba(15, 27, 36, 0.3);
-      color: #0f1b24;
-      font-size: 42px;
-      font-weight: 650;
-      letter-spacing: -0.02em;
-    }
-    .fm-pill::before {
-      content: "";
-      width: 18px;
-      height: 18px;
+    .lb-dot {
+      position: absolute;
+      left: -10px;
+      top: -10px;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
       background: #0e7c7b;
+      box-shadow: 0 0 0 4px #ffffff, 0 4px 10px rgba(15, 27, 36, 0.3);
+    }
+    .lb-line {
+      position: absolute;
+      background: #0e7c7b;
+    }
+    .lb-card {
+      position: absolute;
+      white-space: nowrap;
+      padding: 14px 26px;
+      border-radius: 16px;
+      background: #ffffff;
+      color: #0f1b24;
+      font-size: 40px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      box-shadow: 0 0 0 1px #e2e7eb, 0 14px 34px -14px rgba(15, 27, 36, 0.4);
+    }
+    .lb[data-side="left"] .lb-line {
+      right: 0;
+      top: -1.5px;
+      height: 3px;
+      width: var(--len);
+      transform-origin: 100% 50%;
+    }
+    .lb[data-side="left"] .lb-card {
+      right: var(--len);
+      top: 0;
+      transform: translateY(-50%);
+    }
+    .lb[data-side="bottom"] .lb-line {
+      left: -1.5px;
+      top: 0;
+      width: 3px;
+      height: var(--len);
+      transform-origin: 50% 0;
+    }
+    .lb[data-side="bottom"] .lb-card {
+      left: 0;
+      top: var(--len);
+      transform: translateX(-50%);
+    }
+    .lb[data-side="top"] .lb-line {
+      left: -1.5px;
+      bottom: 0;
+      width: 3px;
+      height: var(--len);
+      transform-origin: 50% 100%;
+    }
+    .lb[data-side="top"] .lb-card {
+      left: 0;
+      bottom: var(--len);
+      transform: translateX(-50%);
+    }
+    .lb-red .lb-dot,
+    .lb-red .lb-line {
+      background: #d92d20;
+    }
+    #fm-whip {
+      position: absolute;
+      inset: 0;
     }
   </style>
-  <div id="root" data-composition-id="form" data-width="1920" data-height="1080" data-start="0" data-duration="13">
-    <div id="fm-window">
-      <div class="fm-bar">
-        <span class="fm-dot" style="left: 20px"></span>
-        <span class="fm-dot" style="left: 40px"></span>
-        <span class="fm-dot" style="left: 60px"></span>
-        <span class="fm-url" data-layout-ignore>wangzi621.github.io/SkinCancer-AI</span>
+  <div id="root" data-composition-id="form" data-width="1920" data-height="1080" data-start="0" data-duration="13" data-motion-blur="on">
+    <div id="fm-whip">
+    <div id="fm-cam" class="cam" data-layout-allow-overflow>
+      <div class="win">
+        <div class="win-bar">
+          <span class="win-dot" style="left: 22px"></span>
+          <span class="win-dot" style="left: 42px"></span>
+          <span class="win-dot" style="left: 62px"></span>
+          <span class="win-url" data-layout-ignore>wangzi621.github.io/SkinCancer-AI</span>
+        </div>
+        <video id="fm-video" class="win-video clip" src="assets/capture/rec3_form.mp4" data-start="0" data-duration="13" data-media-start="1.6" data-playback-rate="1.5" data-track-index="1" muted playsinline></video>
       </div>
-      <video
-        id="fm-video"
-        class="clip"
-        src="assets/capture/rec3_form.mp4"
-        data-start="0"
-        data-duration="13"
-        data-media-start="2.6"
-        data-playback-rate="1.25"
-        data-track-index="1"
-        muted
-        playsinline
-      ></video>
+      <svg id="fm-ring" class="app-ring" viewBox="0 0 400 400"><circle cx="200" cy="200" r="196" pathLength="100" transform="rotate(-90 200 200)" /></svg>
+      <div id="fm-status" class="app-status">Analyzing</div>
+
+      <div id="fm-lb-hand" class="lb" data-at="968.3,268.2" data-z="1.9" data-side="left" style="--len: 64px">
+        <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Typed in by hand</span></div>
+      </div>
+      <div id="fm-lb-map" class="lb" data-at="967.3,450" data-z="2.3" data-side="left" style="--len: 64px">
+        <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Tap where the spot is</span></div>
+      </div>
+      <div id="fm-lb-skin" class="lb" data-at="967.3,630.2" data-z="1.9" data-side="left" style="--len: 64px">
+        <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Skin type and size</span></div>
+      </div>
     </div>
-    <div id="fm-cap-1" class="fm-cap clip" data-start="0.5" data-duration="3.3" data-track-index="2">
-      <div class="fm-pill">Details can be typed in by hand</div>
-    </div>
-    <div id="fm-cap-2" class="fm-cap clip" data-start="3.9" data-duration="9.1" data-track-index="2">
-      <div class="fm-pill">Tap the body map, pick a skin type</div>
     </div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    tl.fromTo("#fm-window", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out" }, 0);
-    tl.fromTo("#fm-cap-1 .fm-pill", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out" }, 0.5);
-    tl.to("#fm-cap-1 .fm-pill", { opacity: 0, duration: 0.2, ease: "power2.in" }, 3.55);
-    tl.fromTo("#fm-cap-2 .fm-pill", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out" }, 3.9);
+    const D = 13;
+
+    // Camera on the real page, adapted from the registry's cursor-zoom-follow: the aim steps
+    // between shots and a critically damped spring (in log zoom) turns each step into a move
+    // that leads, settles and then holds still while the app works.
+    function pageCamera(el, shots, duration, omega = 7) {
+      const W = 1920, H = 1080, FPS = 60, SUB = 4, dt = 1 / (FPS * SUB);
+      const aim = (t) => {
+        let s = shots[0];
+        for (const k of shots) if (t >= k.t) s = k;
+        return { x: s.x, y: s.y, z: Math.log(s.z) };
+      };
+      const n = Math.ceil(duration * FPS) + 1;
+      const out = [];
+      const s = aim(0);
+      const v = { x: 0, y: 0, z: 0 };
+      for (let f = 0; f <= n; f++) {
+        out.push({ x: s.x, y: s.y, z: s.z });
+        for (let j = 0; j < SUB; j++) {
+          const a = aim((f * SUB + j) * dt);
+          for (const k of ["x", "y", "z"]) {
+            v[k] += (omega * omega * (a[k] - s[k]) - 2 * omega * v[k]) * dt;
+            s[k] += v[k] * dt;
+          }
+        }
+      }
+      const at = (t) => {
+        const p = Math.max(0, Math.min(n, t * FPS));
+        const i = Math.floor(p);
+        const u = p - i;
+        const a = out[i];
+        const b = out[Math.min(n, i + 1)];
+        return { x: a.x + (b.x - a.x) * u, y: a.y + (b.y - a.y) * u, z: Math.exp(a.z + (b.z - a.z) * u) };
+      };
+      const render = (t) => {
+        const c = at(t);
+        el.style.transform = `translate(${(W / 2 - c.x * c.z).toFixed(2)}px,${(H / 2 - c.y * c.z).toFixed(2)}px) scale(${c.z.toFixed(4)})`;
+      };
+      return { at, render };
+    }
+    // Labels ride the camera and are counter-scaled to the zoom they are read at.
+    function pinLabels() {
+      document.querySelectorAll("#root .lb").forEach((el) => {
+        const [x, y] = el.dataset.at.split(",").map(Number);
+        el.style.left = x + "px";
+        el.style.top = y + "px";
+        el.firstElementChild.style.transform = `scale(${1 / Number(el.dataset.z)})`;
+      });
+    }
+    function showLabel(sel, tin, tout) {
+      const side = document.querySelector(sel).dataset.side;
+      const axis = side === "left" || side === "right" ? "scaleX" : "scaleY";
+      tl.fromTo(sel + " .lb-dot", { scale: 0 }, { scale: 1, duration: 0.3, ease: "expo.out" }, tin);
+      tl.fromTo(sel + " .lb-line", { [axis]: 0 }, { [axis]: 1, duration: 0.3, ease: "power2.out" }, tin + 0.06);
+      tl.fromTo(sel + " .lb-card", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.28, ease: "power2.out" }, tin + 0.22);
+      if (tout != null) tl.to([sel + " .lb-dot", sel + " .lb-line", sel + " .lb-card"], { opacity: 0, duration: 0.2, ease: "power2.in" }, tout);
+    }
+
+    // Shots. Recording 3 at 1.5x from 1.6 s: Sample 2 click 0.49, age 2.02, sex 3.59, body map 4.89,
+    // skin type 6.28, diameter 7.49, Analyze 9.13, result 10.19.
+    const cam = pageCamera(document.getElementById("fm-cam"), [
+      { t: 0, x: 640, y: 640, z: 1.7 }, // the samples
+      { t: 0.75, x: 1233, y: 330, z: 1.9 }, // age and sex
+      { t: 4.3, x: 1090, y: 450, z: 2.3 }, // the body map
+      { t: 5.95, x: 1233, y: 690, z: 1.9 }, // skin type, diameter, Analyze
+      { t: 9.2, x: 657.6, y: 321.3, z: 2.1 }, // the scope while the model runs
+      { t: 10.5, x: 960, y: 517, z: 0.86 }, // the whole result
+      { t: 11.9, x: 657.6, y: 321.3, z: 2.6 }, // into the scope: 03 continues from this circle
+    ], D);
+    pinLabels();
+    const clock = { t: 0 };
+    tl.to(clock, { t: D, duration: D, ease: "none", onUpdate: () => cam.render(clock.t) }, 0);
+    cam.render(0);
+
+    // whip in: the second half of 04's whip, arriving blurred and settling
+    tl.fromTo("#fm-whip", { x: 1100 }, { x: 0, duration: 0.32, ease: "power3.out" }, 0);
+
+    showLabel("#fm-lb-hand", 1.35, 3.95);
+    showLabel("#fm-lb-map", 5.15, 6.85);
+    showLabel("#fm-lb-skin", 6.75, 8.75);
+
+    // the app's scanning ring (rebuilt; the recording drops frames while the model runs)
+    tl.fromTo(["#fm-ring", "#fm-status"], { opacity: 0 }, { opacity: 1, duration: 0.12 }, 9.15);
+    tl.fromTo("#fm-ring circle", { strokeDasharray: "22 78", strokeDashoffset: 0 }, { strokeDashoffset: -100, duration: 1.1, ease: "none" }, 9.15);
+    tl.to(["#fm-ring", "#fm-status"], { opacity: 0, duration: 0.1 }, 10.19);
     window.__timelines["form"] = tl;
   </script>
 </template>

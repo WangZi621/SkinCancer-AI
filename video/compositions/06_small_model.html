@@ -1,0 +1,288 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Geist";
+      src: url("assets/fonts/geist.woff2") format("woff2");
+      font-weight: 100 900;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      font-family: "Geist", sans-serif;
+      background: #f5f7f8;
+      color: #0f1b24;
+    }
+    /* two panels side by side; the camera slides from the browser to the board */
+    #sm-world {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 3840px;
+      height: 1080px;
+    }
+    #sm-size {
+      position: absolute;
+      left: 140px;
+      top: 300px;
+      font-size: 230px;
+      font-weight: 650;
+      letter-spacing: -0.05em;
+      line-height: 1;
+    }
+    #sm-size span,
+    .sm-line span {
+      display: inline-block;
+      white-space: pre;
+    }
+    .sm-line {
+      position: absolute;
+      left: 148px;
+      top: 560px;
+      width: 780px;
+      font-size: 56px;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+    #sm-file {
+      position: absolute;
+      left: 1220px;
+      top: 290px;
+      width: 360px;
+      height: 460px;
+    }
+    #sm-file svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 24px 40px rgba(15, 27, 36, 0.22));
+    }
+    #sm-file img {
+      position: absolute;
+      left: 44px;
+      top: 60px;
+      width: 96px;
+      height: 96px;
+      border-radius: 26px;
+    }
+    #sm-file p {
+      position: absolute;
+      left: 44px;
+      bottom: 64px;
+      font-size: 32px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    #sm-file small {
+      position: absolute;
+      left: 44px;
+      bottom: 26px;
+      color: #4a5a66;
+      font-size: 30px;
+      font-weight: 500;
+    }
+    #sm-browser {
+      position: absolute;
+      left: 960px;
+      top: 270px;
+      width: 860px;
+      height: 520px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 0 0 1px #e2e7eb, 0 40px 90px -30px rgba(15, 27, 36, 0.35);
+    }
+    #sm-browser .bar {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      height: 36px;
+      border-bottom: 1px solid #e2e7eb;
+    }
+    #sm-browser .bar i {
+      position: absolute;
+      top: 13px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #cfd7dd;
+    }
+    #sm-browser img {
+      position: absolute;
+      left: 0;
+      top: 36px;
+      width: 860px;
+      height: 484px;
+    }
+    /* the board, drawn to its real 65 x 30 mm outline at 20 px per mm */
+    #sm-pi {
+      position: absolute;
+      left: 2230px;
+      top: 330px;
+      width: 1300px;
+      height: 620px;
+    }
+    #sm-pi svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+    #sm-chipring {
+      position: absolute;
+      left: 2650px;
+      top: 460px;
+      width: 400px;
+      height: 400px;
+    }
+    #sm-chipring circle {
+      fill: none;
+      stroke-width: 6;
+    }
+    #sm-drop {
+      position: absolute;
+      left: 2780px;
+      top: 230px;
+      width: 120px;
+      height: 153px;
+    }
+    #sm-drop svg {
+      width: 100%;
+      height: 100%;
+    }
+    .sm-line2 {
+      position: absolute;
+      left: 2060px;
+      top: 120px;
+      width: 1640px;
+      text-align: center;
+      font-size: 64px;
+      font-weight: 650;
+      letter-spacing: -0.03em;
+    }
+    .sm-line2 span {
+      display: inline-block;
+      white-space: pre;
+    }
+  </style>
+  <div id="root" data-composition-id="small" data-width="1920" data-height="1080" data-start="0" data-duration="10" data-motion-blur="on">
+    <div id="sm-stage" class="clip" data-start="0" data-duration="10" data-track-index="1" style="position: absolute; inset: 0">
+    <div id="sm-world" data-layout-allow-overflow data-layout-allow-overlap>
+      <!-- panel 1: the file and the browser -->
+      <p id="sm-size" aria-label="21 MB"><span>2</span><span>1</span><span> </span><span>M</span><span>B</span></p>
+      <p id="sm-l1" class="sm-line"><span>The </span><span>whole </span><span>model </span><span>is </span><span>one </span><span>file</span></p>
+      <p id="sm-l2" class="sm-line"><span>Small </span><span>enough </span><span>to </span><span>run </span><br /><span>in </span><span>a </span><span>browser</span></p>
+
+      <div id="sm-browser">
+        <div class="bar"><i style="left: 16px"></i><i style="left: 32px"></i><i style="left: 48px"></i></div>
+        <img id="sm-shot-a" src="assets/capture/02_photo_loaded.png" alt="" />
+        <img id="sm-shot-b" src="assets/capture/03_result_card.png" alt="" />
+      </div>
+
+      <div id="sm-file">
+        <svg viewBox="0 0 360 460"><path d="M24 0h232l104 104v332a24 24 0 0 1-24 24H24a24 24 0 0 1-24-24V24A24 24 0 0 1 24 0z" fill="#ffffff" /><path d="M256 0v80a24 24 0 0 0 24 24h80" fill="#e7ecef" /></svg>
+        <img src="assets/img/icon.svg" alt="" />
+        <p>skinscan-v3.onnx</p>
+        <small>21 MB</small>
+      </div>
+
+      <!-- panel 2: a Raspberry Pi Zero 2 W -->
+      <p id="sm-l3" class="sm-line2"><span>Even </span><span>on </span><span>a </span><span>$15 </span><span>Raspberry </span><span>Pi </span><span>Zero </span><span>2 </span><span>W</span></p>
+      <div id="sm-pi">
+        <svg viewBox="-60 -20 1420 660">
+          <!-- micro SD card slot, protruding from the left edge -->
+          <rect x="-40" y="218" width="160" height="240" rx="8" fill="#b8c0c5" />
+          <rect x="-40" y="238" width="40" height="200" rx="4" fill="#8e979d" />
+          <!-- the board -->
+          <rect x="0" y="0" width="1300" height="600" rx="60" fill="#1f7a43" />
+          <rect x="6" y="6" width="1288" height="588" rx="56" fill="none" stroke="#2c9655" stroke-width="3" />
+          <!-- mounting holes -->
+          <g fill="#d8b45a">
+            <circle cx="70" cy="70" r="58" /><circle cx="1230" cy="70" r="58" /><circle cx="70" cy="530" r="58" /><circle cx="1230" cy="530" r="58" />
+          </g>
+          <g fill="#f5f7f8">
+            <circle cx="70" cy="70" r="28" /><circle cx="1230" cy="70" r="28" /><circle cx="70" cy="530" r="28" /><circle cx="1230" cy="530" r="28" />
+          </g>
+          <!-- 2 x 20 header holes along the top edge -->
+          <g id="sm-gpio"></g>
+          <!-- RP3A0 system in package -->
+          <rect x="470" y="180" width="300" height="300" rx="16" fill="#c9cfd3" />
+          <rect x="492" y="202" width="256" height="256" rx="10" fill="#d9dee1" />
+          <!-- small parts around it -->
+          <g fill="#2a2f33">
+            <rect x="820" y="210" width="70" height="44" rx="4" /><rect x="820" y="280" width="44" height="26" rx="3" /><rect x="380" y="220" width="54" height="34" rx="3" /><rect x="380" y="400" width="54" height="34" rx="3" /><rect x="930" y="330" width="90" height="90" rx="6" />
+          </g>
+          <g fill="#b98a46">
+            <rect x="830" y="330" width="18" height="10" /><rect x="860" y="330" width="18" height="10" /><rect x="830" y="360" width="18" height="10" /><rect x="400" y="300" width="18" height="10" /><rect x="400" y="330" width="18" height="10" /><rect x="430" y="300" width="18" height="10" />
+          </g>
+          <!-- camera connector on the right edge -->
+          <rect x="1200" y="170" width="96" height="270" rx="6" fill="#2a2f33" />
+          <rect x="1270" y="180" width="18" height="250" rx="4" fill="#5a6168" />
+          <!-- mini HDMI and two micro USB along the bottom edge -->
+          <rect x="136" y="520" width="224" height="92" rx="10" fill="#b8c0c5" />
+          <rect x="166" y="560" width="164" height="30" rx="6" fill="#4a5258" />
+          <rect x="748" y="508" width="160" height="104" rx="10" fill="#b8c0c5" />
+          <rect x="774" y="548" width="108" height="26" rx="6" fill="#4a5258" />
+          <rect x="1000" y="508" width="160" height="104" rx="10" fill="#b8c0c5" />
+          <rect x="1026" y="548" width="108" height="26" rx="6" fill="#4a5258" />
+          <!-- silkscreen -->
+          <text x="1020" y="480" fill="#e8f3ec" font-family="Geist" font-size="30" font-weight="600" text-anchor="middle" data-layout-ignore>Raspberry Pi Zero 2 W</text>
+        </svg>
+      </div>
+      <svg id="sm-chipring" viewBox="0 0 400 400">
+        <circle id="sm-chipring-track" cx="200" cy="200" r="192" style="stroke: #ffffff; stroke-width: 16" />
+        <circle id="sm-chipring-arc" cx="200" cy="200" r="192" pathLength="100" transform="rotate(-90 200 200)" style="stroke: #0e7c7b; stroke-width: 7; stroke-linecap: round" />
+      </svg>
+      <div id="sm-drop">
+        <svg viewBox="0 0 360 460"><path d="M24 0h232l104 104v332a24 24 0 0 1-24 24H24a24 24 0 0 1-24-24V24A24 24 0 0 1 24 0z" fill="#ffffff" stroke="#0e7c7b" stroke-width="10" /><rect x="44" y="60" width="96" height="96" rx="26" fill="#0e7c7b" /></svg>
+      </div>
+    </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+
+    // header holes: 2 rows of 20 at the 2.54 mm pitch
+    const g = document.getElementById("sm-gpio");
+    for (let r = 0; r < 2; r++) {
+      for (let i = 0; i < 20; i++) {
+        const x = 167.5 + i * 50.8;
+        const y = 44.6 + r * 50.8;
+        g.insertAdjacentHTML("beforeend", `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="18" fill="#d8b45a" /><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="9" fill="#123d26" />`);
+      }
+    }
+
+    const words = (sel, t, from = "#a9b6be", to = "#0f1b24") =>
+      tl.fromTo(sel + " span", { opacity: 0, color: from, filter: "blur(6px)" }, { opacity: 1, color: to, filter: "blur(0px)", duration: 0.16, ease: "power2.out", stagger: 0.08 }, t);
+
+    // 21 MB: the file lands, then its size
+    tl.fromTo("#sm-file", { opacity: 1, scale: 0.92, y: 24 }, { scale: 1, y: 0, duration: 0.9, ease: "expo.out" }, 0);
+    tl.fromTo("#sm-size span", { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.24, ease: "power2.out", stagger: 0.07 }, 0.15);
+    words("#sm-l1", 0.9);
+
+    // into a browser: the window rises behind the file, the file drops onto the app's scope,
+    // and the app's own result appears
+    tl.to("#sm-l1", { opacity: 0, filter: "blur(6px)", duration: 0.2, ease: "power2.in" }, 2.45);
+    tl.fromTo("#sm-browser", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.8, ease: "expo.out" }, 2.4);
+    tl.set("#sm-shot-b", { opacity: 0 }, 0);
+    tl.to("#sm-file", { x: 1254.6 - 1400, y: 449.9 - 520, scale: 0.36, duration: 0.75, ease: "power3.inOut" }, 2.7);
+    tl.to("#sm-file", { opacity: 0, duration: 0.15, ease: "power1.in" }, 3.45);
+    tl.to("#sm-shot-b", { opacity: 1, duration: 0.35, ease: "power2.out" }, 3.55);
+    words("#sm-l2", 2.75);
+
+    // the camera slides to the board
+    tl.to("#sm-world", { x: -1920, duration: 0.85, ease: "power2.inOut" }, 5.4);
+    words("#sm-l3", 6.15);
+
+    // the file drops onto the chip; the lens ring closes around it
+    tl.fromTo("#sm-drop", { opacity: 0, y: -40, scale: 1 }, { opacity: 1, y: 0, duration: 0.25, ease: "power2.out" }, 6.35);
+    tl.to("#sm-drop", { y: 345, scale: 0.55, duration: 0.55, ease: "power3.in" }, 6.65);
+    tl.to("#sm-drop", { opacity: 0, duration: 0.12 }, 7.15);
+    tl.fromTo("#sm-chipring", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 7.1);
+    tl.fromTo("#sm-chipring-arc", { strokeDasharray: "22 78", strokeDashoffset: 0 }, { strokeDashoffset: -100, duration: 1.0, ease: "power1.inOut" }, 7.1);
+    tl.to("#sm-chipring-arc", { strokeDasharray: "100 0", duration: 0.6, ease: "power2.inOut" }, 8.0);
+    window.__timelines["small"] = tl;
+  </script>
+</template>

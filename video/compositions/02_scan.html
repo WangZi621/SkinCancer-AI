@@ -12,8 +12,8 @@
       font-family: "Geist", sans-serif;
       background: #f5f7f8;
     }
-    /* camera: the browser window and its highlights move together */
-    #scan-cam {
+    /* the camera: page coordinates (the 1920 x 1080 viewport of the recording) */
+    .cam {
       position: absolute;
       left: 0;
       top: 0;
@@ -21,27 +21,26 @@
       height: 1080px;
       transform-origin: 0 0;
     }
-    #scan-window {
+    .win {
       position: absolute;
-      left: 240px;
-      top: 40px;
-      width: 1440px;
-      height: 856px;
-      border-radius: 18px;
+      left: 0;
+      top: -46px;
+      width: 1920px;
+      height: 1126px;
+      border-radius: 22px;
       overflow: hidden;
       background: #ffffff;
-      box-shadow: 0 0 0 1px #e2e7eb, 0 2px 4px rgba(15, 27, 36, 0.04), 0 40px 90px -30px rgba(15, 27, 36, 0.35);
+      box-shadow: 0 0 0 1px #e2e7eb, 0 40px 90px -30px rgba(15, 27, 36, 0.35);
     }
-    .scan-bar {
+    .win-bar {
       position: absolute;
       left: 0;
       top: 0;
       right: 0;
       height: 46px;
-      background: #ffffff;
       border-bottom: 1px solid #e2e7eb;
     }
-    .scan-dot {
+    .win-dot {
       position: absolute;
       top: 17px;
       width: 12px;
@@ -49,13 +48,12 @@
       border-radius: 50%;
       background: #cfd7dd;
     }
-    .scan-url {
+    .win-url {
       position: absolute;
-      left: 50%;
+      left: 660px;
       top: 8px;
-      width: 560px;
+      width: 600px;
       height: 30px;
-      margin-left: -280px;
       border-radius: 9px;
       background: #f0f3f5;
       color: #4a5a66;
@@ -64,152 +62,267 @@
       line-height: 30px;
       text-align: center;
     }
-    #scan-video {
+    .win-video {
       position: absolute;
       left: 0;
       top: 46px;
-      width: 1440px;
-      height: 810px;
-      object-fit: cover;
+      width: 1920px;
+      height: 1080px;
     }
-    .scan-hl {
+    /* the app's own scanning ring and status pill, rebuilt from docs/app.css: the recording
+       drops frames while the model runs, so this is the one part redrawn on the footage */
+    .app-ring {
       position: absolute;
-      border-radius: 18px;
-      border: 4px solid #0e7c7b;
-      box-shadow: 0 0 0 8px rgba(14, 124, 123, 0.16);
+      left: 457.6px;
+      top: 121.3px;
+      width: 400px;
+      height: 400px;
       opacity: 0;
     }
-    #scan-hl-photo {
-      left: 538px;
-      top: 556px;
-      width: 372px;
-      height: 232px;
+    .app-ring circle {
+      fill: none;
+      stroke: #0e7c7b;
+      stroke-width: 4;
+      stroke-linecap: round;
     }
-    #scan-hl-form {
-      left: 960px;
-      top: 150px;
-      width: 412px;
-      height: 640px;
+    .app-status {
+      position: absolute;
+      left: 657.6px;
+      top: 452px;
+      transform: translateX(-50%);
+      padding: 0 14px;
+      white-space: nowrap;
+      height: 33px;
+      border-radius: 999px;
+      background: rgba(15, 27, 36, 0.78);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 33px;
+      text-align: center;
+      opacity: 0;
     }
-    #scan-hl-verdict {
-      left: 959px;
-      top: 214px;
-      width: 412px;
-      height: 146px;
-      border-color: #d92d20;
-      box-shadow: 0 0 0 8px rgba(217, 45, 32, 0.14);
+    /* labels pinned to the part they name */
+    .lb {
+      position: absolute;
+      width: 0;
+      height: 0;
     }
-    /* step captions under the window */
-    .scan-cap {
+    .lb-w {
       position: absolute;
       left: 0;
-      right: 0;
-      top: 934px;
-      display: flex;
-      justify-content: center;
+      top: 0;
+      transform-origin: 0 0;
     }
-    .scan-pill {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      padding: 14px 30px 14px 16px;
-      border-radius: 999px;
-      background: #ffffff;
-      box-shadow: 0 0 0 1px #e2e7eb, 0 12px 30px -14px rgba(15, 27, 36, 0.3);
-      color: #0f1b24;
-      font-size: 42px;
-      font-weight: 650;
-      letter-spacing: -0.02em;
-    }
-    .scan-num {
-      width: 54px;
-      height: 54px;
+    .lb-dot {
+      position: absolute;
+      left: -10px;
+      top: -10px;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
       background: #0e7c7b;
-      color: #ffffff;
-      font-size: 30px;
-      font-weight: 650;
-      line-height: 54px;
-      text-align: center;
+      box-shadow: 0 0 0 4px #ffffff, 0 4px 10px rgba(15, 27, 36, 0.3);
     }
-    #scan-cap-3 .scan-num {
+    .lb-line {
+      position: absolute;
+      background: #0e7c7b;
+    }
+    .lb-card {
+      position: absolute;
+      white-space: nowrap;
+      padding: 14px 26px;
+      border-radius: 16px;
+      background: #ffffff;
+      color: #0f1b24;
+      font-size: 40px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      box-shadow: 0 0 0 1px #e2e7eb, 0 14px 34px -14px rgba(15, 27, 36, 0.4);
+    }
+    .lb[data-side="left"] .lb-line {
+      right: 0;
+      top: -1.5px;
+      height: 3px;
+      width: var(--len);
+      transform-origin: 100% 50%;
+    }
+    .lb[data-side="left"] .lb-card {
+      right: var(--len);
+      top: 0;
+      transform: translateY(-50%);
+    }
+    .lb[data-side="bottom"] .lb-line {
+      left: -1.5px;
+      top: 0;
+      width: 3px;
+      height: var(--len);
+      transform-origin: 50% 0;
+    }
+    .lb[data-side="bottom"] .lb-card {
+      left: 0;
+      top: var(--len);
+      transform: translateX(-50%);
+    }
+    .lb[data-side="top"] .lb-line {
+      left: -1.5px;
+      bottom: 0;
+      width: 3px;
+      height: var(--len);
+      transform-origin: 50% 100%;
+    }
+    .lb[data-side="top"] .lb-card {
+      left: 0;
+      bottom: var(--len);
+      transform: translateX(-50%);
+    }
+    .lb-red .lb-dot,
+    .lb-red .lb-line {
       background: #d92d20;
     }
+    /* the match cut from 01: the chosen lesion lands on its thumbnail */
+    #sc-flood {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 90% at 50% 42%, #16928e 0%, #0f6f6f 50%, #093f46 100%);
+    }
+    #sc-lens {
+      position: absolute;
+      left: 760px;
+      top: 340px;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 0 0 7px #ffffff, 0 30px 60px -26px rgba(0, 0, 0, 0.45);
+    }
+    #sc-lens img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   </style>
-  <div id="root" data-composition-id="scan" data-width="1920" data-height="1080" data-start="0" data-duration="18">
-    <div id="scan-cam">
-      <div id="scan-window">
-        <div class="scan-bar">
-          <span class="scan-dot" style="left: 20px"></span>
-          <span class="scan-dot" style="left: 40px"></span>
-          <span class="scan-dot" style="left: 60px"></span>
-          <span class="scan-url" data-layout-ignore>wangzi621.github.io/SkinCancer-AI</span>
+  <div id="root" data-composition-id="scan" data-width="1920" data-height="1080" data-start="0" data-duration="14.2" data-motion-blur="on">
+    <div id="sc-cam" class="cam" data-layout-allow-overflow>
+      <div class="win">
+        <div class="win-bar">
+          <span class="win-dot" style="left: 22px"></span>
+          <span class="win-dot" style="left: 42px"></span>
+          <span class="win-dot" style="left: 62px"></span>
+          <span class="win-url" data-layout-ignore>wangzi621.github.io/SkinCancer-AI</span>
         </div>
-        <video
-          id="scan-video"
-          class="clip"
-          src="assets/capture/rec1_scan.mp4"
-          data-start="0"
-          data-duration="18"
-          data-media-start="3.6"
-          data-track-index="1"
-          muted
-          playsinline
-        ></video>
+        <video id="sc-video" class="win-video clip" src="assets/capture/rec1_scan.mp4" data-start="0" data-duration="14.2" data-media-start="1.2" data-track-index="1" muted playsinline></video>
       </div>
-      <div id="scan-hl-photo" class="scan-hl"></div>
-      <div id="scan-hl-form" class="scan-hl"></div>
-      <div id="scan-hl-verdict" class="scan-hl"></div>
+      <svg id="sc-ring" class="app-ring" viewBox="0 0 400 400"><circle cx="200" cy="200" r="196" pathLength="100" transform="rotate(-90 200 200)" /></svg>
+      <div id="sc-status" class="app-status">Analyzing</div>
+
+      <div id="sc-lb-photo" class="lb" data-at="457.6,321.3" data-z="2" data-side="left" style="--len: 64px">
+        <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Add a photo</span></div>
+      </div>
+      <div id="sc-lb-details" class="lb" data-at="967.3,420" data-z="1.45" data-side="left" style="--len: 64px">
+        <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Patient details</span></div>
+      </div>
+      <div id="sc-lb-result" class="lb lb-red" data-at="1233.2,177.3" data-z="2.15" data-side="top" style="--len: 44px">
+        <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Result on the device</span></div>
+      </div>
     </div>
 
-    <div id="scan-cap-1" class="scan-cap clip" data-start="1.6" data-duration="3.1" data-track-index="2">
-      <div class="scan-pill"><span class="scan-num">1</span>Add a photo</div>
-    </div>
-    <div id="scan-cap-2" class="scan-cap clip" data-start="4.7" data-duration="5.4" data-track-index="2">
-      <div class="scan-pill"><span class="scan-num">2</span>Patient details</div>
-    </div>
-    <div id="scan-cap-3" class="scan-cap clip" data-start="12.75" data-duration="5.25" data-track-index="2">
-      <div class="scan-pill"><span class="scan-num">3</span>Result on the device</div>
+    <div id="sc-flood" class="clip" data-start="0" data-duration="0.8" data-track-index="2"></div>
+    <div id="sc-lens-host" class="clip" data-start="0" data-duration="1" data-track-index="3" style="position: absolute; inset: 0">
+      <div id="sc-lens"><img src="assets/img/samples/s1.jpg" alt="" /></div>
     </div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    const pillIn = (sel, t) =>
-      tl.fromTo(sel + " .scan-pill", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out" }, t);
-    const pillOut = (sel, t) => tl.to(sel + " .scan-pill", { opacity: 0, duration: 0.2, ease: "power2.in" }, t);
-    const hl = (sel, tin, tout) => {
-      tl.fromTo(sel, { opacity: 0, scale: 1.04 }, { opacity: 1, scale: 1, duration: 0.45, ease: "expo.out" }, tin);
-      tl.to(sel, { opacity: 0, duration: 0.25, ease: "power2.in" }, tout);
-    };
+    const D = 14.2;
 
-    // window arrives
-    tl.fromTo("#scan-window", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: "expo.out" }, 0);
+    // Camera on the real page, adapted from the registry's cursor-zoom-follow: the aim steps
+    // between shots and a critically damped spring (in log zoom) turns each step into a move
+    // that leads, settles and then holds still while the app works.
+    function pageCamera(el, shots, duration, omega = 7) {
+      const W = 1920, H = 1080, FPS = 60, SUB = 4, dt = 1 / (FPS * SUB);
+      const aim = (t) => {
+        let s = shots[0];
+        for (const k of shots) if (t >= k.t) s = k;
+        return { x: s.x, y: s.y, z: Math.log(s.z) };
+      };
+      const n = Math.ceil(duration * FPS) + 1;
+      const out = [];
+      const s = aim(0);
+      const v = { x: 0, y: 0, z: 0 };
+      for (let f = 0; f <= n; f++) {
+        out.push({ x: s.x, y: s.y, z: s.z });
+        for (let j = 0; j < SUB; j++) {
+          const a = aim((f * SUB + j) * dt);
+          for (const k of ["x", "y", "z"]) {
+            v[k] += (omega * omega * (a[k] - s[k]) - 2 * omega * v[k]) * dt;
+            s[k] += v[k] * dt;
+          }
+        }
+      }
+      const at = (t) => {
+        const p = Math.max(0, Math.min(n, t * FPS));
+        const i = Math.floor(p);
+        const u = p - i;
+        const a = out[i];
+        const b = out[Math.min(n, i + 1)];
+        return { x: a.x + (b.x - a.x) * u, y: a.y + (b.y - a.y) * u, z: Math.exp(a.z + (b.z - a.z) * u) };
+      };
+      const render = (t) => {
+        const c = at(t);
+        el.style.transform = `translate(${(W / 2 - c.x * c.z).toFixed(2)}px,${(H / 2 - c.y * c.z).toFixed(2)}px) scale(${c.z.toFixed(4)})`;
+      };
+      return { at, render };
+    }
+    // Labels ride the camera and are counter-scaled to the zoom they are read at.
+    function pinLabels() {
+      document.querySelectorAll("#root .lb").forEach((el) => {
+        const [x, y] = el.dataset.at.split(",").map(Number);
+        el.style.left = x + "px";
+        el.style.top = y + "px";
+        el.firstElementChild.style.transform = `scale(${1 / Number(el.dataset.z)})`;
+      });
+    }
+    function showLabel(sel, tin, tout) {
+      const side = document.querySelector(sel).dataset.side;
+      const axis = side === "left" || side === "right" ? "scaleX" : "scaleY";
+      tl.fromTo(sel + " .lb-dot", { scale: 0 }, { scale: 1, duration: 0.3, ease: "expo.out" }, tin);
+      tl.fromTo(sel + " .lb-line", { [axis]: 0 }, { [axis]: 1, duration: 0.3, ease: "power2.out" }, tin + 0.06);
+      tl.fromTo(sel + " .lb-card", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.28, ease: "power2.out" }, tin + 0.22);
+      if (tout != null) tl.to([sel + " .lb-dot", sel + " .lb-line", sel + " .lb-card"], { opacity: 0, duration: 0.2, ease: "power2.in" }, tout);
+    }
 
-    // 1. add a photo (sample click at ~2.2 s)
-    pillIn("#scan-cap-1", 1.6);
-    hl("#scan-hl-photo", 1.6, 4.3);
-    pillOut("#scan-cap-1", 4.45);
+    // Shots, in page coordinates. Recording times (rec1, media starts at 1.2 s):
+    // sample click 1.37, photo 1.59, analyze click 6.81, result 8.76.
+    const cam = pageCamera(document.getElementById("sc-cam"), [
+      { t: 0, x: 657, y: 700, z: 1.9 }, // the samples
+      { t: 1.45, x: 657.6, y: 330, z: 2.0 }, // the photo lands in the scope
+      { t: 3.85, x: 1233, y: 420, z: 1.45 }, // the patient details
+      { t: 6.05, x: 1110, y: 800, z: 1.9 }, // Analyze
+      { t: 6.95, x: 657.6, y: 321.3, z: 2.1 }, // the scope while the model runs
+      { t: 9.1, x: 960, y: 517, z: 0.86 }, // pull back: the whole app, on the device
+      { t: 10.7, x: 1233, y: 285, z: 2.15 }, // the verdict
+    ], D);
+    pinLabels();
+    const clock = { t: 0 };
+    tl.to(clock, { t: D, duration: D, ease: "none", onUpdate: () => cam.render(clock.t) }, 0);
+    cam.render(0);
 
-    // 2. patient details fill in from the sample
-    pillIn("#scan-cap-2", 4.7);
-    hl("#scan-hl-form", 4.7, 9.5);
-    pillOut("#scan-cap-2", 9.85);
+    // match cut from 01: the lens keeps its move and lands on thumbnail 1 (screen 609.8, 609.4, d 136.8)
+    tl.fromTo("#sc-lens", { x: 0, y: 0, scale: 1 }, { x: 609.8 - 960, y: 609.4 - 540, scale: 136.8 / 400, duration: 0.72, ease: "power4.out" }, 0);
+    tl.to("#sc-lens", { opacity: 0, duration: 0.15, ease: "power1.in" }, 0.78);
+    // colour flood: the teal ground gives way to the app around the still-moving lens
+    tl.fromTo("#sc-flood", { opacity: 1 }, { opacity: 0, duration: 0.45, ease: "power2.inOut" }, 0.12);
 
-    // 3. result (appears at ~12.65 s)
-    pillIn("#scan-cap-3", 12.75);
-    hl("#scan-hl-verdict", 14.35, 15.3);
-    pillOut("#scan-cap-3", 16.6);
+    showLabel("#sc-lb-photo", 2.15, 3.75);
+    showLabel("#sc-lb-details", 4.5, 5.95);
 
-    // slow push into the verdict card
-    const s = 2.25;
-    const px = 1165;
-    const py = 287;
-    tl.fromTo(
-      "#scan-cam",
-      { x: 0, y: 0, scale: 1 },
-      { x: 960 - s * px, y: 470 - s * py, scale: s, duration: 3.0, ease: "power2.inOut" },
-      14.95,
-    );
+    // the model runs: the app's ring sweeps (22 % arc, 1.1 s a turn), then the real red ring takes over
+    tl.fromTo(["#sc-ring", "#sc-status"], { opacity: 0 }, { opacity: 1, duration: 0.12 }, 6.85);
+    tl.fromTo("#sc-ring circle", { strokeDasharray: "22 78", strokeDashoffset: 0 }, { strokeDashoffset: -100 * (1.9 / 1.1), duration: 1.9, ease: "none" }, 6.85);
+    tl.to(["#sc-ring", "#sc-status"], { opacity: 0, duration: 0.1 }, 8.76);
+
+    showLabel("#sc-lb-result", 11.45);
     window.__timelines["scan"] = tl;
   </script>
 </template>

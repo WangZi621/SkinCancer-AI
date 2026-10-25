@@ -9,5 +9,26 @@
   "media": {
     "autoProxy": true
   },
-  "registryItems": []
+  "registryItems": [
+    {
+      "name": "before-after-wipe",
+      "type": "hyperframes:component",
+      "target": "compositions/components/before-after-wipe.html"
+    },
+    {
+      "name": "match-cut",
+      "type": "hyperframes:component",
+      "target": "compositions/components/match-cut.html"
+    },
+    {
+      "name": "cursor-zoom-follow",
+      "type": "hyperframes:component",
+      "target": "compositions/components/cursor-zoom-follow.html"
+    },
+    {
+      "name": "text-match-cut",
+      "type": "hyperframes:component",
+      "target": "compositions/components/text-match-cut.html"
+    }
+  ]
 }

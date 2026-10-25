@@ -15,7 +15,7 @@
     }
     #mb-ring circle {
       fill: none;
-      stroke-width: 2.4;
+      stroke-width: 2.6;
     }
     #mb-track {
       stroke: #e2e7eb;
@@ -23,6 +23,11 @@
     #mb-arc {
       stroke: #0e7c7b;
       stroke-linecap: round;
+    }
+    #mb-push {
+      position: absolute;
+      inset: 0;
+      transform-origin: 960px 380px;
     }
     #mb-phone {
       position: absolute;
@@ -54,13 +59,31 @@
     }
     #mb-island {
       position: absolute;
-      left: 50%;
-      top: 26px;
+      left: 148px;
+      top: 22px;
       width: 120px;
       height: 34px;
-      margin-left: -60px;
       border-radius: 20px;
       background: #0f1b24;
+    }
+    /* the container morph: 05's browser window (its exact last framing) narrows into the phone */
+    #mb-morph {
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+    }
+    #mb-morph img {
+      position: absolute;
+      left: 134.4px;
+      top: 95.4px;
+      width: 1651.2px;
+      height: 928.8px;
+    }
+    #mb-dip {
+      position: absolute;
+      inset: 0;
+      background: #000000;
+      opacity: 0;
     }
   </style>
   <div id="root" data-composition-id="mobile" data-width="1920" data-height="1080" data-start="0" data-duration="8">
@@ -68,34 +91,41 @@
       <circle id="mb-track" cx="200" cy="200" r="196" />
       <circle id="mb-arc" cx="200" cy="200" r="196" pathLength="100" transform="rotate(-90 200 200)" />
     </svg>
-    <div id="mb-phone">
-      <div id="mb-screen">
-        <video
-          id="mb-video"
-          class="clip"
-          src="assets/capture/rec5_mobile.mp4"
-          data-start="0"
-          data-duration="8"
-          data-media-start="3.2"
-          data-playback-rate="1.5"
-          data-track-index="1"
-          muted
-          playsinline
-        ></video>
-        <div id="mb-island"></div>
+    <div id="mb-push">
+      <div id="mb-phone">
+        <div id="mb-screen">
+          <video id="mb-video" class="clip" src="assets/capture/rec5_mobile.mp4" data-start="0" data-duration="8" data-media-start="2.8" data-playback-rate="1.5" data-track-index="1" muted playsinline></video>
+          <div id="mb-island"></div>
+        </div>
       </div>
     </div>
+    <div id="mb-morph-host" class="clip" data-start="0" data-duration="0.9" data-track-index="2" style="position: absolute; inset: 0">
+      <div id="mb-morph"><img id="mb-morph-shot" src="assets/capture/08_offline_result.png" alt="" /></div>
+    </div>
+    <div id="mb-dip" class="clip" data-start="7.85" data-duration="0.15" data-track-index="3"></div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    // the phone rises into place, then holds still while the app works
-    tl.fromTo("#mb-phone", { opacity: 0, y: 70 }, { opacity: 1, y: 0, duration: 1.1, ease: "expo.out" }, 0);
-    tl.fromTo("#mb-ring", { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 1.2, ease: "expo.out" }, 0.15);
+    // morph: window rect (134.4, 55.8, 1651.2 x 968.4, radius 18.9) to the phone (738, 76, 444 x 928, radius 64)
+    tl.fromTo(
+      "#mb-morph",
+      { clipPath: "inset(55.8px 134.4px 55.8px 134.4px round 18.9px)", opacity: 1 },
+      { clipPath: "inset(76px 738px 76px 738px round 64px)", duration: 0.75, ease: "power3.inOut" },
+      0,
+    );
+    tl.to("#mb-morph-shot", { opacity: 0, duration: 0.3, ease: "power1.in" }, 0.22);
+    tl.to("#mb-morph", { opacity: 0, duration: 0.2, ease: "power1.in" }, 0.62);
+    tl.fromTo("#mb-ring", { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1, duration: 1.0, ease: "expo.out" }, 0.55);
 
-    // "Analyze" is tapped at 3.55 s, the result lands at 4.87 s (Refer for review)
-    tl.fromTo("#mb-arc", { strokeDasharray: "0 100", strokeDashoffset: 0 }, { strokeDasharray: "18 82", duration: 0.3, ease: "power2.out" }, 3.55);
-    tl.to("#mb-arc", { strokeDashoffset: -110, duration: 1.35, ease: "power1.inOut" }, 3.55);
-    tl.to("#mb-arc", { strokeDasharray: "100 0", stroke: "#c4560a", strokeWidth: 3.2, duration: 0.7, ease: "power2.inOut" }, 4.9);
+    // Sample 3 on the phone: Analyze is tapped at 3.81 s, the result (Refer for review) lands at 4.79 s
+    tl.fromTo("#mb-arc", { strokeDasharray: "0 100", strokeDashoffset: 0 }, { strokeDasharray: "18 82", duration: 0.3, ease: "power2.out" }, 3.81);
+    tl.to("#mb-arc", { strokeDashoffset: -90, duration: 1.0, ease: "power1.inOut" }, 3.81);
+    tl.to("#mb-arc", { strokeDasharray: "100 0", stroke: "#c4560a", strokeWidth: 3.4, duration: 0.7, ease: "power2.inOut" }, 4.82);
+    // push toward the verdict at the top of the phone
+    tl.fromTo("#mb-push", { scale: 1 }, { scale: 1.16, duration: 0.8, ease: "power2.inOut" }, 5.6);
+
+    // dip cut into 12
+    tl.fromTo("#mb-dip", { opacity: 0 }, { opacity: 0.4, duration: 0.1, ease: "none" }, 7.85);
     window.__timelines["mobile"] = tl;
   </script>
 </template>
