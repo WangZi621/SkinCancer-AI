@@ -131,6 +131,29 @@ export function resizeToInput(imageData, size) {
   return out;
 }
 
+// Intermediate tensors exposed as extra graph outputs (see tools/add_explain_outputs.py).
+export const LAYERS = {
+  "norm": "model_1/efficientnetb4_fbn/efficientnetb4/tf.math.multiply_1/Mul_prequant",
+  "stem": "model_1/efficientnetb4_fbn/efficientnetb4/stem_activation/mul_1_prequant",
+  "b2": "model_1/efficientnetb4_fbn/efficientnetb4/block2d_add/add_prequant",
+  "b3": "model_1/efficientnetb4_fbn/efficientnetb4/block3d_add/add_prequant",
+  "b4": "model_1/efficientnetb4_fbn/efficientnetb4/block4f_add/add_prequant",
+  "b5": "model_1/efficientnetb4_fbn/efficientnetb4/block5f_add/add_prequant",
+  "b6": "model_1/efficientnetb4_fbn/efficientnetb4/block6h_add/add_prequant",
+  "top": "model_1/efficientnetb4_fbn/efficientnetb4/top_activation/mul_1_prequant",
+  "att": "model_1/reshape_1/Reshape_prequant",
+  "gem": "model_1/gem_pool/Pow_1",
+  "imgbn": "model_1/batch_normalization_5/batchnorm/add_1_prequant",
+  "m1": "model_1/dense_10/mul_1_prequant",
+  "m2": "model_1/dense_11/mul_1_prequant",
+  "m3": "model_1/dense_12/mul_1_prequant",
+  "cat": "model_1/concatenate_1/concat_prequant",
+  "h1": "model_1/dense_13/mul_1_prequant",
+  "h2": "model_1/dense_14/mul_1_prequant",
+  "h3": "model_1/dense_15/mul_1_prequant",
+  "logits": "Add__188:0"
+};
+
 // ---- runtime ----------------------------------------------------------------
 export class SkinScanModel {
   constructor() {
@@ -188,9 +211,31 @@ export class SkinScanModel {
       [this.metaName]: new ort.Tensor('float32', metaVector, [1, metaVector.length]),
     };
     const t0 = performance.now();
-    const out = await this.session.run(feeds);
+    const out = await this.session.run(feeds, [this.outputName]);
     const probs = Float32Array.from(out[this.outputName].data);
     return { probs, ms: performance.now() - t0 };
+  }
+
+  /** One forward pass that also returns every intermediate layer in LAYERS. */
+  explain(imageTensorData, metaVector) {
+    const job = this.queue.then(async () => {
+      const s = this.inputSize;
+      const feeds = {
+        [this.imageName]: new ort.Tensor('float32', imageTensorData, [1, s, s, 3]),
+        [this.metaName]: new ort.Tensor('float32', metaVector, [1, metaVector.length]),
+      };
+      const fetches = [...Object.values(LAYERS), this.outputName];
+      const t0 = performance.now();
+      const out = await this.session.run(feeds, fetches);
+      const layers = {};
+      for (const [key, name] of Object.entries(LAYERS)) {
+        layers[key] = { data: out[name].data, dims: out[name].dims };
+      }
+      layers.probs = { data: Float32Array.from(out[this.outputName].data), dims: [1, 3] };
+      return { layers, ms: performance.now() - t0 };
+    });
+    this.queue = job.catch(() => {});
+    return job;
   }
 }
 

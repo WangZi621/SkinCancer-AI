@@ -24,6 +24,7 @@ It comes in two forms built on the same trained model:
 - Reruns the model with the details blanked out to show how much the patient information changed the result.
 - Draws a heat map of the image areas the model relied on (occlusion sensitivity, 16 extra passes).
 - Saves scans to a local history, exports them as CSV, and prints a one-page referral note.
+- Has an **Inside the model** page that runs one real forward pass and shows every stage of it: the pixel values, the normalized input, all 48 first-layer feature maps, the most active maps in each deeper block, the 1,792 attention weights, GeM pooling (with the math redone in the browser and checked against the model's own output), the 17 encoded patient features, the fusion layers, softmax, and the referral rule. Changing a patient detail reruns the whole network.
 - Never uploads the photo. Everything runs in the browser, and saved scans stay in the browser.
 
 ## The model
@@ -41,7 +42,7 @@ The model is an ImageNet-pretrained EfficientNet-B4 fine-tuned with a patient-da
 
 Testing the INT8 file showed that the photo barely changed its output: a black square, random noise, and real lesions all scored about the same. The cause is the GeM pooling step. The full-INT8 converter quantized x³ to int8 with a step of about 485 before the spatial mean, so almost every one of the 1,792 image features rounded to zero, and the model fell back on the patient details.
 
-The web app runs a fixed version instead. `tf2onnx --tflite --dequantize` turns the INT8 file back into a float graph using the same trained weights, and [`tools/make_weight_only_onnx.py`](tools/make_weight_only_onnx.py) stores the weights as per-channel int8 while every activation stays float32. The result, `docs/model/skinscan-v3.onnx`, is 20.8 MB, stays within 0.007 of the float graph, and responds to the image again. [`tools/fix_gem_quantization.py`](tools/fix_gem_quantization.py) is a smaller patch for the TFLite file that moves just the GeM mean to float. It restores some of the image signal, but the remaining INT8 rounding still moves scores by up to 0.38, so the kiosk should switch to the ONNX model or a re-export from the Keras checkpoint.
+The web app runs a fixed version instead. `tf2onnx --tflite --dequantize` turns the INT8 file back into a float graph using the same trained weights, and [`tools/make_weight_only_onnx.py`](tools/make_weight_only_onnx.py) stores the weights as per-channel int8 while every activation stays float32. [`tools/add_explain_outputs.py`](tools/add_explain_outputs.py) then exposes 18 intermediate tensors as extra graph outputs for the Inside the model page; ordinary scans only fetch the final output. The result, `docs/model/skinscan-v3.onnx`, is 20.9 MB, stays within 0.007 of the float graph, and responds to the image again. [`tools/fix_gem_quantization.py`](tools/fix_gem_quantization.py) is a smaller patch for the TFLite file that moves just the GeM mean to float. It restores some of the image signal, but the remaining INT8 rounding still moves scores by up to 0.38, so the kiosk should switch to the ONNX model or a re-export from the Keras checkpoint.
 
 ### Validation results (9,080 images, single pass)
 
@@ -72,6 +73,7 @@ docs/                 the web app (served by GitHub Pages)
   js/app.js           interface: scope, form, results, heat map, history, printing
   js/bodymap.js       front and back body map for the eight ISIC body sites
   js/heatmap.js       occlusion sensitivity map
+  js/explain.js       Inside the model page: every stage of one forward pass
   model/              skinscan-v3.onnx (float activations, int8 weights)
   samples/            held-out ISIC sample images and their metadata
   vendor/             ONNX Runtime Web 1.30.0 (MIT)
@@ -93,7 +95,8 @@ To rebuild the web model from the kiosk file:
 
 ```bash
 python3 -m tf2onnx.convert --tflite skin_cancer_v3.tflite --output deq.onnx --dequantize --opset 17
-python3 tools/make_weight_only_onnx.py deq.onnx docs/model/skinscan-v3.onnx
+python3 tools/make_weight_only_onnx.py deq.onnx web.onnx
+python3 tools/add_explain_outputs.py web.onnx docs/model/skinscan-v3.onnx
 ```
 
 `tools/predict_python.py` and `tools/predict_browser.py` run the same images through Python and through the browser app; on all 78 held-out images the scores agree within 0.011.
@@ -106,7 +109,7 @@ The eight samples are dermoscopic images from the ISIC Archive that are not in t
 
 - Images: [ISIC Archive](https://www.isic-archive.com). Training data is under CC0, CC BY, and CC BY-NC. The sample images are CC BY (attribution in `samples.json`), and the lesion on the cover and preview image is ISIC_0011437 (CC0).
 - Browser runtime: [ONNX Runtime Web](https://onnxruntime.ai) by Microsoft, MIT License.
-- Typeface: Geist by Vercel, SIL Open Font License.
+- Typefaces: Geist and Geist Mono by Vercel, SIL Open Font License.
 
 ## License
 

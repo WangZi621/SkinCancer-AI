@@ -5,6 +5,7 @@ import {
 import { mountBodyMap } from './bodymap.js';
 import { occlusionMap, heatToCanvas } from './heatmap.js';
 import * as history from './history.js';
+import { createExplainer } from './explain.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const model = new SkinScanModel();
@@ -59,7 +60,9 @@ const state = {
 const pct = (p, digits = 0) => `${(p * 100).toFixed(digits)}%`;
 
 // ---------------------------------------------------------------- routing
-const VIEWS = ['scan', 'history', 'how', 'kiosk'];
+const VIEWS = ['scan', 'history', 'inside', 'how', 'kiosk'];
+let explainer = null;
+let explainScan = false;
 function route() {
   const name = (location.hash.match(/^#\/(\w+)/) || [])[1];
   const view = VIEWS.includes(name) ? name : 'scan';
@@ -69,10 +72,13 @@ function route() {
     else a.removeAttribute('aria-current');
   }
   if (view === 'history') renderHistory();
+  if (view === 'inside') {
+    explainer.open({ preferScan: explainScan });
+    explainScan = false;
+  }
   if (name && name !== 'scan') window.scrollTo({ top: 0 });
 }
 window.addEventListener('hashchange', route);
-route();
 
 // ---------------------------------------------------------------- model loading
 function setNote(text) {
@@ -189,6 +195,7 @@ window.addEventListener('paste', (e) => {
 
 // ---------------------------------------------------------------- samples
 let SAMPLES = [];
+let samplesReady = null;
 async function loadSamples() {
   try {
     const res = await fetch('samples/samples.json');
@@ -212,7 +219,7 @@ async function loadSamples() {
     el.samples.appendChild(node);
   });
 }
-loadSamples();
+samplesReady = loadSamples();
 
 // ---------------------------------------------------------------- patient form
 const bodymap = mountBodyMap($('#bodymap'), el.site);
@@ -575,10 +582,37 @@ $('#clear-btn').addEventListener('click', () => {
   }
 });
 
+// ---------------------------------------------------------------- inside the model
+function currentScan() {
+  if (!state.bitmap) return null;
+  if (!state.tensor) state.tensor = resizeToInput(readPixels(state.bitmap), model.inputSize);
+  return {
+    tensor: state.tensor,
+    original: [state.bitmap.width, state.bitmap.height],
+    patient: state.result ? state.result.patient : readPatient(),
+    thumb: thumbnail(96),
+    truth: state.sample ? state.sample.diagnosis : null,
+  };
+}
+explainer = createExplainer({
+  root: $('#inside-root'),
+  model,
+  samples: () => SAMPLES,
+  samplesReady,
+  getScan: currentScan,
+});
+$('#inside-btn').addEventListener('click', (e) => {
+  e.preventDefault();
+  explainScan = true;
+  if (location.hash === '#/inside') route();
+  else location.hash = '#/inside';
+});
+route();
+
 // ---------------------------------------------------------------- offline support
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 }
 
 // Expose a tiny hook for automated checks.
-window.skinscan = { model, state, encodeMetadata, readPixels, resizeToInput };
+window.skinscan = { model, state, encodeMetadata, readPixels, resizeToInput, get explainer() { return explainer; } };
