@@ -1,0 +1,115 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Geist";
+      src: url("assets/fonts/geist.woff2") format("woff2");
+      font-weight: 100 900;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      font-family: "Geist", sans-serif;
+      color: #ffffff;
+      background: radial-gradient(ellipse 75% 85% at 50% 38%, #16928e 0%, #0f6f6f 48%, #093f46 100%);
+    }
+    #ot-mark {
+      position: absolute;
+      left: 810px;
+      top: 130px;
+      width: 300px;
+      height: 300px;
+    }
+    #ot-logo {
+      position: absolute;
+      left: 60px;
+      top: 60px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50px;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9), 0 30px 60px -24px rgba(0, 0, 0, 0.55);
+    }
+    #ot-ring {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    #ot-ring circle {
+      fill: none;
+      stroke-width: 4;
+    }
+    #ot-track {
+      stroke: rgba(255, 255, 255, 0.18);
+    }
+    #ot-arc {
+      stroke: #ffffff;
+      stroke-linecap: round;
+    }
+    #ot-name {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 470px;
+      text-align: center;
+      font-size: 88px;
+      font-weight: 650;
+      letter-spacing: -0.035em;
+    }
+    #ot-url {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 600px;
+      text-align: center;
+      font-size: 52px;
+      font-weight: 500;
+      letter-spacing: -0.015em;
+    }
+    #ot-by {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 690px;
+      text-align: center;
+      font-size: 40px;
+      font-weight: 450;
+      color: rgba(255, 255, 255, 0.82);
+    }
+    #ot-fine {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 900px;
+      text-align: center;
+      font-size: 30px;
+      font-weight: 450;
+      color: rgba(255, 255, 255, 0.78);
+    }
+  </style>
+  <div id="root" data-composition-id="outro" data-width="1920" data-height="1080" data-start="0" data-duration="5">
+    <div id="ot-stage" class="clip" data-start="0" data-duration="5" data-track-index="1">
+      <div id="ot-mark">
+        <img id="ot-logo" src="assets/img/icon.svg" alt="" />
+        <svg id="ot-ring" viewBox="0 0 400 400">
+          <circle id="ot-track" cx="200" cy="200" r="196" />
+          <circle id="ot-arc" cx="200" cy="200" r="196" pathLength="100" transform="rotate(-90 200 200)" />
+        </svg>
+      </div>
+      <p id="ot-name">SkinScan AI</p>
+      <p id="ot-url">wangzi621.github.io/SkinCancer-AI</p>
+      <p id="ot-by">Built by Jason Xiao</p>
+      <p id="ot-fine">Research prototype. Not a medical device.</p>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#ot-logo", { opacity: 0, scale: 0.86 }, { opacity: 1, scale: 1, duration: 0.8, ease: "expo.out" }, 0.1);
+    tl.fromTo("#ot-arc", { strokeDasharray: "0 100" }, { strokeDasharray: "100 0", duration: 1.1, ease: "power2.inOut" }, 0.3);
+    tl.fromTo("#ot-name", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 0.75);
+    tl.fromTo("#ot-url", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 1.15);
+    tl.fromTo("#ot-by", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 1.4);
+    tl.fromTo("#ot-fine", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "power2.out" }, 1.75);
+    window.__timelines["outro"] = tl;
+  </script>
+</template>

@@ -1,0 +1,272 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Geist";
+      src: url("assets/fonts/geist.woff2") format("woff2");
+      font-weight: 100 900;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      font-family: "Geist", sans-serif;
+      background: #f5f7f8;
+      color: #0f1b24;
+    }
+    #br-stage {
+      position: absolute;
+      inset: 0;
+    }
+    #br-wires {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+    }
+    #br-wires path {
+      fill: none;
+      stroke: #0e7c7b;
+      stroke-width: 4;
+      stroke-linecap: round;
+    }
+    .br-label {
+      position: absolute;
+      color: #4a5a66;
+      font-size: 30px;
+      font-weight: 500;
+      text-align: center;
+    }
+    /* photo with the scope ring */
+    #br-scope {
+      position: absolute;
+      left: 180px;
+      top: 150px;
+      width: 300px;
+      height: 300px;
+    }
+    #br-face {
+      position: absolute;
+      inset: 28px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 0 0 8px #ffffff, 0 20px 40px -18px rgba(15, 27, 36, 0.4);
+    }
+    #br-face img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    #br-ring {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    #br-ring circle {
+      fill: none;
+      stroke-width: 5;
+    }
+    #br-track {
+      stroke: #e7ecef;
+    }
+    #br-arc {
+      stroke: #0e7c7b;
+      stroke-linecap: round;
+    }
+    .br-card {
+      position: absolute;
+      background: #ffffff;
+      border-radius: 24px;
+      box-shadow: 0 0 0 1px #e2e7eb, 0 1px 2px rgba(15, 27, 36, 0.05), 0 18px 40px -16px rgba(15, 27, 36, 0.18);
+    }
+    .br-tag {
+      color: #0e7c7b;
+      font-size: 28px;
+      font-weight: 600;
+    }
+    .br-big {
+      margin-top: 6px;
+      font-size: 50px;
+      font-weight: 650;
+      letter-spacing: -0.03em;
+    }
+    #br-patient {
+      left: 120px;
+      top: 560px;
+      width: 420px;
+      height: 300px;
+      padding: 26px 28px;
+    }
+    #br-patient h3 {
+      font-size: 32px;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+    .br-chips {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .br-chip {
+      padding: 8px 18px;
+      border-radius: 999px;
+      background: #f0f3f5;
+      color: #4a5a66;
+      font-size: 28px;
+      font-weight: 500;
+    }
+    #br-img {
+      left: 720px;
+      top: 220px;
+      width: 440px;
+      height: 160px;
+      padding: 28px 32px;
+    }
+    #br-meta {
+      left: 720px;
+      top: 630px;
+      width: 440px;
+      height: 160px;
+      padding: 28px 32px;
+    }
+    #br-scores {
+      left: 1300px;
+      top: 330px;
+      width: 500px;
+      height: 400px;
+      padding: 32px 36px;
+    }
+    #br-scores h3 {
+      font-size: 32px;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+    .br-row {
+      margin-top: 24px;
+    }
+    .br-name {
+      font-size: 32px;
+      font-weight: 500;
+    }
+    .br-bar {
+      margin-top: 12px;
+      height: 14px;
+      border-radius: 999px;
+      background: #e7ecef;
+      overflow: hidden;
+    }
+    .br-fill {
+      height: 100%;
+      border-radius: 999px;
+      transform-origin: 0 50%;
+    }
+    #br-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 930px;
+      text-align: center;
+      font-size: 58px;
+      font-weight: 650;
+      letter-spacing: -0.03em;
+    }
+    #br-line em {
+      font-style: normal;
+      color: #0e7c7b;
+    }
+  </style>
+  <div id="root" data-composition-id="branches" data-width="1920" data-height="1080" data-start="0" data-duration="11.5">
+    <div id="br-stage" class="clip" data-start="0" data-duration="11.5" data-track-index="1">
+      <svg id="br-wires" viewBox="0 0 1920 1080">
+        <path id="br-w1" pathLength="100" d="M480 300 L720 300" />
+        <path id="br-w2" pathLength="100" d="M540 710 L720 710" />
+        <path id="br-w3" pathLength="100" d="M1160 300 C1240 300 1220 500 1300 500" />
+        <path id="br-w4" pathLength="100" d="M1160 710 C1240 710 1220 560 1300 560" />
+      </svg>
+
+      <div id="br-scope">
+        <div id="br-face"><img src="assets/img/lesion_from_capture.jpg" alt="" /></div>
+        <svg id="br-ring" viewBox="0 0 400 400">
+          <circle id="br-track" cx="200" cy="200" r="196" />
+          <circle id="br-arc" cx="200" cy="200" r="196" pathLength="100" transform="rotate(-90 200 200)" />
+        </svg>
+      </div>
+      <p id="br-photo-label" class="br-label" style="left: 180px; top: 466px; width: 300px">Photo</p>
+
+      <div id="br-patient" class="br-card">
+        <h3>Patient details</h3>
+        <div class="br-chips">
+          <span class="br-chip">Age</span>
+          <span class="br-chip">Sex</span>
+          <span class="br-chip">Body site</span>
+          <span class="br-chip">Skin type</span>
+          <span class="br-chip">Diameter</span>
+          <span class="br-chip">Melanocytic</span>
+        </div>
+      </div>
+
+      <div id="br-img" class="br-card">
+        <p class="br-tag">Image branch</p>
+        <p class="br-big">EfficientNet-B4</p>
+      </div>
+      <div id="br-meta" class="br-card">
+        <p class="br-tag">Patient branch</p>
+        <p class="br-big">17 features</p>
+      </div>
+
+      <div id="br-scores" class="br-card">
+        <h3>Three scores</h3>
+        <div class="br-row">
+          <p class="br-name">Melanoma</p>
+          <div class="br-bar"><div id="br-f1" class="br-fill" style="width: 82%; background: #d92d20"></div></div>
+        </div>
+        <div class="br-row">
+          <p class="br-name">Benign</p>
+          <div class="br-bar"><div id="br-f2" class="br-fill" style="width: 17%; background: #0a8456"></div></div>
+        </div>
+        <div class="br-row">
+          <p class="br-name">Other skin cancer</p>
+          <div class="br-bar"><div id="br-f3" class="br-fill" style="width: 3%; background: #c4560a"></div></div>
+        </div>
+      </div>
+
+      <p id="br-line" data-hold>It reads the photo <em>and</em> the patient together.</p>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const card = (sel, t) =>
+      tl.fromTo(sel, { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out" }, t);
+    const wire = (sel, t, d = 0.6) =>
+      tl.fromTo(sel, { strokeDasharray: "0 100" }, { strokeDasharray: "100 0", duration: d, ease: "power2.inOut" }, t);
+
+    // inputs
+    tl.fromTo("#br-scope", { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 0.8, ease: "expo.out" }, 0.2);
+    tl.fromTo("#br-photo-label", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.5);
+    card("#br-patient", 0.7);
+
+    // two branches
+    wire("#br-w1", 1.5);
+    card("#br-img", 1.85);
+    wire("#br-w2", 2.5);
+    card("#br-meta", 2.85);
+
+    // the scope ring sweeps while the branches merge
+    tl.fromTo("#br-arc", { strokeDasharray: "0 100", strokeDashoffset: 0 }, { strokeDasharray: "22 78", duration: 0.3, ease: "power2.out" }, 3.6);
+    tl.to("#br-arc", { strokeDashoffset: -200, duration: 2.0, ease: "power1.inOut" }, 3.6);
+    wire("#br-w3", 3.8, 0.8);
+    wire("#br-w4", 3.9, 0.8);
+    card("#br-scores", 4.5);
+    tl.fromTo(".br-fill", { scaleX: 0 }, { scaleX: 1, duration: 1.0, ease: "power3.out", stagger: 0.18 }, 5.0);
+
+    // one strong moment: the ring closes in the triage colour
+    tl.to("#br-arc", { strokeDasharray: "100 0", stroke: "#d92d20", duration: 0.6, ease: "power2.inOut" }, 5.6);
+
+    // the line
+    tl.fromTo("#br-line", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.5, ease: "power3.out" }, 7.6);
+    window.__timelines["branches"] = tl;
+  </script>
+</template>

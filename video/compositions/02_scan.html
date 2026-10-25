@@ -1,0 +1,215 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Geist";
+      src: url("assets/fonts/geist.woff2") format("woff2");
+      font-weight: 100 900;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      font-family: "Geist", sans-serif;
+      background: #f5f7f8;
+    }
+    /* camera: the browser window and its highlights move together */
+    #scan-cam {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      transform-origin: 0 0;
+    }
+    #scan-window {
+      position: absolute;
+      left: 240px;
+      top: 40px;
+      width: 1440px;
+      height: 856px;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 0 0 1px #e2e7eb, 0 2px 4px rgba(15, 27, 36, 0.04), 0 40px 90px -30px rgba(15, 27, 36, 0.35);
+    }
+    .scan-bar {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      height: 46px;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e7eb;
+    }
+    .scan-dot {
+      position: absolute;
+      top: 17px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #cfd7dd;
+    }
+    .scan-url {
+      position: absolute;
+      left: 50%;
+      top: 8px;
+      width: 560px;
+      height: 30px;
+      margin-left: -280px;
+      border-radius: 9px;
+      background: #f0f3f5;
+      color: #4a5a66;
+      font-size: 17px;
+      font-weight: 500;
+      line-height: 30px;
+      text-align: center;
+    }
+    #scan-video {
+      position: absolute;
+      left: 0;
+      top: 46px;
+      width: 1440px;
+      height: 810px;
+      object-fit: cover;
+    }
+    .scan-hl {
+      position: absolute;
+      border-radius: 18px;
+      border: 4px solid #0e7c7b;
+      box-shadow: 0 0 0 8px rgba(14, 124, 123, 0.16);
+      opacity: 0;
+    }
+    #scan-hl-photo {
+      left: 538px;
+      top: 556px;
+      width: 372px;
+      height: 232px;
+    }
+    #scan-hl-form {
+      left: 960px;
+      top: 150px;
+      width: 412px;
+      height: 640px;
+    }
+    #scan-hl-verdict {
+      left: 959px;
+      top: 214px;
+      width: 412px;
+      height: 146px;
+      border-color: #d92d20;
+      box-shadow: 0 0 0 8px rgba(217, 45, 32, 0.14);
+    }
+    /* step captions under the window */
+    .scan-cap {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 934px;
+      display: flex;
+      justify-content: center;
+    }
+    .scan-pill {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 14px 30px 14px 16px;
+      border-radius: 999px;
+      background: #ffffff;
+      box-shadow: 0 0 0 1px #e2e7eb, 0 12px 30px -14px rgba(15, 27, 36, 0.3);
+      color: #0f1b24;
+      font-size: 42px;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+    .scan-num {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: #0e7c7b;
+      color: #ffffff;
+      font-size: 30px;
+      font-weight: 650;
+      line-height: 54px;
+      text-align: center;
+    }
+    #scan-cap-3 .scan-num {
+      background: #d92d20;
+    }
+  </style>
+  <div id="root" data-composition-id="scan" data-width="1920" data-height="1080" data-start="0" data-duration="18">
+    <div id="scan-cam">
+      <div id="scan-window">
+        <div class="scan-bar">
+          <span class="scan-dot" style="left: 20px"></span>
+          <span class="scan-dot" style="left: 40px"></span>
+          <span class="scan-dot" style="left: 60px"></span>
+          <span class="scan-url" data-layout-ignore>wangzi621.github.io/SkinCancer-AI</span>
+        </div>
+        <video
+          id="scan-video"
+          class="clip"
+          src="assets/capture/rec1_scan.mp4"
+          data-start="0"
+          data-duration="18"
+          data-media-start="3.6"
+          data-track-index="1"
+          muted
+          playsinline
+        ></video>
+      </div>
+      <div id="scan-hl-photo" class="scan-hl"></div>
+      <div id="scan-hl-form" class="scan-hl"></div>
+      <div id="scan-hl-verdict" class="scan-hl"></div>
+    </div>
+
+    <div id="scan-cap-1" class="scan-cap clip" data-start="1.6" data-duration="3.1" data-track-index="2">
+      <div class="scan-pill"><span class="scan-num">1</span>Add a photo</div>
+    </div>
+    <div id="scan-cap-2" class="scan-cap clip" data-start="4.7" data-duration="5.4" data-track-index="2">
+      <div class="scan-pill"><span class="scan-num">2</span>Patient details</div>
+    </div>
+    <div id="scan-cap-3" class="scan-cap clip" data-start="12.75" data-duration="5.25" data-track-index="2">
+      <div class="scan-pill"><span class="scan-num">3</span>Result on the device</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const pillIn = (sel, t) =>
+      tl.fromTo(sel + " .scan-pill", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out" }, t);
+    const pillOut = (sel, t) => tl.to(sel + " .scan-pill", { opacity: 0, duration: 0.2, ease: "power2.in" }, t);
+    const hl = (sel, tin, tout) => {
+      tl.fromTo(sel, { opacity: 0, scale: 1.04 }, { opacity: 1, scale: 1, duration: 0.45, ease: "expo.out" }, tin);
+      tl.to(sel, { opacity: 0, duration: 0.25, ease: "power2.in" }, tout);
+    };
+
+    // window arrives
+    tl.fromTo("#scan-window", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: "expo.out" }, 0);
+
+    // 1. add a photo (sample click at ~2.2 s)
+    pillIn("#scan-cap-1", 1.6);
+    hl("#scan-hl-photo", 1.6, 4.3);
+    pillOut("#scan-cap-1", 4.45);
+
+    // 2. patient details fill in from the sample
+    pillIn("#scan-cap-2", 4.7);
+    hl("#scan-hl-form", 4.7, 9.5);
+    pillOut("#scan-cap-2", 9.85);
+
+    // 3. result (appears at ~12.65 s)
+    pillIn("#scan-cap-3", 12.75);
+    hl("#scan-hl-verdict", 14.35, 15.3);
+    pillOut("#scan-cap-3", 16.6);
+
+    // slow push into the verdict card
+    const s = 2.25;
+    const px = 1165;
+    const py = 287;
+    tl.fromTo(
+      "#scan-cam",
+      { x: 0, y: 0, scale: 1 },
+      { x: 960 - s * px, y: 470 - s * py, scale: s, duration: 3.0, ease: "power2.inOut" },
+      14.95,
+    );
+    window.__timelines["scan"] = tl;
+  </script>
+</template>

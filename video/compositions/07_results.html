@@ -1,0 +1,147 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Geist";
+      src: url("assets/fonts/geist.woff2") format("woff2");
+      font-weight: 100 900;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      font-family: "Geist", sans-serif;
+      color: #ffffff;
+      background: radial-gradient(ellipse 80% 90% at 35% 45%, #16928e 0%, #0f6f6f 46%, #093f46 100%);
+    }
+    #rs-scope {
+      position: absolute;
+      left: 250px;
+      top: 230px;
+      width: 520px;
+      height: 520px;
+    }
+    #rs-face {
+      position: absolute;
+      inset: 50px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 0 0 9px #ffffff, 0 40px 80px -30px rgba(0, 0, 0, 0.55);
+    }
+    #rs-face img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    #rs-ring {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    #rs-ring circle {
+      fill: none;
+      stroke-width: 6;
+    }
+    #rs-track {
+      stroke: rgba(255, 255, 255, 0.18);
+    }
+    #rs-arc {
+      stroke: #ffffff;
+      stroke-linecap: round;
+    }
+    .rs-stat {
+      position: absolute;
+      left: 880px;
+      top: 330px;
+      width: 900px;
+    }
+    .rs-num {
+      transform-origin: 0 60%;
+      font-size: 190px;
+      font-weight: 650;
+      letter-spacing: -0.045em;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .rs-label {
+      margin-top: 22px;
+      font-size: 50px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      color: rgba(255, 255, 255, 0.88);
+      line-height: 1.2;
+    }
+    #rs-foot {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 880px;
+      text-align: center;
+      font-size: 40px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.86);
+    }
+  </style>
+  <div id="root" data-composition-id="results" data-width="1920" data-height="1080" data-start="0" data-duration="10">
+    <div id="rs-stage" class="clip" data-start="0" data-duration="10" data-track-index="1">
+      <div id="rs-scope">
+        <div id="rs-face"><img src="assets/img/lesion_from_capture.jpg" alt="" /></div>
+        <svg id="rs-ring" viewBox="0 0 400 400">
+          <circle id="rs-track" cx="200" cy="200" r="196" />
+          <circle id="rs-arc" cx="200" cy="200" r="196" pathLength="100" transform="rotate(-90 200 200)" />
+        </svg>
+      </div>
+
+      <div id="rs-a" class="rs-stat">
+        <p class="rs-num"><span id="rs-a-n">45,400</span></p>
+        <p class="rs-label">biopsy-confirmed images</p>
+      </div>
+      <div id="rs-b" class="rs-stat">
+        <p class="rs-num"><span id="rs-b-n">93.2%</span></p>
+        <p class="rs-label">AUC</p>
+      </div>
+      <div id="rs-c" class="rs-stat">
+        <p class="rs-num"><span id="rs-c-n">90%</span></p>
+        <p class="rs-label">of melanomas caught at a 0.278 cutoff</p>
+      </div>
+
+      <p id="rs-foot">Tested on 9,080 images it never trained on.</p>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Each number lands whole, so only the real figure is ever on screen; the ring carries the motion.
+    const statIn = (sel, t) => {
+      tl.fromTo(sel + " .rs-num", { opacity: 0, scale: 0.96, filter: "blur(12px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.5, ease: "power3.out" }, t);
+      tl.fromTo(sel + " .rs-label", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out" }, t + 0.25);
+    };
+    const statOut = (sel, t) => tl.to(sel, { opacity: 0, filter: "blur(8px)", duration: 0.22, ease: "power2.in" }, t);
+    const ring = (to, t, d = 1.3) => tl.to("#rs-arc", { strokeDasharray: to + " " + (100 - to), duration: d, ease: "power3.out" }, t);
+
+    tl.fromTo("#rs-scope", { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1, duration: 0.9, ease: "expo.out" }, 0);
+    tl.set("#rs-arc", { strokeDasharray: "0 100" }, 0);
+    tl.set(["#rs-a", "#rs-b", "#rs-c"], { opacity: 1 }, 0);
+
+    // 45,400 biopsy-confirmed images: the ring closes all the way
+    statIn("#rs-a", 0.25);
+    ring(100, 0.25);
+    statOut("#rs-a", 2.75);
+    tl.to("#rs-arc", { strokeDasharray: "0 100", duration: 0.3, ease: "power2.in" }, 2.7);
+
+    // 93.2% AUC
+    statIn("#rs-b", 3.05);
+    ring(93.2, 3.05);
+    statOut("#rs-b", 5.4);
+    tl.to("#rs-arc", { strokeDasharray: "0 100", duration: 0.3, ease: "power2.in" }, 5.35);
+
+    // 90% of melanomas caught: the ring lands in the urgent colour
+    statIn("#rs-c", 5.7);
+    tl.set("#rs-arc", { stroke: "#ffffff" }, 0);
+    tl.to("#rs-arc", { stroke: "#d92d20", duration: 0.4, ease: "power2.out" }, 5.7);
+    ring(90, 5.7);
+
+    // source line
+    tl.fromTo("#rs-foot", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 7.0);
+    window.__timelines["results"] = tl;
+  </script>
+</template>

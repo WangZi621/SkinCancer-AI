@@ -1,0 +1,170 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Geist";
+      src: url("assets/fonts/geist.woff2") format("woff2");
+      font-weight: 100 900;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      font-family: "Geist", sans-serif;
+      background: #f5f7f8;
+    }
+    #hm-cam {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      transform-origin: 0 0;
+    }
+    #hm-window {
+      position: absolute;
+      left: 240px;
+      top: 40px;
+      width: 1440px;
+      height: 856px;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 0 0 1px #e2e7eb, 0 2px 4px rgba(15, 27, 36, 0.04), 0 40px 90px -30px rgba(15, 27, 36, 0.35);
+    }
+    .hm-bar {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      height: 46px;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e7eb;
+    }
+    .hm-dot {
+      position: absolute;
+      top: 17px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #cfd7dd;
+    }
+    .hm-url {
+      position: absolute;
+      left: 50%;
+      top: 8px;
+      width: 560px;
+      height: 30px;
+      margin-left: -280px;
+      border-radius: 9px;
+      background: #f0f3f5;
+      color: #4a5a66;
+      font-size: 17px;
+      font-weight: 500;
+      line-height: 30px;
+      text-align: center;
+    }
+    #hm-video,
+    .hm-still {
+      position: absolute;
+      left: 0;
+      top: 46px;
+      width: 1440px;
+      height: 810px;
+      object-fit: cover;
+    }
+    #hm-wipe {
+      position: absolute;
+      left: 0;
+      top: 46px;
+      width: 4px;
+      height: 810px;
+      margin-left: -2px;
+      background: #ffffff;
+      box-shadow: 0 0 12px rgba(15, 27, 36, 0.35);
+      opacity: 0;
+    }
+    #hm-cap {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 934px;
+      display: flex;
+      justify-content: center;
+    }
+    .hm-pill {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 14px 32px 14px 18px;
+      border-radius: 999px;
+      background: #ffffff;
+      box-shadow: 0 0 0 1px #e2e7eb, 0 12px 30px -14px rgba(15, 27, 36, 0.3);
+      color: #0f1b24;
+      font-size: 44px;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+    .hm-swatch {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 50% 50%, #ffe866 0%, #ff7a45 60%, rgba(255, 122, 69, 0.15) 100%);
+      box-shadow: 0 0 0 4px #ffffff, 0 0 0 6px #d92d20;
+    }
+  </style>
+  <div id="root" data-composition-id="heatmap" data-width="1920" data-height="1080" data-start="0" data-duration="8.5">
+    <div id="hm-cam">
+      <div id="hm-window">
+        <div class="hm-bar">
+          <span class="hm-dot" style="left: 20px"></span>
+          <span class="hm-dot" style="left: 40px"></span>
+          <span class="hm-dot" style="left: 60px"></span>
+          <span class="hm-url" data-layout-ignore>wangzi621.github.io/SkinCancer-AI</span>
+        </div>
+        <video
+          id="hm-video"
+          class="clip"
+          src="assets/capture/rec2_heatmap.mp4"
+          data-start="0"
+          data-duration="4.85"
+          data-media-start="0.4"
+          data-playback-rate="4"
+          data-track-index="1"
+          muted
+          playsinline
+        ></video>
+        <img id="hm-before" class="hm-still clip" src="assets/capture/03_result_card.png" alt="" data-start="3.95" data-duration="4.55" data-track-index="2" />
+        <img id="hm-after" class="hm-still clip" src="assets/capture/04_heatmap_on.png" alt="" data-start="3.95" data-duration="4.55" data-track-index="3" />
+        <div id="hm-wipe"></div>
+      </div>
+    </div>
+    <div id="hm-cap" class="clip" data-start="4.2" data-duration="4.3" data-track-index="4">
+      <div class="hm-pill"><span class="hm-swatch"></span>Where the model looked</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#hm-window", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out" }, 0);
+
+    // magnify the scope while the 16 occlusion passes run (scope centre in frame: 733, 327)
+    const s = 2.3;
+    tl.fromTo(
+      "#hm-cam",
+      { x: 0, y: 0, scale: 1 },
+      { x: 960 - s * 733, y: 470 - s * 327, scale: s, duration: 2.3, ease: "power2.inOut" },
+      0.5,
+    );
+
+    // when the map lands, wipe from the plain photo to the heat map across the scope
+    const W = 1440;
+    tl.fromTo("#hm-after", { clipPath: `inset(0px ${W - 300}px 0px 0px)` }, { clipPath: `inset(0px ${W - 700}px 0px 0px)`, duration: 1.5, ease: "power2.inOut" }, 4.3);
+    tl.to("#hm-after", { clipPath: "inset(0px 0px 0px 0px)", duration: 0.3, ease: "power2.in" }, 5.8);
+    tl.set("#hm-wipe", { x: 300 }, 0);
+    tl.fromTo("#hm-wipe", { opacity: 0 }, { opacity: 1, duration: 0.15 }, 4.15);
+    tl.to("#hm-wipe", { x: 700, duration: 1.5, ease: "power2.inOut" }, 4.3);
+    tl.to("#hm-wipe", { opacity: 0, duration: 0.2 }, 5.8);
+
+    tl.fromTo("#hm-cap .hm-pill", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out" }, 4.2);
+    window.__timelines["heatmap"] = tl;
+  </script>
+</template>

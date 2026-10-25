@@ -1,0 +1,100 @@
+{
+  "rec1_scan_boxes": {
+    "verdict": {
+      "x": 967.25,
+      "y": 177.3125,
+      "width": 531.75,
+      "height": 179.046875
+    },
+    "scope": {
+      "x": 457.625,
+      "y": 121.3125,
+      "width": 400,
+      "height": 400
+    },
+    "scrollY": 322
+  },
+  "rec1_scan": {
+    "file": "rec1_scan.mp4",
+    "frames": 131,
+    "seconds": 21.45,
+    "marks": {
+      "page loaded": 0.05,
+      "model ready": 1.14,
+      "click sample 1": 5.83,
+      "photo loaded": 7.64,
+      "patient details visible": 12.17,
+      "click analyze": 13.47,
+      "result shown": 16.25,
+      "result framed": 17.88,
+      "end": 20.88
+    }
+  },
+  "rec2_heatmap_boxes": {
+    "scope": {
+      "x": 457.625,
+      "y": 121.3125,
+      "width": 400,
+      "height": 400
+    }
+  },
+  "rec2_heatmap": {
+    "file": "rec2_heatmap.mp4",
+    "frames": 41,
+    "seconds": 19.86,
+    "marks": {
+      "click heat map": 1.2,
+      "heat map on": 16.7,
+      "end": 19.21
+    }
+  },
+  "rec3_form": {
+    "file": "rec3_form.mp4",
+    "frames": 271,
+    "seconds": 23.13,
+    "marks": {
+      "click sample 2": 1.24,
+      "photo loaded": 2.51,
+      "type age": 3.72,
+      "pick sex": 5.97,
+      "body map": 7.95,
+      "skin type": 9.98,
+      "diameter": 12.04,
+      "click analyze": 14.36,
+      "result shown": 17.48,
+      "end": 22.02
+    }
+  },
+  "rec4_how": {
+    "file": "rec4_how.mp4",
+    "frames": 293,
+    "seconds": 18.14,
+    "marks": {
+      "scroll start": 1.53,
+      "scroll end": 15.55
+    }
+  },
+  "rec5_mobile": {
+    "file": "rec5_mobile.mp4",
+    "frames": 301,
+    "seconds": 15.54,
+    "marks": {
+      "tap sample 3": 4.14,
+      "photo loaded": 4.3,
+      "tap analyze": 8.52,
+      "result shown": 10.51,
+      "end": 15.32
+    }
+  },
+  "rec6_offline": {
+    "file": "rec6_offline.mp4",
+    "frames": 55,
+    "seconds": 10.94,
+    "marks": {
+      "network off (navigator.onLine=false)": 1.51,
+      "click analyze": 2.71,
+      "result shown offline": 6.02,
+      "end": 10.07
+    }
+  }
+}
