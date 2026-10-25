@@ -8,7 +8,7 @@ capture/capture.mjs   Playwright script that records the real app (see below)
 capture/out/          raw recordings, full-resolution stills, timings.json
 compositions/         one HyperFrames scene per clip
 assets/               fonts, logo, kiosk photo, and copies of the captures used by the scenes
-index.html            all nine clips back to back, for previewing
+index.html            the full film: the clips back to back in edit order (out/skinscan_demo.mp4)
 scripts/              render.mjs (renders every clip), build-roots.mjs, contact_sheet.py
 out/                  the rendered clips, frames/ and contact_sheet.png
 ```
@@ -48,7 +48,12 @@ npx hyperframes preview                 # all clips in the Studio
 npx hyperframes check                   # lint, layout and contrast checks
 node scripts/render.mjs                 # every clip to out/, plus frames and the contact sheet
 node scripts/render.mjs --only 04 --quality draft
+node scripts/render.mjs --only 01 --film   # also renders the full film to out/skinscan_demo.mp4
 ```
+
+The film order lives in `FILM` in `scripts/build-roots.mjs`. Besides the nine brief clips it uses
+three bridge scenes: `10_form` (recording 3, the form typed by hand), `11_training` (training facts)
+and `12_limits` (78.6% accuracy and the prototype disclaimer over the How it works recording).
 
 If HyperFrames cannot find Chrome, run `npx hyperframes browser ensure`, or point
 `HYPERFRAMES_BROWSER_PATH` at a Chrome Headless Shell binary.

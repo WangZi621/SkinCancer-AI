@@ -1,0 +1,118 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Geist";
+      src: url("assets/fonts/geist.woff2") format("woff2");
+      font-weight: 100 900;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      font-family: "Geist", sans-serif;
+      background: #f5f7f8;
+      color: #0f1b24;
+    }
+    #tr-scope {
+      position: absolute;
+      left: 190px;
+      top: 270px;
+      width: 540px;
+      height: 540px;
+    }
+    #tr-face {
+      position: absolute;
+      inset: 52px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 0 0 10px #ffffff, 0 30px 70px -30px rgba(15, 27, 36, 0.45);
+    }
+    #tr-face img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    #tr-ring {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    #tr-ring circle {
+      fill: none;
+      stroke-width: 6;
+    }
+    #tr-track {
+      stroke: #e2e7eb;
+    }
+    #tr-arc {
+      stroke: #0e7c7b;
+      stroke-linecap: round;
+    }
+    #tr-title {
+      position: absolute;
+      left: 860px;
+      top: 150px;
+      font-size: 72px;
+      font-weight: 650;
+      letter-spacing: -0.035em;
+    }
+    #tr-list {
+      position: absolute;
+      left: 860px;
+      top: 290px;
+      width: 960px;
+      list-style: none;
+    }
+    .tr-item {
+      display: flex;
+      align-items: baseline;
+      gap: 22px;
+      padding: 22px 0;
+      border-bottom: 1px solid #e2e7eb;
+      font-size: 38px;
+      font-weight: 500;
+      color: #4a5a66;
+      letter-spacing: -0.015em;
+    }
+    .tr-item b {
+      color: #0e7c7b;
+      font-weight: 650;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+  </style>
+  <div id="root" data-composition-id="training" data-width="1920" data-height="1080" data-start="0" data-duration="12">
+    <div id="tr-stage" class="clip" data-start="0" data-duration="12" data-track-index="1">
+      <div id="tr-scope">
+        <div id="tr-face"><img src="assets/img/lesion_from_capture.jpg" alt="" /></div>
+        <svg id="tr-ring" viewBox="0 0 400 400">
+          <circle id="tr-track" cx="200" cy="200" r="196" />
+          <circle id="tr-arc" cx="200" cy="200" r="196" pathLength="100" transform="rotate(-90 200 200)" />
+        </svg>
+      </div>
+      <h2 id="tr-title">How it was trained</h2>
+      <ul id="tr-list" data-hold>
+        <li id="tr-i1" class="tr-item"><b>45,400</b>biopsy-confirmed images from the ISIC Archive</li>
+        <li id="tr-i2" class="tr-item"><b>36,320</b>for training, <b>9,080</b>for validation</li>
+        <li id="tr-i3" class="tr-item"><b>EfficientNet-B4</b>image branch</li>
+        <li id="tr-i4" class="tr-item"><b>17</b>patient features</li>
+        <li id="tr-i5" class="tr-item"><b>218</b>training epochs</li>
+      </ul>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#tr-scope", { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1, duration: 0.9, ease: "expo.out" }, 0);
+    tl.fromTo("#tr-title", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.45, ease: "power3.out" }, 0.3);
+    tl.set("#tr-arc", { strokeDasharray: "0 100" }, 0);
+    // each line closes another fifth of the ring
+    ["#tr-i1", "#tr-i2", "#tr-i3", "#tr-i4", "#tr-i5"].forEach((sel, i) => {
+      const t = 1.0 + i * 1.5;
+      tl.fromTo(sel, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, t);
+      const f = (i + 1) * 20;
+      tl.to("#tr-arc", { strokeDasharray: f + " " + (100 - f), duration: 0.8, ease: "power2.inOut" }, t);
+    });
+    window.__timelines["training"] = tl;
+  </script>
+</template>

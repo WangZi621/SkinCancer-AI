@@ -1,0 +1,131 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Geist";
+      src: url("assets/fonts/geist.woff2") format("woff2");
+      font-weight: 100 900;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      font-family: "Geist", sans-serif;
+      background: #f5f7f8;
+    }
+    #fm-window {
+      position: absolute;
+      left: 240px;
+      top: 40px;
+      width: 1440px;
+      height: 856px;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 0 0 1px #e2e7eb, 0 2px 4px rgba(15, 27, 36, 0.04), 0 40px 90px -30px rgba(15, 27, 36, 0.35);
+    }
+    .fm-bar {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      height: 46px;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e7eb;
+    }
+    .fm-dot {
+      position: absolute;
+      top: 17px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #cfd7dd;
+    }
+    .fm-url {
+      position: absolute;
+      left: 50%;
+      top: 8px;
+      width: 560px;
+      height: 30px;
+      margin-left: -280px;
+      border-radius: 9px;
+      background: #f0f3f5;
+      color: #4a5a66;
+      font-size: 17px;
+      font-weight: 500;
+      line-height: 30px;
+      text-align: center;
+    }
+    #fm-video {
+      position: absolute;
+      left: 0;
+      top: 46px;
+      width: 1440px;
+      height: 810px;
+      object-fit: cover;
+    }
+    .fm-cap {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 934px;
+      display: flex;
+      justify-content: center;
+    }
+    .fm-pill {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 14px 32px 14px 18px;
+      border-radius: 999px;
+      background: #ffffff;
+      box-shadow: 0 0 0 1px #e2e7eb, 0 12px 30px -14px rgba(15, 27, 36, 0.3);
+      color: #0f1b24;
+      font-size: 42px;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+    .fm-pill::before {
+      content: "";
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #0e7c7b;
+    }
+  </style>
+  <div id="root" data-composition-id="form" data-width="1920" data-height="1080" data-start="0" data-duration="13">
+    <div id="fm-window">
+      <div class="fm-bar">
+        <span class="fm-dot" style="left: 20px"></span>
+        <span class="fm-dot" style="left: 40px"></span>
+        <span class="fm-dot" style="left: 60px"></span>
+        <span class="fm-url" data-layout-ignore>wangzi621.github.io/SkinCancer-AI</span>
+      </div>
+      <video
+        id="fm-video"
+        class="clip"
+        src="assets/capture/rec3_form.mp4"
+        data-start="0"
+        data-duration="13"
+        data-media-start="2.6"
+        data-playback-rate="1.25"
+        data-track-index="1"
+        muted
+        playsinline
+      ></video>
+    </div>
+    <div id="fm-cap-1" class="fm-cap clip" data-start="0.5" data-duration="3.3" data-track-index="2">
+      <div class="fm-pill">Details can be typed in by hand</div>
+    </div>
+    <div id="fm-cap-2" class="fm-cap clip" data-start="3.9" data-duration="9.1" data-track-index="2">
+      <div class="fm-pill">Tap the body map, pick a skin type</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#fm-window", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out" }, 0);
+    tl.fromTo("#fm-cap-1 .fm-pill", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out" }, 0.5);
+    tl.to("#fm-cap-1 .fm-pill", { opacity: 0, duration: 0.2, ease: "power2.in" }, 3.55);
+    tl.fromTo("#fm-cap-2 .fm-pill", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out" }, 3.9);
+    window.__timelines["form"] = tl;
+  </script>
+</template>

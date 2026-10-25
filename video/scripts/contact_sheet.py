@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 out = sys.argv[1]
 frames = os.path.join(out, "frames")
-clips = sorted(p for p in glob.glob(os.path.join(out, "*.mp4")))
+clips = sorted(p for p in glob.glob(os.path.join(out, "[0-9][0-9]_*.mp4")))
 TW, TH, PAD, LABEL = 400, 225, 12, 300
 font_path = os.path.join(os.path.dirname(__file__), "..", "assets", "fonts", "geist.woff2")
 try:

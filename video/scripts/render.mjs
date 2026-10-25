@@ -1,6 +1,6 @@
 // Renders every clip to out/NN_name.mp4, pulls 6 frames from each into out/frames/,
 // and builds out/contact_sheet.png.
-//   node scripts/render.mjs [--quality delivery|looks|draft] [--only 02,04]
+//   node scripts/render.mjs [--quality delivery|looks|draft] [--only 02,04] [--film]
 // Each clip gets a temporary one-clip root file while it renders (the project keeps
 // a single root, index.html, so `hyperframes check` sees one entry point).
 import fs from 'node:fs';
@@ -43,3 +43,15 @@ for (const c of CLIPS.filter((c) => ONLY.includes(c.n))) {
 }
 
 execFileSync('python3', [path.join(ROOT, 'scripts', 'contact_sheet.py'), OUT], { stdio: 'inherit' });
+
+// --film also renders index.html, every clip back to back, to out/skinscan_demo.mp4
+if (args.includes('--film')) {
+  const film = path.join(OUT, 'skinscan_demo.mp4');
+  console.log(`rendering the full film (${QUALITY})`);
+  execFileSync('npx', ['hyperframes', 'render', '-o', film, '--quality', QUALITY], {
+    cwd: ROOT,
+    stdio: ['inherit', 'pipe', 'pipe'],
+    maxBuffer: 256 * 1024 * 1024,
+  });
+  console.log(`  -> ${path.relative(ROOT, film)}  ${probe(film).toFixed(2)} s`);
+}

@@ -1,0 +1,138 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Geist";
+      src: url("assets/fonts/geist.woff2") format("woff2");
+      font-weight: 100 900;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      font-family: "Geist", sans-serif;
+      background: #f5f7f8;
+      color: #0f1b24;
+    }
+    #lm-window {
+      position: absolute;
+      left: 120px;
+      top: 250px;
+      width: 960px;
+      height: 580px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 0 0 1px #e2e7eb, 0 2px 4px rgba(15, 27, 36, 0.04), 0 40px 90px -30px rgba(15, 27, 36, 0.35);
+    }
+    .lm-bar {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      height: 40px;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e7eb;
+    }
+    .lm-dot {
+      position: absolute;
+      top: 14px;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #cfd7dd;
+    }
+    #lm-video {
+      position: absolute;
+      left: 0;
+      top: 40px;
+      width: 960px;
+      height: 540px;
+      object-fit: cover;
+    }
+    #lm-title {
+      position: absolute;
+      left: 1170px;
+      top: 250px;
+      font-size: 64px;
+      font-weight: 650;
+      letter-spacing: -0.035em;
+    }
+    .lm-block {
+      position: absolute;
+      left: 1170px;
+      width: 660px;
+    }
+    #lm-a {
+      top: 360px;
+    }
+    #lm-b {
+      top: 560px;
+    }
+    #lm-c {
+      top: 720px;
+    }
+    .lm-num {
+      font-size: 110px;
+      font-weight: 650;
+      letter-spacing: -0.045em;
+      line-height: 1;
+      color: #c4560a;
+    }
+    .lm-label {
+      margin-top: 10px;
+      font-size: 38px;
+      font-weight: 500;
+      color: #4a5a66;
+    }
+    .lm-line {
+      font-size: 40px;
+      font-weight: 600;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+    }
+    .lm-line span {
+      display: block;
+      color: #4a5a66;
+      font-weight: 500;
+    }
+  </style>
+  <div id="root" data-composition-id="limits" data-width="1920" data-height="1080" data-start="0" data-duration="16">
+    <div id="lm-window">
+      <div class="lm-bar">
+        <span class="lm-dot" style="left: 18px"></span>
+        <span class="lm-dot" style="left: 36px"></span>
+        <span class="lm-dot" style="left: 54px"></span>
+      </div>
+      <video
+        id="lm-video"
+        class="clip"
+        src="assets/capture/rec4_how.mp4"
+        data-start="0"
+        data-duration="16"
+        data-media-start="1.2"
+        data-track-index="1"
+        muted
+        playsinline
+      ></video>
+    </div>
+    <div id="lm-text" class="clip" data-start="0" data-duration="16" data-track-index="2">
+      <h2 id="lm-title">Honest about limits</h2>
+      <div id="lm-a" class="lm-block">
+        <p class="lm-num">78.6%</p>
+        <p class="lm-label">overall accuracy</p>
+      </div>
+      <p id="lm-b" class="lm-block lm-line">It does not diagnose.<span>It suggests how soon to refer.</span></p>
+      <p id="lm-c" class="lm-block lm-line">A research prototype,<span>not a medical device.</span></p>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#lm-window", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: "expo.out" }, 0);
+    tl.fromTo("#lm-title", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.45, ease: "power3.out" }, 0.4);
+    tl.fromTo("#lm-a .lm-num", { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.5, ease: "power3.out" }, 1.4);
+    tl.fromTo("#lm-a .lm-label", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out" }, 1.65);
+    tl.fromTo("#lm-b", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 5.0);
+    tl.fromTo("#lm-c", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 9.0);
+    window.__timelines["limits"] = tl;
+  </script>
+</template>

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1920, height=1080" />
-    <title>SkinScan AI clips</title>
+    <title>SkinScan AI demo</title>
     <script src="assets/vendor/gsap.min.js"></script>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -11,7 +11,7 @@
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="reel" data-start="0" data-duration="85.5" data-width="1920" data-height="1080">
+    <div id="root" data-composition-id="film" data-start="0" data-duration="126.5" data-width="1920" data-height="1080">
       <div
         id="open"
         data-composition-id="open"
@@ -35,10 +35,21 @@
         data-height="1080"
       ></div>
       <div
+        id="form"
+        data-composition-id="form"
+        data-composition-src="compositions/10_form.html"
+        data-start="25.5"
+        data-duration="13"
+        data-track-index="1"
+        data-track-kind="graphics"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
         id="branches"
         data-composition-id="branches"
         data-composition-src="compositions/03_two_branches.html"
-        data-start="25.5"
+        data-start="38.5"
         data-duration="11.5"
         data-track-index="1"
         data-track-kind="graphics"
@@ -49,8 +60,19 @@
         id="heatmap"
         data-composition-id="heatmap"
         data-composition-src="compositions/04_heatmap.html"
-        data-start="37"
+        data-start="50"
         data-duration="8.5"
+        data-track-index="1"
+        data-track-kind="graphics"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        id="mobile"
+        data-composition-id="mobile"
+        data-composition-src="compositions/09_mobile.html"
+        data-start="58.5"
+        data-duration="8"
         data-track-index="1"
         data-track-kind="graphics"
         data-width="1920"
@@ -60,7 +82,7 @@
         id="private"
         data-composition-id="private"
         data-composition-src="compositions/05_private.html"
-        data-start="45.5"
+        data-start="66.5"
         data-duration="8"
         data-track-index="1"
         data-track-kind="graphics"
@@ -71,8 +93,19 @@
         id="kiosk"
         data-composition-id="kiosk"
         data-composition-src="compositions/06_kiosk.html"
-        data-start="53.5"
+        data-start="74.5"
         data-duration="9"
+        data-track-index="1"
+        data-track-kind="graphics"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        id="training"
+        data-composition-id="training"
+        data-composition-src="compositions/11_training.html"
+        data-start="83.5"
+        data-duration="12"
         data-track-index="1"
         data-track-kind="graphics"
         data-width="1920"
@@ -82,8 +115,19 @@
         id="results"
         data-composition-id="results"
         data-composition-src="compositions/07_results.html"
-        data-start="62.5"
+        data-start="95.5"
         data-duration="10"
+        data-track-index="1"
+        data-track-kind="graphics"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        id="limits"
+        data-composition-id="limits"
+        data-composition-src="compositions/12_limits.html"
+        data-start="105.5"
+        data-duration="16"
         data-track-index="1"
         data-track-kind="graphics"
         data-width="1920"
@@ -93,19 +137,8 @@
         id="outro"
         data-composition-id="outro"
         data-composition-src="compositions/08_outro.html"
-        data-start="72.5"
+        data-start="121.5"
         data-duration="5"
-        data-track-index="1"
-        data-track-kind="graphics"
-        data-width="1920"
-        data-height="1080"
-      ></div>
-      <div
-        id="mobile"
-        data-composition-id="mobile"
-        data-composition-src="compositions/09_mobile.html"
-        data-start="77.5"
-        data-duration="8"
         data-track-index="1"
         data-track-kind="graphics"
         data-width="1920"
@@ -114,7 +147,7 @@
     </div>
     <script>
       window.__timelines = window.__timelines || {};
-      window.__timelines["reel"] = gsap.timeline({ paused: true });
+      window.__timelines["film"] = gsap.timeline({ paused: true });
     </script>
   </body>
 </html>
