@@ -85,7 +85,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .topbar { position: sticky; top: 0; z-index: 20; background: var(--slide); border-bottom: 1px solid transparent; }
 body.is-scrolled .topbar { border-bottom-color: var(--rule); }
 .topbar-inner { max-width: 1280px; margin: 0 auto; height: 72px; padding: 0 32px; display: flex; align-items: center; gap: 28px; }
-.brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-weight: 800; font-stretch: 112%; font-size: 19px; letter-spacing: -0.02em; }
+.brand { display: inline-flex; align-items: center; gap: 9px; color: var(--ink); text-decoration: none; font-weight: 800; font-stretch: 115%; font-size: 18.7px; letter-spacing: -0.012em; } /* the horizontal lockup at 34 px: cap height 0.40 and gap 0.27 of the symbol */
 .brand:hover { color: var(--ink); text-decoration: none; }
 .brand-mark { width: 34px; height: 34px; flex: none; }
 .nav { display: flex; align-items: center; gap: 4px; margin-right: auto; }

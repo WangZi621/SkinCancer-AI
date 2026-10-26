@@ -17,6 +17,11 @@ often offline. Its job: scan a spot, say how soon to refer, keep each lesion's h
 | rule | `#D7D5DF` | Hairlines and input borders |
 | urgent / review / routine | `#B42318` / `#9A4A06` / `#1A7247` | Triage results only, always with their words |
 
+## Logo
+
+Contours: a skin spot's outline at three visits, growing toward the lower right. Violet symbol, ink
+wordmark. Masters, icons and rules are in `brand/logo/` (`GUIDELINES.md`, rebuilt by `kit.py`).
+
 ## Type
 
 Mona Sans (variable, self-hosted, SIL OFL) for everything. Headlines 800 weight at width 118,
