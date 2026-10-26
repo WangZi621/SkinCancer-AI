@@ -5,34 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>SkinScan AI</title>
   <meta name="description" content="Skin lesion triage that runs entirely on your device. Track patients and lesions over time, check photo quality, and print referral reports. Nothing is uploaded.">
-  <meta name="theme-color" content="#f5f7f8" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0c1418" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ececef">
   <meta property="og:title" content="SkinScan AI">
   <meta property="og:description" content="On-device skin lesion triage from a dermoscopic photo and patient details.">
   <meta property="og:image" content="https://wangzi621.github.io/SkinCancer-AI/img/og.jpg">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="preload" href="fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/mona-sans.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="app.css">
-  <script>
-    // Apply the saved theme before the first paint.
-    try { const t = localStorage.getItem('skinscan.theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (e) {}
-  </script>
   <script type="module" src="js/app.js"></script>
 </head>
 <body>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
-      <linearGradient id="logo-grad" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stop-color="#17a39d"/>
-        <stop offset="1" stop-color="#0a5c63"/>
-      </linearGradient>
       <symbol id="logo" viewBox="0 0 64 64">
-        <rect width="64" height="64" rx="18" fill="url(#logo-grad)"/>
-        <path d="M15 25v-5.5a4.5 4.5 0 0 1 4.5-4.5H25M39 15h5.5a4.5 4.5 0 0 1 4.5 4.5V25M49 39v5.5a4.5 4.5 0 0 1-4.5 4.5H39M25 49h-5.5a4.5 4.5 0 0 1-4.5-4.5V39" fill="none" stroke="#fff" stroke-width="4.2" stroke-linecap="round"/>
-        <path d="M33.2 22.6c5 .4 9 4.5 8.6 9.6-.3 4.2-2.6 6.7-5.8 8.5-3.7 2-8.4 1.7-11.3-1.2-2.7-2.9-3.1-7.4-1.3-11 1.9-3.6 5.7-6.1 9.8-5.9z" fill="#f7cbb3"/>
-        <path d="M32.6 27.6c2.7.2 4.8 2.4 4.6 5.1-.2 2.3-1.4 3.6-3.1 4.6-2 1.1-4.5.9-6-.6-1.5-1.6-1.7-4-.7-5.9 1-2 3.1-3.3 5.2-3.2z" fill="#c97b5e"/>
+        <rect width="64" height="64" rx="16" fill="#5a2cb0"/>
+        <circle cx="32" cy="32" r="17" fill="none" stroke="#fff" stroke-width="4" stroke-dasharray="0.1 8.8" stroke-linecap="round"/>
+        <path d="M33 23.5c4.6.4 8 4.2 7.6 8.8-.3 3.8-2.4 6.1-5.3 7.7-3.4 1.8-7.6 1.5-10.2-1.1-2.5-2.6-2.8-6.7-1.2-10 1.7-3.3 5.2-5.6 9.1-5.4z" fill="#fff"/>
       </symbol>
     </defs>
   </svg>
@@ -94,13 +84,11 @@
     <!-- SCAN -->
     <section class="view view-scan" id="view-scan" data-view="scan" hidden>
       <div class="hero" id="scan-hero">
-        <h1>Skin lesion triage that runs on your device</h1>
-        <p>Add a dermoscopic photo and a few patient details. SkinScan AI estimates whether the spot looks like melanoma, another skin cancer, or a benign lesion, and suggests how soon to refer.</p>
-        <ul class="hero-points">
-          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6z"/><path d="m9 12 2 2 4-4"/></svg>Photos never leave your device</li>
-          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/></svg>Trained on 45,400 biopsy-confirmed images</li>
-          <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>A triage aid, not a diagnosis</li>
-        </ul>
+        <div>
+          <h1>Scan a skin spot</h1>
+          <p>Add a dermoscopic photo and what you know about the patient. SkinScan AI scores it for melanoma, other skin cancers and benign lesions, then suggests how soon to refer.</p>
+        </div>
+        <p class="hero-note">The photo stays on this device. Scans without a profile are not saved.</p>
       </div>
       <div class="scan-context" id="scan-context"></div>
 

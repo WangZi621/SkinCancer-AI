@@ -94,9 +94,9 @@ export function patientLine(p) {
   const bits = [];
   const age = ageFrom(p);
   if (Number.isFinite(age)) bits.push(`${age} years`);
-  if (p.sex && p.sex !== 'unknown') bits.push(SEX_NAMES[p.sex]);
-  if (p.fitzpatrick) bits.push(`Skin type ${FITZ[p.fitzpatrick - 1]}`);
-  return bits.join(' · ') || 'No details recorded';
+  if (p.sex && p.sex !== 'unknown') bits.push(SEX_NAMES[p.sex].toLowerCase());
+  if (p.fitzpatrick) bits.push(`skin type ${FITZ[p.fitzpatrick - 1]}`);
+  return bits.join(', ') || 'No details recorded';
 }
 
 // ---------------------------------------------------------------- toast

@@ -110,6 +110,8 @@ async function route() {
   if (name !== 'scan') window.scrollTo({ top: 0 });
 }
 window.addEventListener('hashchange', route);
+// the top bar gets a hairline once the page scrolls under it
+window.addEventListener('scroll', () => document.body.classList.toggle('is-scrolled', window.scrollY > 4), { passive: true });
 
 async function refreshProfiles() {
   profiles = await store.listProfiles();
@@ -131,7 +133,7 @@ function updateChrome() {
     $('#account-avatar').textContent = initials(me.name);
     $('#account-name').textContent = me.name;
     $('#menu-name').textContent = me.name;
-    $('#menu-org').textContent = [me.role, me.org].filter(Boolean).join(' · ');
+    $('#menu-org').textContent = [me.role, me.org].filter(Boolean).join(', ');
     $('#menu-lock').hidden = !me.locked;
   }
 }
@@ -174,17 +176,6 @@ $('#menu-switch').addEventListener('click', () => {
   store.lock();
   go('#/signin');
 });
-
-function setTheme(t) {
-  try {
-    if (t === 'system') localStorage.removeItem('skinscan.theme');
-    else localStorage.setItem('skinscan.theme', t);
-  } catch {
-    /* ignore */
-  }
-  if (t === 'system') delete document.documentElement.dataset.theme;
-  else document.documentElement.dataset.theme = t;
-}
 
 // ---------------------------------------------------------------- model loading
 function setNote(text) {
@@ -356,7 +347,7 @@ const samplesReady = (async () => {
 })();
 
 // ---------------------------------------------------------------- patient form
-const bodymap = mountBodyMap($('#bodymap'), el.site);
+const bodymap = mountBodyMap($('#bodymap'), el.site, { sex: 'unknown' });
 
 function readPatient() {
   const f = new FormData(el.form);
@@ -387,6 +378,7 @@ function fillPatient(p = {}) {
   el.form.age.value = p.age ?? '';
   el.form.diameter.value = p.diameterMm ?? '';
   setRadio('sex', p.sex || 'unknown');
+  bodymap.setSex(p.sex || 'unknown');
   setRadio('fitz', p.fitzpatrick ?? '');
   setRadio('melanocytic', p.melanocytic || 'unsure');
   el.site.value = p.site || '';
@@ -406,6 +398,7 @@ function syncDiameterFlag() {
 }
 el.form.addEventListener('change', (e) => {
   if (e.target.name === 'fitz') updateFitzNote();
+  if (e.target.name === 'sex') bodymap.setSex(e.target.value);
 });
 el.form.diameter.addEventListener('input', syncDiameterFlag);
 
@@ -430,7 +423,10 @@ function applyContextToForm() {
   if (p) {
     const age = ageFrom(p);
     if (Number.isFinite(age)) el.form.age.value = age;
-    if (p.sex && p.sex !== 'unknown') setRadio('sex', p.sex);
+    if (p.sex && p.sex !== 'unknown') {
+      setRadio('sex', p.sex);
+      bodymap.setSex(p.sex);
+    }
     if (p.fitzpatrick) setRadio('fitz', p.fitzpatrick);
     updateFitzNote();
   }
@@ -459,7 +455,7 @@ function renderContext() {
     html`<div class="ctx">
       <span class="ctx-label">Scanning for</span>
       <label class="ctx-field"><span class="visually-hidden">Patient</span>
-        <select id="ctx-patient"><option value="">No patient (quick scan)</option>${pts.map((x) => html`<option value="${x.id}" ${raw(p && p.id === x.id ? 'selected' : '')}>${x.name}${x.ref ? ` · ${x.ref}` : ''}</option>`)}<option value="__add">+ Add a patient…</option></select>
+        <select id="ctx-patient"><option value="">No patient (quick scan)</option>${pts.map((x) => html`<option value="${x.id}" ${raw(p && p.id === x.id ? 'selected' : '')}>${x.name}${x.ref ? ` (${x.ref})` : ''}</option>`)}<option value="__add">+ Add a patient…</option></select>
       </label>
       ${p
         ? html`<label class="ctx-field"><span class="visually-hidden">Lesion</span>
@@ -670,7 +666,7 @@ function renderSaveState() {
     const l = s.lesionId && store.get(s.lesionId);
     render(
       el.savedTo,
-      html`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg><span>Saved${p ? html` to <strong>${p.name}</strong>` : ''}${l ? ` · ${l.label || 'new lesion'}` : ''}.</span>${l ? html`<a href="#/lesion/${l.id}">Open lesion history</a>` : html`<a href="#/scans">All scans</a>`}`,
+      html`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg><span>Saved${p ? html` to <strong>${p.name}</strong>` : ''}${l ? `, ${l.label || 'new lesion'}` : ''}.</span>${l ? html`<a href="#/lesion/${l.id}">Open lesion history</a>` : html`<a href="#/scans">All scans</a>`}`,
     );
   }
 }
@@ -695,9 +691,9 @@ async function openSaveDialog() {
     title: 'Save scan',
     submit: 'Save',
     body: html`
-      <div class="save-summary" data-level="${r.level}"><img src="${squareJpeg(state.bitmap, 120)}" alt=""><div><strong>${r.title}</strong><span>${r.finding} · melanoma ${pct(r.probs[0])}</span></div></div>
+      <div class="save-summary" data-level="${r.level}"><img src="${squareJpeg(state.bitmap, 120)}" alt=""><div><strong>${r.title}</strong><span>${r.finding}, melanoma ${pct(r.probs[0])}</span></div></div>
       <label class="f"><span>Patient</span>
-        <select name="patient" id="sv-patient">${pts.map((p) => html`<option value="${p.id}" ${raw(ctxP && ctxP.id === p.id ? 'selected' : '')}>${p.name}${p.ref ? ` · ${p.ref}` : ''}</option>`)}<option value="__new" ${raw(!ctxP && !pts.length ? 'selected' : '')}>+ New patient</option><option value="" ${raw(!ctxP && pts.length ? 'selected' : '')}>No patient</option></select>
+        <select name="patient" id="sv-patient">${pts.map((p) => html`<option value="${p.id}" ${raw(ctxP && ctxP.id === p.id ? 'selected' : '')}>${p.name}${p.ref ? ` (${p.ref})` : ''}</option>`)}<option value="__new" ${raw(!ctxP && !pts.length ? 'selected' : '')}>+ New patient</option><option value="" ${raw(!ctxP && pts.length ? 'selected' : '')}>No patient</option></select>
       </label>
       <label class="f" id="sv-newname-f" hidden><span>New patient's name or initials</span><input name="newName" maxlength="80" autocomplete="off"></label>
       <label class="f" id="sv-lesion-f"><span>Lesion</span><select name="lesion" id="sv-lesion"></select></label>
@@ -856,7 +852,6 @@ pages.init({
   go,
   rerender: route,
   refreshProfiles,
-  setTheme,
   pendingSave: () => !!state.result && !state.savedId,
   takeIntended: () => {
     const i = intended;

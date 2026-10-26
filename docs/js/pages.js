@@ -1,12 +1,13 @@
-// The app's pages: sign-up, sign-in, home, patients, patient, lesion, all scans, report, settings.
-// Every page renders from the on-device store (store.js) on each visit.
+// The app's pages: the public landing page and sign-up, sign-in, home, patients, patient,
+// lesion, all scans, report and settings. Every page renders from the on-device store
+// (store.js) on each visit.
 
 import * as store from './store.js';
 import { CLASSES, MELANOMA_CUTOFF } from './model.js';
 import { mountLesionMap } from './bodymap.js';
 import { scoreChart } from './chart.js';
 import {
-  $, $$, html, raw, render, esc, pct, fmtDate, fmtDateTime, ago, daysUntil, isoToday, initials, LEVELS, levelBadge,
+  $, $$, html, raw, render, pct, fmtDate, fmtDateTime, ago, daysUntil, isoToday, initials, LEVELS, levelBadge,
   SITE_NAMES, SEX_NAMES, FITZ, ageFrom, patientLine, toast, dialog, confirmDialog, download,
 } from './ui.js';
 
@@ -21,7 +22,6 @@ const ICONS = {
   chev: '<path d="m9 6 6 6-6 6"/>',
   lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
   shield: '<path d="M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6z"/><path d="m9 12 2 2 4-4"/>',
-  wifi: '<path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.4a9.5 9.5 0 0 1 13 0M8.6 15.8a5 5 0 0 1 6.8 0"/><circle cx="12" cy="19.2" r="1"/>',
   people: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.3a6.5 6.5 0 0 1 3.5 5.7"/>',
   check: '<path d="m5 12 5 5 9-10"/>',
   photo: '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3.5"/>',
@@ -32,11 +32,31 @@ const ICONS = {
   print: '<path d="M7 9V3h10v6M7 17H4v-7h16v7h-3"/><rect x="7" y="14" width="10" height="7"/>',
   back: '<path d="m15 6-6 6 6 6"/>',
   pin: '<path d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+  flag: '<path d="M5 21V4h11l-2 4 2 4H5"/>',
+  copy: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',
 };
 const icon = (k) => raw(`<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICONS[k]}</svg>`);
 const avatar = (name, cls = '') => html`<span class="avatar ${cls}" aria-hidden="true">${initials(name)}</span>`;
 const thumb = (src, alt = '') =>
   src ? html`<img class="thumb" src="${src}" alt="${alt}" loading="lazy">` : html`<span class="thumb thumb-empty">${icon('photo')}</span>`;
+const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
+const lc = (s) => (s ? s[0].toLowerCase() + s.slice(1) : s);
+// "today", "3 days ago", or a date, to follow a comma
+const when = (ts) => (/^(Today|Yesterday|\d)/.test(ago(ts)) ? lc(ago(ts)) : ago(ts));
+
+// Melanoma risk factors from skin cancer screening checklists. Recorded for the referral;
+// the model does not use them.
+const RISKS = [
+  ['personal', 'Has had melanoma before'],
+  ['family', 'Melanoma in a parent, brother, sister or child'],
+  ['otherSkin', 'Has had another skin cancer'],
+  ['moles', 'More than 50 moles'],
+  ['atypical', 'Atypical (dysplastic) moles'],
+  ['sunburn', 'Three or more blistering sunburns'],
+  ['tanning', 'Has used tanning beds'],
+  ['immuno', 'Immunosuppressed, for example after a transplant'],
+];
+const riskList = (p) => RISKS.filter(([k]) => p?.risks?.[k]).map(([, t]) => t);
 
 // ---------------------------------------------------------------- shared lookups
 function lesionNumber(lesion) {
@@ -59,13 +79,10 @@ function queueItems() {
   for (const s of store.all('scan').filter((x) => !x.lesionId)) items.push({ scan: s, lesion: null, patient: s.patientId ? store.get(s.patientId) : null });
   return items.sort((a, b) => LEVELS[a.scan.level].rank - LEVELS[b.scan.level].rank || b.scan.probs[0] - a.scan.probs[0] || b.scan.ts - a.scan.ts);
 }
-function itemHref(it) {
-  return it.lesion ? `#/lesion/${it.lesion.id}` : `#/report/${it.scan.id}`;
-}
+const itemHref = (it) => (it.lesion ? `#/lesion/${it.lesion.id}` : `#/report/${it.scan.id}`);
 function itemTitle(it) {
-  if (it.patient && it.lesion) return `${it.patient.name} · ${lesionName(it.lesion)}`;
   if (it.patient) return it.patient.name;
-  return it.scan.sample ? `Sample ${it.scan.sample.index || ''} (not linked to a patient)`.replace('  ', ' ') : 'Not linked to a patient';
+  return it.scan.sample ? `Sample ${it.scan.sample.index || ''}, no patient` : 'No patient';
 }
 
 function worstLevel(patientId) {
@@ -83,7 +100,7 @@ export async function editPatient(existing = null) {
   const year = new Date().getFullYear();
   const fd = await dialog({
     title: existing ? 'Edit patient' : 'Add a patient',
-    submit: existing ? 'Save' : 'Add patient',
+    submit: existing ? 'Save patient' : 'Add patient',
     body: html`
       <label class="f"><span>Name or initials</span><input name="name" required maxlength="80" value="${p.name || ''}" autocomplete="off"></label>
       <div class="f-row">
@@ -98,12 +115,17 @@ export async function editPatient(existing = null) {
       <label class="f"><span>Fitzpatrick skin type</span>
         <select name="fitzpatrick"><option value="">Not sure</option>${FITZ.map((r, i) => html`<option value="${i + 1}" ${raw(p.fitzpatrick === i + 1 ? 'selected' : '')}>Type ${r}</option>`)}</select>
       </label>
+      <fieldset class="f"><legend>Risk factors <small>for the referral; the model does not use them</small></legend>
+        <div class="checks">${RISKS.map(([k, t]) => html`<label class="check"><input type="checkbox" name="risk_${k}" ${raw(p.risks?.[k] ? 'checked' : '')}><span>${t}</span></label>`)}</div>
+      </fieldset>
       <label class="f"><span>Notes <small>optional</small></span><textarea name="notes" rows="3" maxlength="2000">${p.notes || ''}</textarea></label>
       <p class="dlg-fine">${icon('shield')} Saved only in this browser${store.current()?.locked ? ', encrypted with your passcode' : ''}.</p>`,
   });
   if (!fd) return null;
   const by = Number(fd.get('birthYear'));
   const fz = Number(fd.get('fitzpatrick'));
+  const risks = {};
+  for (const [k] of RISKS) if (fd.get(`risk_${k}`)) risks[k] = true;
   const saved = await store.save({
     ...p,
     kind: 'patient',
@@ -112,16 +134,17 @@ export async function editPatient(existing = null) {
     birthYear: by >= 1900 ? by : null,
     sex: fd.get('sex') || 'unknown',
     fitzpatrick: fz >= 1 && fz <= 6 ? fz : null,
+    risks,
     notes: String(fd.get('notes') || '').trim(),
   });
-  toast(existing ? 'Patient updated' : `${saved.name} added`);
+  toast(existing ? 'Patient saved' : `${saved.name} added`);
   return saved;
 }
 
 async function editLesion(lesion) {
   const fd = await dialog({
     title: lesion.id ? 'Edit lesion' : 'New lesion',
-    submit: 'Save',
+    submit: 'Save lesion',
     body: html`
       <label class="f"><span>Label</span><input name="label" maxlength="60" value="${lesion.label || ''}" placeholder="For example: left forearm, below the elbow"></label>
       <label class="f"><span>Body site</span>
@@ -132,60 +155,163 @@ async function editLesion(lesion) {
   return store.save({ ...lesion, kind: 'lesion', label: String(fd.get('label') || '').trim(), site: fd.get('site') });
 }
 
-// ---------------------------------------------------------------- welcome / sign-up
+// ---------------------------------------------------------------- landing page and sign-up
+// Encrypts the sample scan shown in the hero the way store.js seals a saved record (AES-GCM,
+// 256-bit key, random 12-byte IV) and shows the start of the result.
+async function cipherDemo(pre) {
+  try {
+    const key = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, false, ['encrypt']);
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const record = { kind: 'scan', patient: 'Demo patient A', lesion: 'Left cheek', title: 'Refer urgently', finding: 'Possible melanoma' };
+    const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(JSON.stringify(record))));
+    pre.textContent = btoa(String.fromCharCode(...ct.slice(0, 96)));
+  } catch {
+    pre.closest('.l-visual').hidden = true; // WebCrypto needs HTTPS or localhost
+  }
+}
+
 export async function welcome(el, r) {
   const profiles = await store.listProfiles();
-  const step = r.params.get('step') === 'create' || r.params.has('new') ? 'create' : 'intro';
-  const pending = app.pendingSave();
-  const points = [
-    ['shield', 'Runs on this device', 'Photos and patient details never leave it, and it keeps working offline.'],
-    ['people', 'Patients and lesions', 'Track each lesion on a body map and see how its scores change over time.'],
-    ['photo', 'Photo check', 'Blur, exposure and resolution are checked before the model runs.'],
-    ['doc', 'Referral reports', 'A one-page report with the photo, scores and your notes, ready to print.'],
-  ];
+  const create = r.params.get('step') === 'create' || r.params.has('new');
+  return create ? signup(el, r, profiles) : landing(el, profiles);
+}
+
+function landing(el, profiles) {
   render(
     el,
-    html`<div class="welcome">
-      <div class="welcome-art" aria-hidden="true">
-        <div class="w-scope"><img src="samples/ISIC_5700648.jpg" alt=""><svg viewBox="0 0 400 400"><circle class="w-track" cx="200" cy="200" r="196"/><circle class="w-arc" cx="200" cy="200" r="196" pathLength="100"/></svg></div>
-        <div class="w-chip w-chip-a"><i data-level="urgent"></i>Refer urgently</div>
-        <div class="w-chip w-chip-b"><i data-level="routine"></i>Routine follow-up</div>
-      </div>
-      <div class="welcome-card">
-        ${step === 'intro'
-          ? html`<svg class="w-logo" aria-hidden="true"><use href="#logo"/></svg>
-            <h1>Skin lesion triage that runs on your device</h1>
-            <p class="lead">SkinScan AI reads a dermoscopic photo and the patient's details together and suggests how soon to refer. It is a research prototype and does not diagnose.</p>
-            <ul class="w-points">${points.map(([i, t, d]) => html`<li>${icon(i)}<div><strong>${t}</strong><span>${d}</span></div></li>`)}</ul>
-            <div class="w-actions">
-              <a class="btn btn-primary btn-lg" href="#/welcome?step=create">Create a profile</a>
-              <a class="btn btn-secondary btn-lg" href="#/scan">Try a scan first</a>
-            </div>
-            ${profiles.length ? html`<p class="w-alt">Already have a profile on this device? <a href="#/signin">Sign in</a></p>` : ''}`
-          : html`<a class="w-back" href="${profiles.length && r.params.has('new') ? '#/signin' : '#/welcome'}">${icon('back')}Back</a>
-            <h1>Create your profile</h1>
-            <p class="lead">${pending ? 'Your scan will be saved to this profile. ' : ''}Your profile and everything you save stay in this browser. Add a passcode to encrypt them on this device.</p>
-            <form class="w-form" id="signup-form" novalidate>
-              <label class="f"><span>Your name</span><input name="name" required maxlength="60" autocomplete="name" placeholder="Jason Xiao"></label>
-              <div class="f-row">
-                <label class="f"><span>Role</span>
-                  <select name="role">${['Clinician', 'Nurse', 'Medical student', 'Researcher', 'Other'].map((x) => html`<option>${x}</option>`)}</select>
-                </label>
-                <label class="f"><span>Clinic or school <small>optional</small></span><input name="org" maxlength="80" autocomplete="organization"></label>
-              </div>
-              <div class="f-row">
-                <label class="f"><span>Passcode <small>optional, 4+ characters</small></span><input name="passcode" type="password" minlength="4" maxlength="64" autocomplete="new-password"></label>
-                <label class="f"><span>Repeat passcode</span><input name="passcode2" type="password" maxlength="64" autocomplete="new-password"></label>
-              </div>
-              <label class="check check-block"><input type="checkbox" name="ack" required><span>I understand SkinScan AI is a research prototype, not a medical device, and that it does not diagnose.</span></label>
-              <p class="f-error" id="signup-error" role="alert" hidden></p>
-              <button class="btn btn-primary btn-lg" type="submit">Create profile</button>
-            </form>`}
-      </div>
+    html`<div class="landing">
+      <section class="l-hero">
+        <div>
+          <h1>Which skin spot should be seen first?</h1>
+          <p class="lead">SkinScan AI reads a dermoscopic photo together with the patient's age, sex and body site, and suggests how soon to refer: urgently, for review, or at the next routine visit. It runs on your device and keeps working offline.</p>
+          <div class="l-actions">
+            <a class="btn btn-primary btn-lg" href="#/welcome?step=create">Create a free profile</a>
+            <a class="btn btn-secondary btn-lg" href="#/scan">Try a scan first</a>
+          </div>
+          ${profiles.length ? html`<p class="l-alt">Already have a profile on this device? <a href="#/signin">Sign in</a></p>` : ''}
+        </div>
+        <div class="l-scope" aria-hidden="true">
+          <img src="samples/ISIC_5700648.jpg" alt="">
+          <svg viewBox="0 0 400 400"><circle class="l-track" cx="200" cy="200" r="197"/><circle class="l-arc" cx="200" cy="200" r="197"/></svg>
+          <div class="l-result"><strong>Refer urgently</strong><span>Possible melanoma</span></div>
+        </div>
+      </section>
+
+      <section class="l-section on-slide">
+        <h2>A scan takes about a minute</h2>
+        <ol class="l-steps">
+          <li><strong>Add the photo</strong><span>Upload a dermoscopic close-up or take one with the camera. It is checked for focus, exposure, contrast and size before the model runs.</span></li>
+          <li><strong>Add what you know</strong><span>Age, sex, body site, skin type, size, and whether the spot looks melanocytic. Each one is optional, and each one helps.</span></li>
+          <li><strong>Read the suggestion</strong><span>Three scores, how soon to refer, and why. A heat map shows which part of the photo the model relied on.</span></li>
+        </ol>
+      </section>
+
+      <section class="l-section">
+        <div>
+          <h2>Follow each lesion from visit to visit</h2>
+          <p>Every patient gets a body map. Mark where a lesion is, rescan it at each visit, and its scores line up on one chart. Rechecks that are due or overdue show on the home screen.</p>
+        </div>
+        <div class="l-visual"><div class="body-fig lesion-map" id="l-map"></div></div>
+      </section>
+
+      <section class="l-section is-flipped">
+        <div>
+          <h2>See all of a patient's spots side by side</h2>
+          <p>Moles on one person tend to look alike, and a melanoma often looks different from the rest. Dermatologists call this the ugly duckling sign (Grob and Bonerandi, 1998). The patient page lines up the latest photo of every lesion, so the one that looks different is easy to find.</p>
+        </div>
+        <div class="l-visual"><ul class="l-gallery">
+          ${[
+            ['ISIC_5700648', 'Left cheek', 'Melanoma in situ'],
+            ['ISIC_8821098', 'Upper chest', 'Seborrheic keratosis'],
+            ['ISIC_1464567', 'Left upper arm', 'Basal cell carcinoma'],
+            ['ISIC_6991057', 'Left calf', 'Seborrheic keratosis'],
+          ].map(([id, where, dx], i) => html`<li class="${i === 0 ? 'is-odd' : ''}"><span class="l-thumb"><img src="samples/${id}.jpg" alt="" loading="lazy"></span><strong>${i + 1}. ${where}</strong><span>Biopsy: ${lc(dx)}</span></li>`)}
+        </ul></div>
+      </section>
+
+      <section class="l-section">
+        <div>
+          <h2>Patient data stays on this device</h2>
+          <p>Photos and details are never uploaded. Give your profile a passcode and every patient and scan is encrypted in the browser with AES-GCM, using a key made from the passcode that is never stored.</p>
+        </div>
+        <div class="l-visual l-cipher-wrap"><p class="l-cipher-cap">The scan at the top of this page, encrypted in your browser a moment ago:</p><pre class="l-cipher" id="l-cipher"></pre></div>
+      </section>
+
+      <section class="l-section">
+        <div>
+          <h2>Trained on 45,400 biopsy-confirmed images</h2>
+          <p>The numbers below come from 9,080 images the model never trained on. They are likely a little better than what it will do in a clinic. <a href="#/how">How it works, and what it can't do</a></p>
+        </div>
+        <dl class="l-numbers">
+          <div><dt>AUC across the three classes</dt><dd>93.2%</dd></div>
+          <div><dt>Melanoma AUC</dt><dd>0.940</dd></div>
+          <div><dt>Melanomas caught at the 0.278 cutoff</dt><dd>90.0%</dd></div>
+          <div><dt>Specificity at that cutoff</dt><dd>81.5%</dd></div>
+          <div><dt>Overall accuracy</dt><dd>78.6%</dd></div>
+          <div><dt>Model size</dt><dd>21 MB</dd></div>
+        </dl>
+      </section>
+
+      <section class="l-close">
+        <h2>Start with four demo patients</h2>
+        <p>Create a profile, then load demo patients built from biopsy-confirmed ISIC images. Every score is computed by the model in your browser. SkinScan AI is a research prototype, not a medical device, and it does not diagnose.</p>
+        <a class="btn btn-lg" href="#/welcome?step=create">Create a free profile</a>
+      </section>
+    </div>`,
+  );
+  cipherDemo($('#l-cipher', el));
+  // live body map with a few lesions, to show what a patient page looks like
+  mountLesionMap($('#l-map', el), {
+    sex: 'female',
+    lesions: [
+      { id: 'a', n: 1, level: 'urgent', point: { view: 'front', u: 0.53, v: 0.085 } },
+      { id: 'b', n: 2, level: 'routine', point: { view: 'front', u: 0.468, v: 0.23 } },
+      { id: 'c', n: 3, level: 'soon', point: { view: 'front', u: 0.72, v: 0.31 } },
+      { id: 'd', n: 4, level: 'routine', point: { view: 'back', u: 0.413, v: 0.803 } },
+    ],
+  });
+}
+
+function signup(el, r, profiles) {
+  const pending = app.pendingSave();
+  render(
+    el,
+    html`<div class="signup">
+      <aside class="signup-side">
+        <div>
+          <h1>Create your profile</h1>
+          <p>Your profile, patients and scans stay in this browser.</p>
+        </div>
+        <ul>
+          <li>${icon('lock')}<span>A passcode encrypts everything you save on this device.</span></li>
+          <li>${icon('people')}<span>Each person sharing a computer gets their own profile and patients.</span></li>
+          <li>${icon('doc')}<span>Your name and clinic go on the referral reports you print.</span></li>
+        </ul>
+      </aside>
+      <section class="signup-main">
+        <a class="w-back" href="${profiles.length && r.params.has('new') ? '#/signin' : '#/welcome'}">${icon('back')}Back</a>
+        <h2>About you</h2>
+        ${pending ? html`<p class="check-block">The scan you just ran will be saved to this profile.</p>` : ''}
+        <form class="w-form" id="signup-form" novalidate>
+          <label class="f"><span>Your name</span><input name="name" required maxlength="60" autocomplete="name" placeholder="Jason Xiao"></label>
+          <div class="f-row">
+            <label class="f"><span>Role</span>
+              <select name="role">${['Clinician', 'Nurse', 'Medical student', 'Researcher', 'Other'].map((x) => html`<option>${x}</option>`)}</select>
+            </label>
+            <label class="f"><span>Clinic or school <small>optional</small></span><input name="org" maxlength="80" autocomplete="organization"></label>
+          </div>
+          <div class="f-row">
+            <label class="f"><span>Passcode <small>optional</small></span><input name="passcode" type="password" minlength="4" maxlength="64" autocomplete="new-password" placeholder="4 or more characters"></label>
+            <label class="f"><span>Repeat the passcode</span><input name="passcode2" type="password" maxlength="64" autocomplete="new-password"></label>
+          </div>
+          <label class="check check-block"><input type="checkbox" name="ack" required><span>I understand SkinScan AI is a research prototype, not a medical device, and that it does not diagnose.</span></label>
+          <p class="f-error" id="signup-error" role="alert" hidden></p>
+          <button class="btn btn-primary btn-lg" type="submit">Create profile</button>
+        </form>
+      </section>
     </div>`,
   );
   const form = $('#signup-form', el);
-  if (!form) return;
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const err = $('#signup-error', el);
@@ -193,9 +319,9 @@ export async function welcome(el, r) {
     const pass = String(fd.get('passcode') || '');
     const problems = [];
     if (!String(fd.get('name') || '').trim()) problems.push('Enter your name.');
-    if (pass && pass.length < 4) problems.push('The passcode needs at least 4 characters.');
-    if (pass !== String(fd.get('passcode2') || '')) problems.push('The two passcodes do not match.');
-    if (!fd.get('ack')) problems.push('Please confirm you understand what SkinScan AI is.');
+    if (pass && pass.length < 4) problems.push('Use at least 4 characters for the passcode.');
+    if (pass !== String(fd.get('passcode2') || '')) problems.push('The two passcodes are different.');
+    if (!fd.get('ack')) problems.push('Tick the box to confirm you understand what SkinScan AI is.');
     if (problems.length) {
       err.textContent = problems.join(' ');
       err.hidden = false;
@@ -208,11 +334,10 @@ export async function welcome(el, r) {
       const p = await store.createProfile({ name: fd.get('name'), role: fd.get('role'), org: fd.get('org'), passcode: pass });
       await app.refreshProfiles();
       toast(`Welcome, ${p.name.split(' ')[0]}`);
-      if (pending) app.go('#/scan?resume=save');
-      else app.go('#/home');
+      app.go(pending ? '#/scan?resume=save' : '#/home');
     } catch (ex) {
       console.error(ex);
-      err.textContent = 'This browser could not create the profile. Private browsing can block on-device storage.';
+      err.textContent = 'This browser blocked on-device storage, so the profile could not be created. Private browsing windows often do this; try a normal window.';
       err.hidden = false;
       btn.disabled = false;
       btn.textContent = 'Create profile';
@@ -226,16 +351,15 @@ export async function signin(el) {
   if (!profiles.length) return app.go('#/welcome');
   render(
     el,
-    html`<div class="signin">
-      <svg class="w-logo" aria-hidden="true"><use href="#logo"/></svg>
+    html`<div class="signin"><div class="signin-card">
       <h1>Who's scanning?</h1>
-      <p class="lead">Profiles on this device. Each keeps its own patients and scans.</p>
+      <p class="lead">Profiles on this device. Each one keeps its own patients and scans.</p>
       <ul class="profile-list">
         ${profiles.map(
           (p) => html`<li>
             <button class="profile-card" type="button" data-id="${p.id}" data-locked="${p.locked ? '1' : ''}">
               ${avatar(p.name, 'avatar-lg')}
-              <span class="pc-main"><strong>${p.name}</strong><span>${[p.role, p.org].filter(Boolean).join(' · ') || 'Profile'}</span></span>
+              <span class="pc-main"><strong>${p.name}</strong><span>${[p.role, p.org].filter(Boolean).join(', ') || 'Profile'}</span></span>
               ${p.locked ? html`<span class="pc-lock" title="Protected with a passcode">${icon('lock')}</span>` : icon('chev')}
             </button>
             ${p.locked
@@ -249,8 +373,8 @@ export async function signin(el) {
           </li>`,
         )}
       </ul>
-      <p class="w-alt"><a href="#/welcome?new=1">Create another profile</a><span aria-hidden="true"> · </span><a href="#/scan">Scan without signing in</a></p>
-    </div>`,
+      <p class="w-alt"><a href="#/welcome?new=1">Create another profile</a>, or <a href="#/scan">scan without signing in</a>.</p>
+    </div></div>`,
   );
   for (const b of $$('.profile-card', el)) {
     b.addEventListener('click', async () => {
@@ -274,7 +398,7 @@ export async function signin(el) {
         await store.unlock(f.dataset.id, f.passcode.value);
         app.go(app.takeIntended() || '#/home');
       } catch {
-        errEl.textContent = 'That passcode is not right.';
+        errEl.textContent = 'That passcode is wrong. Check caps lock and try again.';
         errEl.hidden = false;
         f.passcode.select();
       } finally {
@@ -293,7 +417,6 @@ export function home(el) {
   const pts = store.patients();
   const lesions = store.all('lesion');
   const scans = store.scans();
-  const month = scans.filter((s) => s.ts > Date.now() - 30 * 86400000).length;
   const queue = queueItems();
   const waiting = queue.filter((it) => it.scan.level !== 'routine').length;
   const rechecks = lesions
@@ -302,43 +425,40 @@ export function home(el) {
     .filter((x) => x.days <= 30)
     .sort((a, b) => a.days - b.days);
   const groups = ['urgent', 'soon', 'routine'].map((lv) => ({ lv, items: queue.filter((it) => it.scan.level === lv) }));
+  const today = new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' });
+  const summary = scans.length ? ` ${plural(pts.length, 'patient')}, ${plural(lesions.length, 'lesion')}, ${waiting} waiting for a referral.` : '';
 
   const queueRow = (it) => html`<li><a class="q-row" href="${itemHref(it)}">
       ${thumb(it.scan.thumb)}
-      <span class="q-main"><strong>${itemTitle(it)}</strong><span>${it.lesion ? lesionWhere(it.lesion) : it.scan.finding} · ${ago(it.scan.ts)}</span></span>
+      <span class="q-main"><strong>${itemTitle(it)}</strong><span>${it.lesion ? lesionName(it.lesion) : it.scan.finding}, ${when(it.scan.ts)}</span></span>
       <span class="q-score" title="Melanoma score"><span class="q-bar"><i style="width:${Math.max(2, it.scan.probs[0] * 100)}%"></i><b style="left:${MELANOMA_CUTOFF * 100}%"></b></span>${pct(it.scan.probs[0])}</span>
       ${icon('chev')}
     </a></li>`;
+  const due = (days) => (days < 0 ? `Overdue by ${plural(-days, 'day')}` : days === 0 ? 'Due today' : `Due in ${plural(days, 'day')}`);
 
   render(
     el,
     html`<div class="page-head page-head-row">
-        <div><p class="eyebrow">${new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}${me.org ? ` · ${me.org}` : ''}</p>
-        <h1>${greet}, ${me.name.split(' ')[0]}</h1></div>
+        <div><h1>${greet}, ${me.name.split(' ')[0]}</h1>
+        <p class="date-line">${today}${me.org ? `, ${me.org}` : ''}.${summary}</p></div>
         <div class="head-actions">
           <button class="btn btn-secondary" type="button" id="h-add">${icon('plus')}Add patient</button>
           <a class="btn btn-primary" href="#/scan">${icon('scan')}New scan</a>
         </div>
       </div>
-      <ul class="stats">
-        <li><span>Patients</span><strong>${pts.length}</strong></li>
-        <li><span>Lesions tracked</span><strong>${lesions.length}</strong></li>
-        <li><span>Scans, last 30 days</span><strong>${month}</strong></li>
-        <li><span>Waiting for referral</span><strong>${waiting}</strong></li>
-      </ul>
       ${scans.length === 0
         ? html`<div class="card onboard">
             <h2>Start with a patient</h2>
             <ol class="steps">
-              <li><strong>Add a patient.</strong> Age, sex and skin type fill in on every scan for them.</li>
-              <li><strong>Scan a lesion.</strong> Tap where it is on the body map; the photo check runs before the model.</li>
-              <li><strong>Follow it over time.</strong> Rescan it later and compare the scores and photos side by side.</li>
+              <li><strong>Add a patient.</strong> Their age, sex and skin type then fill in on every scan.</li>
+              <li><strong>Scan a lesion.</strong> Tap where it is on the body map. The photo is checked before the model runs.</li>
+              <li><strong>Follow it over time.</strong> Rescan it at the next visit and compare the photos and scores.</li>
             </ol>
             <div class="head-actions">
               <button class="btn btn-primary" type="button" id="h-add2">${icon('plus')}Add a patient</button>
               <button class="btn btn-secondary" type="button" id="h-demo">Load demo patients</button>
             </div>
-            <p class="fine">Demo patients use the eight biopsy-confirmed sample images and real results from the model on this device. They are marked as demo data and can be removed in Settings.</p>
+            <p class="fine">The demo patients use the eight biopsy-confirmed sample images, and every score comes from the model running in this browser. They are marked as demo data, and Settings removes them.</p>
           </div>`
         : html`<div class="home-grid">
             <section class="card queue">
@@ -356,16 +476,16 @@ export function home(el) {
                 <header class="card-head"><h2>Rechecks</h2></header>
                 ${rechecks.length
                   ? html`<ul class="r-list">${rechecks.map(
-                      (x) => html`<li><a href="#/lesion/${x.l.id}">${icon('calendar')}<span><strong>${x.p?.name || ''} · ${lesionName(x.l)}</strong><span class="${x.days < 0 ? 'due-late' : x.days <= 7 ? 'due-soon' : ''}">${x.days < 0 ? `Overdue by ${-x.days} day${x.days === -1 ? '' : 's'}` : x.days === 0 ? 'Due today' : `Due in ${x.days} day${x.days === 1 ? '' : 's'}`} · ${fmtDate(new Date(x.l.recheckOn + 'T12:00').getTime())}</span></span></a></li>`,
+                      (x) => html`<li><a href="#/lesion/${x.l.id}">${icon('calendar')}<span><strong>${x.p?.name || ''}</strong><span>${lesionName(x.l)}, <span class="${x.days < 0 ? 'due-late' : x.days <= 7 ? 'due-soon' : ''}">${lc(due(x.days))}</span> (${fmtDate(new Date(x.l.recheckOn + 'T12:00').getTime(), { year: undefined })})</span></span></a></li>`,
                     )}</ul>`
-                  : html`<p class="card-sub">No rechecks in the next 30 days. Set one from a lesion's page.</p>`}
+                  : html`<p class="card-sub">No rechecks in the next 30 days. A lesion's page sets one.</p>`}
               </section>
               <section class="card">
                 <header class="card-head"><h2>Recent scans</h2></header>
                 <ul class="r-list">${scans.slice(0, 5).map((s) => {
                   const l = s.lesionId ? store.get(s.lesionId) : null;
                   const p = s.patientId ? store.get(s.patientId) : null;
-                  return html`<li><a href="${l ? `#/lesion/${l.id}` : `#/report/${s.id}`}">${thumb(s.thumb)}<span><strong>${p ? p.name : 'Not linked to a patient'}</strong><span>${fmtDateTime(s.ts)}</span></span>${levelBadge(s.level)}</a></li>`;
+                  return html`<li><a href="${l ? `#/lesion/${l.id}` : `#/report/${s.id}`}">${thumb(s.thumb)}<span><strong>${p ? p.name : 'No patient'}</strong><span>${fmtDateTime(s.ts)}</span></span>${levelBadge(s.level)}</a></li>`;
                 })}</ul>
               </section>
             </div>
@@ -388,19 +508,18 @@ export function patients(el, r) {
   render(
     el,
     html`<div class="page-head page-head-row">
-        <div><h1>Patients</h1><p>${all.length} on this device${store.current().locked ? ', encrypted' : ''}.</p></div>
+        <div><h1>Patients</h1><p>${plural(all.length, 'patient')} on this device${store.current().locked ? ', encrypted' : ''}.</p></div>
         <div class="head-actions"><button class="btn btn-primary" type="button" id="p-add">${icon('plus')}Add patient</button></div>
       </div>
       ${all.length
         ? html`<div class="toolbar"><label class="search">${raw('<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>')}<span class="visually-hidden">Search patients</span><input id="p-q" type="search" placeholder="Search by name or ID" value="${r.params.get('q') || ''}"></label></div>
           <ul class="rows">${list.map((p) => {
             const ls = store.lesionsOf(p.id);
-            const scans = store.all('scan').filter((s) => s.patientId === p.id);
-            const last = scans.sort((a, b) => b.ts - a.ts)[0];
+            const last = store.all('scan').filter((s) => s.patientId === p.id).sort((a, b) => b.ts - a.ts)[0];
             return html`<li><a class="row" href="#/patient/${p.id}">
               ${avatar(p.name)}
-              <span class="row-main"><strong>${p.name}${p.demo ? raw(' <em class="tag">Demo</em>') : ''}</strong><span>${[p.ref, patientLine(p)].filter(Boolean).join(' · ')}</span></span>
-              <span class="row-meta">${ls.length} lesion${ls.length === 1 ? '' : 's'}${last ? ` · ${ago(last.ts)}` : ''}</span>
+              <span class="row-main"><strong>${p.name}${p.demo ? raw(' <em class="tag">Demo</em>') : ''}</strong><span>${[p.ref, patientLine(p)].filter(Boolean).join(', ')}</span></span>
+              <span class="row-meta">${plural(ls.length, 'lesion')}${last ? `, last scan ${when(last.ts)}` : ''}</span>
               ${levelBadge(worstLevel(p.id))}
               ${icon('chev')}
             </a></li>`;
@@ -433,12 +552,14 @@ export function patient(el, r) {
   if (!p || p.kind !== 'patient') return notFound(el, 'patient');
   const ls = store.lesionsOf(p.id);
   const loose = store.all('scan').filter((s) => s.patientId === p.id && !s.lesionId).sort((a, b) => b.ts - a.ts);
-  const marks = ls.map((l, i) => ({ id: l.id, n: i + 1, point: l.point, site: l.site, level: store.latestScan(l.id)?.level }));
+  const marks = ls.map((l, i) => ({ id: l.id, n: i + 1, point: l.point, level: store.latestScan(l.id)?.level }));
+  const withPhoto = ls.map((l, i) => ({ l, n: i + 1, s: store.latestScan(l.id) })).filter((x) => x.s);
+  const risks = riskList(p);
   render(
     el,
     html`<nav class="crumbs" aria-label="Breadcrumb"><a href="#/patients">Patients</a>${icon('chev')}<span>${p.name}</span></nav>
       <div class="page-head page-head-row">
-        <div class="ph-person">${avatar(p.name, 'avatar-lg')}<div><h1>${p.name}${p.demo ? raw(' <em class="tag">Demo</em>') : ''}</h1><p>${[p.ref, patientLine(p)].filter(Boolean).join(' · ')}</p></div></div>
+        <div class="ph-person">${avatar(p.name, 'avatar-lg')}<div><h1>${p.name}${p.demo ? raw(' <em class="tag">Demo</em>') : ''}</h1><p>${[p.ref, patientLine(p)].filter(Boolean).join(', ')}</p></div></div>
         <div class="head-actions">
           <button class="btn btn-ghost" type="button" id="pt-del">${icon('trash')}Delete</button>
           <button class="btn btn-secondary" type="button" id="pt-edit">${icon('edit')}Edit</button>
@@ -449,34 +570,49 @@ export function patient(el, r) {
         <section class="card pt-map">
           <header class="card-head"><h2>Body map</h2><button class="btn btn-secondary btn-sm" type="button" id="pt-pick">${icon('pin')}Mark a lesion</button></header>
           <div class="lesion-map" id="pt-map"></div>
-          <p class="card-sub" id="pt-pick-hint" hidden>Tap where the lesion is on the front or back view.</p>
+          <p class="card-sub" id="pt-pick-hint" hidden>Tap where the lesion is on the front or back.</p>
         </section>
-        <section class="pt-lesions">
-          <h2 class="section-title">Lesions <span>${ls.length}</span></h2>
-          ${ls.length
-            ? html`<ul class="lesion-cards">${ls.map((l, i) => {
-                const sc = store.scansOf(l.id);
-                const last = sc.at(-1);
-                return html`<li class="lesion-card">
-                  <a class="lc-link" href="#/lesion/${l.id}">
-                    <span class="lc-n" data-level="${last?.level || ''}">${i + 1}</span>
-                    ${thumb(last?.thumb)}
-                    <span class="lc-main"><strong>${lesionName(l)}</strong><span>${lesionWhere(l)} · ${sc.length} scan${sc.length === 1 ? '' : 's'}${last ? ` · ${ago(last.ts)}` : ''}</span>
-                      ${l.recheckOn ? html`<span class="lc-recheck">${icon('calendar')}Recheck ${fmtDate(new Date(l.recheckOn + 'T12:00').getTime())}</span>` : ''}</span>
-                    ${levelBadge(last?.level)}
-                  </a>
-                  <a class="btn btn-secondary btn-sm" href="#/scan?patient=${p.id}&lesion=${l.id}">Rescan</a>
-                </li>`;
-              })}</ul>`
-            : html`<div class="empty empty-sm"><p>No lesions yet. Mark one on the body map, or scan a new lesion.</p></div>`}
+        <div class="pt-side">
+          <section class="pt-lesions">
+            <h2 class="section-title">Lesions <span>${ls.length}</span></h2>
+            ${ls.length
+              ? html`<ul class="lesion-cards">${ls.map((l, i) => {
+                  const sc = store.scansOf(l.id);
+                  const last = sc.at(-1);
+                  return html`<li class="lesion-card">
+                    <a class="lc-link" href="#/lesion/${l.id}">
+                      <span class="lc-n" data-level="${last?.level || ''}">${i + 1}</span>
+                      ${thumb(last?.thumb)}
+                      <span class="lc-main"><strong>${lesionName(l)}</strong><span>${lesionWhere(l)}, ${plural(sc.length, 'scan')}${last ? `, ${when(last.ts)}` : ''}</span>
+                        ${l.recheckOn ? html`<span class="lc-recheck">${icon('calendar')}Recheck ${fmtDate(new Date(l.recheckOn + 'T12:00').getTime())}</span>` : ''}</span>
+                      ${levelBadge(last?.level)}
+                    </a>
+                    <a class="btn btn-secondary btn-sm" href="#/scan?patient=${p.id}&lesion=${l.id}">Rescan</a>
+                  </li>`;
+                })}</ul>`
+              : html`<div class="empty empty-sm"><p>No lesions yet. Mark one on the body map, or scan a new lesion.</p></div>`}
+          </section>
+          ${withPhoto.length > 1
+            ? html`<section class="card">
+                <header class="card-head"><h2>All lesions side by side</h2></header>
+                <p class="card-sub">Moles on one person usually look alike. A spot that looks different from the others deserves a closer look (the ugly duckling sign).</p>
+                <ul class="gallery">${withPhoto.map((x) => html`<li><a href="#/lesion/${x.l.id}"><img src="${x.s.image || x.s.thumb}" alt=""><strong>${x.n}. ${lesionName(x.l)}</strong><span>${LEVELS[x.s.level].title}, melanoma ${pct(x.s.probs[0])}</span></a></li>`)}</ul>
+              </section>`
+            : ''}
+          <section class="card">
+            <header class="card-head"><h2>Risk factors</h2><button class="btn btn-ghost btn-sm" type="button" id="pt-risk">${icon('edit')}Edit</button></header>
+            ${risks.length ? html`<ul class="risk-list">${risks.map((t) => html`<li>${icon('flag')}<span>${t}</span></li>`)}</ul>` : html`<p class="card-sub">None recorded.</p>`}
+            <p class="fine" style="margin-top:10px">Printed on referral reports. The model does not use them.</p>
+          </section>
           ${loose.length
             ? html`<h2 class="section-title">Other scans <span>${loose.length}</span></h2><ul class="r-list card">${loose.map((s) => html`<li><a href="#/report/${s.id}">${thumb(s.thumb)}<span><strong>${s.finding}</strong><span>${fmtDateTime(s.ts)}</span></span>${levelBadge(s.level)}</a></li>`)}</ul>`
             : ''}
-          ${p.notes ? html`<h2 class="section-title">Notes</h2><p class="card notes">${p.notes}</p>` : ''}
-        </section>
+          ${p.notes ? html`<section class="card"><header class="card-head"><h2>Notes</h2></header><p class="notes">${p.notes}</p></section>` : ''}
+        </div>
       </div>`,
   );
   const map = mountLesionMap($('#pt-map', el), {
+    sex: p.sex,
     lesions: marks,
     onSelect: (id) => app.go(`#/lesion/${id}`),
     onPick: async (pt) => {
@@ -496,12 +632,14 @@ export function patient(el, r) {
     $('#pt-pick', el).classList.toggle('is-on', on);
   };
   $('#pt-pick', el).addEventListener('click', () => setPick(!picking));
-  $('#pt-edit', el).addEventListener('click', async () => {
+  const edit = async () => {
     if (await editPatient(p)) patient(el, r);
-  });
+  };
+  $('#pt-edit', el).addEventListener('click', edit);
+  $('#pt-risk', el).addEventListener('click', edit);
   $('#pt-del', el).addEventListener('click', async () => {
     const n = store.all('scan').filter((s) => s.patientId === p.id).length;
-    if (await confirmDialog({ title: `Delete ${p.name}?`, message: `This removes the patient, ${ls.length} lesion${ls.length === 1 ? '' : 's'} and ${n} scan${n === 1 ? '' : 's'} from this device. It cannot be undone.` })) {
+    if (await confirmDialog({ title: `Delete ${p.name}?`, message: `This removes the patient, ${plural(ls.length, 'lesion')} and ${plural(n, 'scan')} from this device. It cannot be undone.`, confirm: 'Delete patient' })) {
       await store.removePatient(p.id);
       toast('Patient deleted');
       app.go('#/patients');
@@ -521,12 +659,13 @@ export function lesion(el, r) {
   const due = l.recheckOn ? daysUntil(l.recheckOn) : null;
   // from the rounded percentages shown, so the label adds up
   const delta = sc.length > 1 ? Math.round(last.probs[0] * 100) - Math.round(first.probs[0] * 100) : null;
+  const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
   render(
     el,
     html`<nav class="crumbs" aria-label="Breadcrumb"><a href="#/patients">Patients</a>${icon('chev')}<a href="#/patient/${p.id}">${p.name}</a>${icon('chev')}<span>${lesionName(l)}</span></nav>
       <div class="page-head page-head-row">
-        <div class="ph-person"><span class="lc-n lc-n-lg" data-level="${last?.level || ''}">${n}</span><div><h1>${lesionName(l)}</h1><p>${lesionWhere(l)} · ${p.name} · ${sc.length} scan${sc.length === 1 ? '' : 's'}</p></div></div>
+        <div class="ph-person"><span class="lc-n lc-n-lg" data-level="${last?.level || ''}">${n}</span><div><h1>${lesionName(l)}</h1><p>${lesionWhere(l)}, ${p.name}, ${plural(sc.length, 'scan')}</p></div></div>
         <div class="head-actions">
           <button class="btn btn-ghost" type="button" id="ls-del">${icon('trash')}Delete</button>
           <button class="btn btn-secondary" type="button" id="ls-edit">${icon('edit')}Edit</button>
@@ -543,25 +682,27 @@ export function lesion(el, r) {
             </div>
             <form class="card recheck" id="ls-recheck">
               <h2>${icon('calendar')}Recheck</h2>
-              <p class="card-sub">${due === null ? 'No recheck set.' : due < 0 ? `Overdue by ${-due} day${due === -1 ? '' : 's'}.` : due === 0 ? 'Due today.' : `Due in ${due} day${due === 1 ? '' : 's'}.`}</p>
+              <p class="card-sub">${due === null ? 'No recheck set.' : due < 0 ? `Overdue by ${plural(-due, 'day')}.` : due === 0 ? 'Due today.' : `Due in ${plural(due, 'day')}.`}</p>
               <div class="recheck-row"><label class="visually-hidden" for="ls-date">Recheck date</label><input id="ls-date" type="date" value="${l.recheckOn || ''}" min="${isoToday()}">
-              <button class="btn btn-secondary" type="submit">Save</button></div>
+              <button class="btn btn-secondary" type="submit">Save date</button></div>
               <div class="chips">${[30, 90, 180].map((d) => html`<button type="button" class="chip" data-days="${d}">In ${d === 30 ? '1 month' : d === 90 ? '3 months' : '6 months'}</button>`)}</div>
             </form>
           </div>
           <section class="card">
-            <header class="card-head"><h2>Scores over time</h2>${delta !== null ? html`<span class="delta ${delta > 0 ? 'up' : delta < 0 ? 'down' : ''}">Melanoma ${pct(first.probs[0])} to ${pct(last.probs[0])} (${delta > 0 ? '+' : ''}${delta} points)</span>` : ''}</header>
-            ${sc.length === 1 ? html`<p class="card-sub">One scan so far. Rescan this lesion later to see how its scores change.</p>` : ''}
+            <header class="card-head"><h2>Scores at each scan</h2>${delta !== null ? html`<span class="delta ${delta > 0 ? 'up' : delta < 0 ? 'down' : ''}">Melanoma ${pct(first.probs[0])} to ${pct(last.probs[0])}, ${delta > 0 ? '+' : ''}${delta} points</span>` : ''}</header>
+            ${sc.length === 1 ? html`<p class="card-sub">One scan so far. Rescan this lesion at the next visit to see how its scores change.</p>` : ''}
             <div class="chart" id="ls-chart"></div>
           </section>
           ${sc.length > 1
             ? html`<section class="card">
-                <header class="card-head"><h2>Compare photos</h2>
-                  <div class="cmp-pick"><label>Before <select id="cmp-a">${sc.map((s, i) => html`<option value="${i}" ${raw(i === 0 ? 'selected' : '')}>${fmtDate(s.ts)}</option>`)}</select></label>
-                  <label>After <select id="cmp-b">${sc.map((s, i) => html`<option value="${i}" ${raw(i === sc.length - 1 ? 'selected' : '')}>${fmtDate(s.ts)}</option>`)}</select></label></div>
+                <header class="card-head"><h2>Compare two photos</h2>
+                  <div class="cmp-pick"><label>Earlier <select id="cmp-a">${sc.map((s, i) => html`<option value="${i}" ${raw(i === 0 ? 'selected' : '')}>${fmtDate(s.ts)}</option>`)}</select></label>
+                  <label>Later <select id="cmp-b">${sc.map((s, i) => html`<option value="${i}" ${raw(i === sc.length - 1 ? 'selected' : '')}>${fmtDate(s.ts)}</option>`)}</select></label></div>
                 </header>
+                <p class="card-sub">Drag across the photo to wipe between them${reduceMotion ? '' : ', or flicker them so a change in size, shape or color stands out'}.</p>
                 <div class="compare" id="cmp"><img class="cmp-a" alt=""><div class="cmp-b-wrap"><img class="cmp-b" alt=""></div><i class="cmp-line"></i>
                   <input class="cmp-range" type="range" min="0" max="100" value="50" aria-label="Drag to compare the two photos"></div>
+                ${reduceMotion ? '' : html`<div class="cmp-tools"><button class="btn btn-secondary btn-sm" type="button" id="cmp-flicker" aria-pressed="false">Flicker</button></div>`}
                 <div class="cmp-captions"><span id="cmp-ca"></span><span id="cmp-cb"></span></div>
               </section>`
             : ''}`
@@ -591,14 +732,21 @@ export function lesion(el, r) {
       const b = sc[Number($('#cmp-b', el).value)];
       $('.cmp-a', cmp).src = a.image || a.thumb;
       $('.cmp-b', cmp).src = b.image || b.thumb;
-      render($('#cmp-ca', el), html`${fmtDate(a.ts)} · ${LEVELS[a.level].title} · melanoma ${pct(a.probs[0])}`);
-      render($('#cmp-cb', el), html`${fmtDate(b.ts)} · ${LEVELS[b.level].title} · melanoma ${pct(b.probs[0])}`);
+      render($('#cmp-ca', el), html`${fmtDate(a.ts)}: ${lc(LEVELS[a.level].title)}, melanoma ${pct(a.probs[0])}`);
+      render($('#cmp-cb', el), html`${fmtDate(b.ts)}: ${lc(LEVELS[b.level].title)}, melanoma ${pct(b.probs[0])}`);
     };
     const range = $('.cmp-range', cmp);
     const setSplit = () => cmp.style.setProperty('--split', `${range.value}%`);
     range.addEventListener('input', setSplit);
     $('#cmp-a', el).addEventListener('change', setPair);
     $('#cmp-b', el).addEventListener('change', setPair);
+    $('#cmp-flicker', el)?.addEventListener('click', (e) => {
+      const on = !cmp.classList.contains('is-flicker');
+      cmp.classList.toggle('is-flicker', on);
+      e.currentTarget.setAttribute('aria-pressed', String(on));
+      e.currentTarget.classList.toggle('is-on', on);
+      e.currentTarget.textContent = on ? 'Stop flicker' : 'Flicker';
+    });
     setPair();
     setSplit();
   }
@@ -607,7 +755,7 @@ export function lesion(el, r) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       await store.save({ ...l, recheckOn: $('#ls-date', el).value || null });
-      toast($('#ls-date', el).value ? 'Recheck saved' : 'Recheck cleared');
+      toast($('#ls-date', el).value ? 'Recheck date saved' : 'Recheck cleared');
       lesion(el, r);
     });
     for (const c of $$('.chip', form)) {
@@ -620,7 +768,7 @@ export function lesion(el, r) {
     if (await editLesion(l)) lesion(el, r);
   });
   $('#ls-del', el).addEventListener('click', async () => {
-    if (await confirmDialog({ title: `Delete ${lesionName(l)}?`, message: `This removes the lesion and its ${sc.length} scan${sc.length === 1 ? '' : 's'} from this device.` })) {
+    if (await confirmDialog({ title: `Delete ${lesionName(l)}?`, message: `This removes the lesion and its ${plural(sc.length, 'scan')} from this device.`, confirm: 'Delete lesion' })) {
       await store.removeLesion(l.id);
       toast('Lesion deleted');
       app.go(`#/patient/${p.id}`);
@@ -628,7 +776,7 @@ export function lesion(el, r) {
   });
   for (const b of $$('.tl-del', el)) {
     b.addEventListener('click', async () => {
-      if (await confirmDialog({ title: 'Delete this scan?', message: 'The photo, scores and notes of this scan are removed from this device.' })) {
+      if (await confirmDialog({ title: 'Delete this scan?', message: 'Its photo, scores and notes are removed from this device.', confirm: 'Delete scan' })) {
         await store.remove(b.dataset.id);
         lesion(el, r);
       }
@@ -649,7 +797,7 @@ export function detailsLine(d = {}) {
 }
 export function abcdeLine(a) {
   if (!a) return '';
-  const names = { a: 'asymmetry', b: 'irregular border', c: 'varied colour', d: 'diameter over 6 mm', e: 'evolving' };
+  const names = { a: 'asymmetry', b: 'irregular border', c: 'varied color', d: 'diameter over 6 mm', e: 'evolving' };
   return Object.keys(names).filter((k) => a[k]).map((k) => names[k]).join(', ');
 }
 
@@ -662,7 +810,7 @@ export function scans(el, r) {
   render(
     el,
     html`<div class="page-head page-head-row">
-        <div><h1>Scans</h1><p>${all.length} saved on this device.</p></div>
+        <div><h1>Scans</h1><p>${plural(all.length, 'scan')} saved on this device.</p></div>
         <div class="head-actions">${all.length ? html`<button class="btn btn-secondary" type="button" id="sc-csv">Export CSV</button>` : ''}<a class="btn btn-primary" href="#/scan">${icon('scan')}New scan</a></div>
       </div>
       ${all.length
@@ -674,7 +822,7 @@ export function scans(el, r) {
               const l = s.lesionId ? store.get(s.lesionId) : null;
               return html`<tr>
                 <td>${thumb(s.thumb)}</td>
-                <td>${l ? html`<a href="#/lesion/${l.id}">${p?.name} · ${lesionName(l)}</a>` : p ? html`<a href="#/patient/${p.id}">${p.name}</a>` : html`<span class="muted">Not linked to a patient</span>`}<div class="muted small">${s.finding}</div></td>
+                <td>${l ? html`<a href="#/lesion/${l.id}">${p?.name}, ${lesionName(l)}</a>` : p ? html`<a href="#/patient/${p.id}">${p.name}</a>` : html`<span class="muted">No patient</span>`}<div class="muted small">${s.finding}</div></td>
                 <td>${levelBadge(s.level)}</td>
                 <td class="num">${pct(s.probs[0])}</td>
                 <td class="nowrap">${fmtDateTime(s.ts)}</td>
@@ -701,7 +849,37 @@ function toCSV(items) {
   return [cols, ...rows].map((r) => r.map(q).join(',')).join('\n');
 }
 
-// ---------------------------------------------------------------- report
+// ---------------------------------------------------------------- report and referral letter
+const ONSETS = [['', 'Not known'], ['under a month', 'Under a month'], ['1 to 6 months', '1 to 6 months'], ['6 to 12 months', '6 to 12 months'], ['over a year', 'Over a year']];
+const CHANGES = [['grown', 'has grown'], ['shape', 'has changed shape'], ['color', 'has changed color'], ['bleeds', 'bleeds'], ['itches', 'itches'], ['new', 'is new']];
+const andList = (xs) => (xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs.at(-1)}`);
+
+function letterText(s, p, l, me, ref = {}) {
+  const age = p ? ageFrom(p) : s.details?.age;
+  const sex = (p?.sex || s.details?.sex) === 'female' ? 'woman' : (p?.sex || s.details?.sex) === 'male' ? 'man' : 'patient';
+  const who = p ? `${p.name}${p.ref ? ` (${p.ref})` : ''}` : 'this patient';
+  const desc = Number.isFinite(age) ? `, a ${age}-year-old ${sex},` : '';
+  const site = l ? `${lesionName(l).toLowerCase()} (${lesionWhere(l).toLowerCase()})` : SITE_NAMES[s.details?.site] ? SITE_NAMES[s.details.site].toLowerCase() : 'skin';
+  const changes = CHANGES.filter(([k]) => ref.changes?.[k]).map(([, t]) => t);
+  const clinical = [];
+  if (ref.onset) clinical.push(`It has been there for ${ref.onset}.`);
+  if (changes.length) clinical.push(`The patient says it ${andList(changes)}.`);
+  if (abcdeLine(s.abcde)) clinical.push(`On examination: ${abcdeLine(s.abcde)}.`);
+  const risks = riskList(p);
+  if (risks.length) clinical.push(`Risk factors: ${risks.map(lc).join('; ')}.`);
+  if (ref.history) clinical.push(`History: ${ref.history.replace(/\.?$/, '.')}`);
+  const lines = [
+    'Dear dermatology team,',
+    '',
+    `Please see ${who}${desc} about a lesion on the ${site}.${clinical.length ? ` ${clinical.join(' ')}` : ''}`,
+    '',
+    `SkinScan AI, a research triage tool that does not diagnose, suggests: ${s.title.toLowerCase()} (${s.finding.toLowerCase()}). Its scores were melanoma ${pct(s.probs[0])}, benign ${pct(s.probs[1])} and other skin cancer ${pct(s.probs[2])}, against a melanoma cutoff of ${pct(MELANOMA_CUTOFF, 1)}.`,
+  ];
+  if (ref.question) lines.push('', `My question: ${ref.question}`);
+  lines.push('', 'The dermoscopic photo and the full report are attached.', '', [me?.name, me?.role, me?.org].filter(Boolean).join(', ') || '');
+  return lines.join('\n').replace(/\n{3,}/g, '\n\n');
+}
+
 export function report(el, r) {
   const s = r.id === 'current' ? app.currentScan() : store.get(r.id);
   if (!s || s.kind !== 'scan') return notFound(el, 'scan');
@@ -709,6 +887,8 @@ export function report(el, r) {
   const l = s.lesionId ? store.get(s.lesionId) : null;
   const me = store.current();
   const hist = l ? store.scansOf(l.id) : [];
+  const risks = riskList(p);
+  const ref = { ...(s.referral || {}) };
   const why =
     s.level === 'urgent'
       ? `The melanoma score, ${pct(s.probs[0])}, is at or above the ${pct(MELANOMA_CUTOFF, 1)} cutoff. On 9,080 validation images this cutoff caught 90% of melanomas.`
@@ -724,14 +904,14 @@ export function report(el, r) {
       <article class="report-doc" id="report-doc">
         <header class="rd-head">
           <div class="rd-brand"><svg aria-hidden="true"><use href="#logo"/></svg><div><strong>SkinScan AI triage report</strong><span>${fmtDateTime(s.ts)}</span></div></div>
-          <div class="rd-by">${me ? html`<strong>${me.name}</strong><span>${[me.role, me.org].filter(Boolean).join(' · ')}</span>` : html`<span>Not signed in</span>`}</div>
+          <div class="rd-by">${me ? html`<strong>${me.name}</strong><span>${[me.role, me.org].filter(Boolean).join(', ')}</span>` : html`<span>Not signed in</span>`}</div>
         </header>
         <section class="rd-grid">
           <div class="rd-photo"><div class="rd-scope" data-level="${s.level}"><img src="${s.image || s.thumb}" alt="Lesion photo">${s.heat ? html`<img class="rd-heat" src="${s.heat}" alt="">` : ''}</div>
             ${s.heat ? html`<p class="rd-cap">Highlighted: the parts of the photo that, when covered, lowered the top score the most.</p>` : ''}</div>
           <div class="rd-main">
             <dl class="rd-facts">
-              <div><dt>Patient</dt><dd>${p ? `${p.name}${p.ref ? ` (${p.ref})` : ''}` : 'Not linked to a patient'}</dd></div>
+              <div><dt>Patient</dt><dd>${p ? `${p.name}${p.ref ? ` (${p.ref})` : ''}` : 'No patient'}</dd></div>
               ${p ? html`<div><dt>Details</dt><dd>${patientLine(p)}</dd></div>` : ''}
               <div><dt>Lesion</dt><dd>${l ? `${lesionName(l)}, ${lesionWhere(l).toLowerCase()}` : SITE_NAMES[s.details?.site] || 'Not recorded'}</dd></div>
             </dl>
@@ -746,18 +926,58 @@ export function report(el, r) {
             ${s.probsPhotoOnly ? html`<p class="muted small">With every detail blank: melanoma ${pct(s.probsPhotoOnly[0])}, benign ${pct(s.probsPhotoOnly[1])}, other skin cancer ${pct(s.probsPhotoOnly[2])}.</p>` : ''}</div>
           <div><h3>Clinician observations</h3><p>${abcdeLine(s.abcde) || 'None recorded'}</p></div>
           <div><h3>Photo check</h3><p>${s.quality ? (s.quality.ok ? 'Passed: in focus, well exposed, enough contrast and resolution.' : s.quality.checks.filter((c) => !c.ok).map((c) => c.note).join(' ')) : 'Not recorded'}</p></div>
+          <div><h3>Risk factors</h3><p>${p ? (risks.length ? risks.map((t, i) => (i ? lc(t) : t)).join('; ') : 'None recorded') : 'No patient'}</p></div>
           <div><h3>Notes</h3><p>${s.notes || 'None'}</p></div>
         </section>
         ${hist.length > 1
           ? html`<section class="rd-hist"><h3>History of this lesion</h3><table class="table"><thead><tr><th>Date</th><th>Result</th><th class="num">Melanoma</th><th class="num">Benign</th><th class="num">Other</th></tr></thead>
             <tbody>${hist.map((h) => html`<tr class="${h.id === s.id ? 'is-this' : ''}"><td>${fmtDate(h.ts)}</td><td>${h.title}</td><td class="num">${pct(h.probs[0])}</td><td class="num">${pct(h.probs[1])}</td><td class="num">${pct(h.probs[2])}</td></tr>`)}</tbody></table></section>`
           : ''}
-        <footer class="rd-foot">SkinScan AI is a research prototype, not a medical device, and is not FDA-cleared. It does not diagnose skin cancer; this report supports, and does not replace, clinical judgment. Model: SkinScan v3 (EfficientNet-B4 image branch, 17 patient features), run on this device with ONNX Runtime Web${s.sample ? `. Sample image ${s.sample.id}, biopsy result: ${s.sample.diagnosis}` : ''}.</footer>
-      </article>`,
+        <section class="rd-letter"><h3>Referral letter</h3><pre id="rp-letter"></pre></section>
+        <footer class="rd-foot">SkinScan AI is a research prototype, not a medical device, and is not FDA-cleared. It does not diagnose skin cancer; this report supports clinical judgment and does not replace it. Model: SkinScan v3 (EfficientNet-B4 image branch, 17 patient features), run on this device with ONNX Runtime Web${s.sample ? `. Sample image ${s.sample.id}, biopsy result: ${s.sample.diagnosis}` : ''}.</footer>
+      </article>
+      <form class="letter-form" id="rp-form">
+        <h2>Write the referral letter</h2>
+        <p class="card-sub">These answers fill in the letter above${r.id === 'current' ? '' : ' and are saved with the scan'}. The fields follow common store-and-forward referral guidelines.</p>
+        <div class="f-row">
+          <label class="f"><span>How long has it been there?</span><select name="onset">${ONSETS.map(([v, t]) => html`<option value="${v}" ${raw(ref.onset === v ? 'selected' : '')}>${t}</option>`)}</select></label>
+        </div>
+        <fieldset class="f"><legend>What the patient has noticed</legend>
+          <div class="checks">${CHANGES.map(([k, t]) => html`<label class="check"><input type="checkbox" name="ch_${k}" ${raw(ref.changes?.[k] ? 'checked' : '')}><span>It ${t}</span></label>`)}</div>
+        </fieldset>
+        <label class="f"><span>Relevant history, medications, allergies <small>optional</small></span><textarea name="history" rows="2" maxlength="1000">${ref.history || ''}</textarea></label>
+        <label class="f"><span>Your question for the dermatologist <small>optional</small></span><textarea name="question" rows="2" maxlength="600" placeholder="For example: is this suitable for excision biopsy?">${ref.question || ''}</textarea></label>
+        <div class="head-actions"><button class="btn btn-secondary" type="button" id="rp-copy">${icon('copy')}Copy letter</button></div>
+      </form>`,
   );
+  const form = $('#rp-form', el);
+  const pre = $('#rp-letter', el);
+  let timer;
+  const update = () => {
+    const fd = new FormData(form);
+    ref.onset = fd.get('onset') || '';
+    ref.changes = Object.fromEntries(CHANGES.filter(([k]) => fd.get(`ch_${k}`)).map(([k]) => [k, true]));
+    ref.history = String(fd.get('history') || '').trim();
+    ref.question = String(fd.get('question') || '').trim();
+    pre.textContent = letterText(s, p, l, me, ref);
+    if (r.id !== 'current' && store.current()) {
+      clearTimeout(timer);
+      timer = setTimeout(() => store.save({ ...store.get(s.id), referral: ref }), 500);
+    }
+  };
+  form.addEventListener('input', update);
+  form.addEventListener('change', update);
+  pre.textContent = letterText(s, p, l, me, ref);
+  $('#rp-copy', el).addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(pre.textContent);
+      toast('Letter copied');
+    } catch {
+      toast('This browser blocked copying. Select the letter in the report and copy it.', { tone: 'warn' });
+    }
+  });
   $('#rp-print', el).addEventListener('click', () => {
-    const area = $('#print-area');
-    area.innerHTML = $('#report-doc', el).outerHTML;
+    $('#print-area').innerHTML = $('#report-doc', el).outerHTML;
     window.print();
   });
 }
@@ -765,21 +985,14 @@ export function report(el, r) {
 // ---------------------------------------------------------------- settings
 export async function settings(el) {
   const me = store.current();
-  const theme = (() => {
-    try {
-      return localStorage.getItem('skinscan.theme') || 'system';
-    } catch {
-      return 'system';
-    }
-  })();
   const st = await app.modelStatus();
   const demoCount = store.patients().filter((p) => p.demo).length;
   render(
     el,
-    html`<div class="page-head"><h1>Settings</h1><p>${me.name}${me.org ? ` · ${me.org}` : ''}</p></div>
+    html`<div class="page-head"><h1>Settings</h1><p>${me.name}${me.org ? `, ${me.org}` : ''}</p></div>
       <div class="settings">
         <section class="set-card card">
-          <div class="set-title"><h2>Profile</h2><p>Shown on your referral reports.</p></div>
+          <div class="set-title"><h2>Profile</h2><p>Shown on your referral reports and letters.</p></div>
           <form class="set-body" id="st-profile">
             <label class="f"><span>Name</span><input name="name" required maxlength="60" value="${me.name}"></label>
             <div class="f-row">
@@ -790,7 +1003,7 @@ export async function settings(el) {
           </form>
         </section>
         <section class="set-card card">
-          <div class="set-title"><h2>Security</h2><p>${me.locked ? 'Your patients and scans are encrypted on this device with your passcode (AES-GCM, key from PBKDF2).' : 'Without a passcode, anyone using this browser can open this profile.'}</p></div>
+          <div class="set-title"><h2>Passcode</h2><p>${me.locked ? 'Your patients and scans are encrypted on this device with your passcode (AES-GCM, with a key made from the passcode by PBKDF2).' : 'Without a passcode, anyone using this browser can open this profile.'}</p></div>
           <div class="set-body">
             <p class="set-state ${me.locked ? 'ok' : ''}">${icon(me.locked ? 'lock' : 'shield')}${me.locked ? 'Passcode on, data encrypted' : 'No passcode'}</p>
             <div class="head-actions">
@@ -803,25 +1016,21 @@ export async function settings(el) {
           </div>
         </section>
         <section class="set-card card">
-          <div class="set-title"><h2>Appearance</h2></div>
-          <div class="set-body"><div class="seg seg-fit" id="st-theme">${['system', 'light', 'dark'].map((t) => html`<label><input type="radio" name="theme" value="${t}" ${raw(theme === t ? 'checked' : '')}><span>${t === 'system' ? 'Match device' : t[0].toUpperCase() + t.slice(1)}</span></label>`)}</div></div>
-        </section>
-        <section class="set-card card">
           <div class="set-title"><h2>Model and offline use</h2><p>Every scan runs in this browser. Nothing is uploaded.</p></div>
           <div class="set-body">
             <dl class="kv">
-              <div><dt>Model</dt><dd>SkinScan v3: EfficientNet-B4 image branch and a 17-feature patient branch</dd></div>
+              <div><dt>Model</dt><dd>SkinScan v3: an EfficientNet-B4 image branch and a 17-feature patient branch</dd></div>
               <div><dt>File</dt><dd>skinscan-v3.onnx, 21 MB</dd></div>
-              <div><dt>Runtime</dt><dd>ONNX Runtime Web, WebAssembly, ${st.threads} thread${st.threads === 1 ? '' : 's'}</dd></div>
+              <div><dt>Runtime</dt><dd>ONNX Runtime Web, WebAssembly, ${plural(st.threads, 'thread')}</dd></div>
               <div><dt>Status</dt><dd>${st.ready ? 'Loaded' : 'Not loaded yet'}</dd></div>
-              <div><dt>Offline</dt><dd class="${st.offline ? 'ok' : ''}">${st.offline ? 'Ready: the app and model are cached on this device' : 'Not cached yet. Open the app once over HTTPS to cache it.'}</dd></div>
+              <div><dt>Offline</dt><dd class="${st.offline ? 'ok' : ''}">${st.offline ? 'Ready: the app and the model are saved on this device' : 'Not saved yet. Open the app once over HTTPS to save it for offline use.'}</dd></div>
             </dl>
             <div class="head-actions"><button class="btn btn-secondary" type="button" id="st-test">Run a self-test</button></div>
             <p class="fine" id="st-test-out" role="status"></p>
           </div>
         </section>
         <section class="set-card card">
-          <div class="set-title"><h2>Data</h2><p>Back up this profile to a file, or restore one. ${me.locked ? 'Backups stay encrypted with your passcode.' : 'Without a passcode, the backup file is readable by anyone who has it.'}</p></div>
+          <div class="set-title"><h2>Data</h2><p>Back up this profile to a file, or restore one. ${me.locked ? 'Backups stay encrypted with your passcode.' : 'Without a passcode, anyone with the backup file can read it.'}</p></div>
           <div class="set-body">
             <div class="head-actions">
               <button class="btn btn-secondary" type="button" id="st-export">Export backup</button>
@@ -829,14 +1038,14 @@ export async function settings(el) {
               <input class="visually-hidden" type="file" id="st-import" accept="application/json,.json">
             </div>
             <div class="head-actions">
-              ${demoCount ? html`<button class="btn btn-ghost" type="button" id="st-undemo">Remove ${demoCount} demo patient${demoCount === 1 ? '' : 's'}</button>` : html`<button class="btn btn-ghost" type="button" id="st-demo">Load demo patients</button>`}
+              ${demoCount ? html`<button class="btn btn-ghost" type="button" id="st-undemo">Remove ${plural(demoCount, 'demo patient')}</button>` : html`<button class="btn btn-ghost" type="button" id="st-demo">Load demo patients</button>`}
               <button class="btn btn-ghost btn-danger" type="button" id="st-delete">${icon('trash')}Delete this profile</button>
             </div>
           </div>
         </section>
         <section class="set-card card">
           <div class="set-title"><h2>About</h2></div>
-          <div class="set-body"><p class="muted">SkinScan AI is a research prototype, not a medical device. It has not been cleared by the FDA and it does not diagnose skin cancer. <a href="#/how">How it works</a> · <a href="https://github.com/WangZi621/SkinCancer-AI" rel="noopener">Source on GitHub</a></p></div>
+          <div class="set-body"><p class="muted">SkinScan AI is a research prototype, not a medical device. It has not been cleared by the FDA and it does not diagnose skin cancer. <a href="#/how">How it works</a>. <a href="https://github.com/WangZi621/SkinCancer-AI" rel="noopener">Source code on GitHub</a>.</p></div>
         </section>
       </div>`,
   );
@@ -851,12 +1060,12 @@ export async function settings(el) {
     const fd = await dialog({
       title: me.locked ? 'Change passcode' : 'Set a passcode',
       submit: me.locked ? 'Change passcode' : 'Set passcode',
-      body: html`<p class="dlg-text">Every patient and scan in this profile will be encrypted on this device. If you forget the passcode, the data cannot be recovered.</p>
+      body: html`<p class="dlg-text">Every patient and scan in this profile will be encrypted on this device. If you forget the passcode, nobody can recover the data.</p>
         <label class="f"><span>New passcode</span><input name="a" type="password" minlength="4" required autocomplete="new-password"></label>
         <label class="f"><span>Repeat it</span><input name="b" type="password" required autocomplete="new-password"></label>`,
     });
     if (!fd) return;
-    if (fd.get('a') !== fd.get('b')) return toast('The passcodes did not match. Nothing changed.', { tone: 'warn' });
+    if (fd.get('a') !== fd.get('b')) return toast('The two passcodes were different, so nothing changed.', { tone: 'warn' });
     await store.setPasscode(String(fd.get('a')));
     toast('Passcode set. Your data is encrypted.');
     settings(el);
@@ -870,22 +1079,22 @@ export async function settings(el) {
   });
   $('#st-autolock', el)?.addEventListener('change', async (e) => {
     await store.updateProfile({ settings: { autoLockMinutes: Number(e.target.value) } });
-    toast('Saved');
+    toast('Auto-lock saved');
   });
-  for (const r of $$('#st-theme input', el)) r.addEventListener('change', () => app.setTheme(r.value));
   $('#st-test', el).addEventListener('click', async (e) => {
     const out = $('#st-test-out', el);
-    e.currentTarget.disabled = true;
+    const btn = e.currentTarget;
+    btn.disabled = true;
     out.textContent = 'Running Sample 1 through the model…';
     try {
       const t = await app.selfTest();
       out.textContent = t.pass
-        ? `Passed: Sample 1 (melanoma in situ) scored ${pct(t.probs[0])} melanoma and was flagged "Refer urgently", in ${(t.ms / 1000).toFixed(2)} s on this device.`
-        : `Unexpected result: Sample 1 was "${t.title}". The model may not have loaded correctly.`;
-    } catch (ex) {
-      out.textContent = 'The self-test could not run the model in this browser.';
+        ? `Passed. Sample 1 (melanoma in situ) scored ${pct(t.probs[0])} melanoma and was flagged "Refer urgently", in ${(t.ms / 1000).toFixed(2)} s on this device.`
+        : `Unexpected result: Sample 1 came back "${t.title}". The model may not have loaded correctly; reload the page and run the test again.`;
+    } catch {
+      out.textContent = 'The self-test could not run the model in this browser. Try a current version of Chrome, Edge, Safari or Firefox.';
     } finally {
-      e.currentTarget.disabled = false;
+      btn.disabled = false;
     }
   });
   $('#st-export', el).addEventListener('click', async () => {
@@ -898,7 +1107,7 @@ export async function settings(el) {
     try {
       const p = await store.importBackup(await f.text());
       await app.refreshProfiles();
-      toast(`Restored "${p.name}". Sign in to it from Switch profile.`);
+      toast(`Restored "${p.name}". Open it from Switch profile.`);
     } catch {
       toast('That file is not a SkinScan AI backup.', { tone: 'warn' });
     }
@@ -915,7 +1124,7 @@ export async function settings(el) {
       title: 'Delete this profile?',
       danger: true,
       submit: 'Delete profile',
-      body: html`<p class="dlg-text">This permanently removes ${me.name}'s profile, ${store.patients().length} patients and ${store.scans().length} scans from this device. Export a backup first if you might need them.</p>
+      body: html`<p class="dlg-text">This permanently removes ${me.name}'s profile, ${plural(store.patients().length, 'patient')} and ${plural(store.scans().length, 'scan')} from this device. Export a backup first if you might need them.</p>
         <label class="f"><span>Type DELETE to confirm</span><input name="c" required pattern="DELETE" autocomplete="off"></label>`,
     });
     if (!fd) return;
@@ -929,7 +1138,8 @@ export async function settings(el) {
 // ---------------------------------------------------------------- demo data
 /**
  * Demo patients built from the eight bundled samples. Every score comes from running the
- * model on this device now; the dates are spread over the last few months.
+ * model on this device now; the dates are spread over the last few months. Points are
+ * fractions of the body figure (see bodymap.js).
  */
 async function loadDemo(btn) {
   btn.disabled = true;
@@ -940,15 +1150,15 @@ async function loadDemo(btn) {
     const now = Date.now();
     const year = new Date().getFullYear();
     const plan = [
-      { name: 'Demo patient A', ref: 'DEMO-01', birthYear: year - 65, sex: 'female', fitzpatrick: 2, lesions: [{ s: 0, label: 'Left cheek', pt: { view: 'front', x: 63, y: 24 }, scans: [{ daysAgo: 42, photoOnly: true }, { daysAgo: 2 }] }, { s: 5, label: 'Upper chest', pt: { view: 'front', x: 56, y: 57 }, scans: [{ daysAgo: 9 }] }] },
-      { name: 'Demo patient B', ref: 'DEMO-02', birthYear: year - 30, sex: 'female', fitzpatrick: 3, lesions: [{ s: 1, label: 'Upper abdomen', pt: { view: 'front', x: 61, y: 80 }, scans: [{ daysAgo: 5 }], recheck: 75 }] },
-      { name: 'Demo patient C', ref: 'DEMO-03', birthYear: year - 60, sex: 'female', fitzpatrick: null, lesions: [{ s: 2, label: 'Left upper arm', pt: { view: 'front', x: 87.5, y: 70 }, scans: [{ daysAgo: 1 }] }, { s: 7, label: 'Left calf', pt: { view: 'back', x: 154, y: 170 }, scans: [{ daysAgo: 30 }], recheck: 10 }] },
-      { name: 'Demo patient D', ref: 'DEMO-04', birthYear: year - 70, sex: 'male', fitzpatrick: 3, lesions: [{ s: 4, label: 'Right forearm', pt: { view: 'front', x: 25, y: 94 }, scans: [{ daysAgo: 12 }] }, { s: 3, label: 'Right flank', pt: { view: 'back', x: 179, y: 85 }, scans: [{ daysAgo: 20 }], recheck: -2 }] },
+      { name: 'Demo patient A', ref: 'DEMO-01', birthYear: year - 65, sex: 'female', fitzpatrick: 2, risks: { sunburn: true, atypical: true }, lesions: [{ s: 0, label: 'Left cheek', pt: { view: 'front', u: 0.53, v: 0.085 }, scans: [{ daysAgo: 42, photoOnly: true }, { daysAgo: 2 }] }, { s: 5, label: 'Upper chest', pt: { view: 'front', u: 0.468, v: 0.23 }, scans: [{ daysAgo: 9 }] }] },
+      { name: 'Demo patient B', ref: 'DEMO-02', birthYear: year - 30, sex: 'female', fitzpatrick: 3, risks: {}, lesions: [{ s: 1, label: 'Upper abdomen', pt: { view: 'front', u: 0.515, v: 0.335 }, scans: [{ daysAgo: 5 }], recheck: 75 }] },
+      { name: 'Demo patient C', ref: 'DEMO-03', birthYear: year - 60, sex: 'female', fitzpatrick: null, risks: { family: true }, lesions: [{ s: 2, label: 'Left upper arm', pt: { view: 'front', u: 0.72, v: 0.31 }, scans: [{ daysAgo: 1 }] }, { s: 7, label: 'Left calf', pt: { view: 'back', u: 0.413, v: 0.803 }, scans: [{ daysAgo: 30 }], recheck: 10 }] },
+      { name: 'Demo patient D', ref: 'DEMO-04', birthYear: year - 70, sex: 'male', fitzpatrick: 3, risks: { otherSkin: true }, lesions: [{ s: 4, label: 'Right forearm', pt: { view: 'front', u: 0.195, v: 0.369 }, scans: [{ daysAgo: 12 }] }, { s: 3, label: 'Right flank', pt: { view: 'back', u: 0.635, v: 0.37 }, scans: [{ daysAgo: 20 }], recheck: -2 }] },
     ];
     let k = 0;
     const total = plan.reduce((n, p) => n + p.lesions.reduce((m, l) => m + l.scans.length, 0), 0);
     for (const pp of plan) {
-      const p = await store.save({ kind: 'patient', name: pp.name, ref: pp.ref, birthYear: pp.birthYear, sex: pp.sex, fitzpatrick: pp.fitzpatrick, notes: 'Demo data built from biopsy-confirmed ISIC sample images.', demo: true });
+      const p = await store.save({ kind: 'patient', name: pp.name, ref: pp.ref, birthYear: pp.birthYear, sex: pp.sex, fitzpatrick: pp.fitzpatrick, risks: pp.risks, notes: 'Demo data built from biopsy-confirmed ISIC sample images.', demo: true });
       for (const ll of pp.lesions) {
         const sample = samples[ll.s];
         const l = await store.save({ kind: 'lesion', patientId: p.id, label: ll.label, site: sample.patient.site, point: { ...ll.pt, site: sample.patient.site }, recheckOn: ll.recheck !== undefined ? isoToday(ll.recheck) : null });
@@ -965,7 +1175,7 @@ async function loadDemo(btn) {
     app.rerender();
   } catch (err) {
     console.error(err);
-    toast('Could not load the demo patients.', { tone: 'warn' });
+    toast('The demo patients could not be loaded. Reload the page and try again.', { tone: 'warn' });
   } finally {
     btn.disabled = false;
     btn.textContent = label;
@@ -973,5 +1183,5 @@ async function loadDemo(btn) {
 }
 
 function notFound(el, what) {
-  render(el, html`<div class="empty"><h2>This ${what} is not on this device</h2><p>It may have been deleted, or it belongs to another profile.</p><a class="btn btn-secondary" href="#/home">Go home</a></div>`);
+  render(el, html`<div class="empty"><h2>This ${what} is not on this device</h2><p>It may have been deleted, or it belongs to another profile.</p><a class="btn btn-secondary" href="#/home">Go to home</a></div>`);
 }
