@@ -1,4 +1,4 @@
-# Brag plan: SkinScan AI
+# Brag plan: Stryde
 
 Invocation: `/brag --full --tone "calm, clinical product film for a student science competition"`
 Tone preset: `polished` (serious, elegant), kept calm and clinical per the direction. Format: landscape
@@ -30,18 +30,23 @@ tones) and bundled music were not. This plan follows the steps and gates SKILL.m
 One spot, picked out of eight, read by the real app in real time. The lens circle carries the eye
 from the hook to the logo. Calm pacing: one move at a time, every line held long enough to read.
 
-## Storyboard (24.5 s)
+## Storyboard (27.5 s)
+
+Rebuilt for the rename: every scene is now the film's own Stryde scene (Archivo, cobalt and dress
+blue on the off-white lattice, hard ink outlines, no soft shadows), cut down, and the scan uses the
+new signed-in recording.
 
 | Time | Scene | On screen | Text (hold) | Transition out |
 | --- | --- | --- | --- | --- |
-| 0.0-5.5 | Hook and reveal | 8 lesions; the ring visits two, locks on Sample 1; the rest fall away; it grows to centre | "Which skin spots need a dermatologist first?" (0.1-2.9); "SkinScan AI" (3.6-5.3) | Match cut: the lens accelerates into the cut |
-| 5.5-12.5 | The scan, real UI | the lens lands on its thumbnail; camera follows the click; the scope while the model runs; the camera settles on the verdict | "Result on the device" (10.8-12.5) | Dip cut |
-| 12.5-17.0 | Small model | "21 MB"; a Raspberry Pi Zero 2 W drawn to scale; the model file drops onto its chip; the ring closes | "Even on a $15 Raspberry Pi Zero 2 W" (13.4-17.0) | Hard cut on the ring |
-| 17.0-20.5 | One number | the lens as a gauge filling to 90 % in red | "90%" / "of melanomas caught at a 0.278 cutoff" (17.3-20.5) | Hard cut |
-| 20.5-24.5 | Outro | lens becomes the logo; wordmark wipes in | URL, "Built by Jason Xiao", "Research prototype. Not a medical device." (21.7-24.5) | End |
+| 0.0-6.5 | Hook and reveal | 8 lesions; the ring visits three, locks on Sample 1; the rest fall away; it grows to centre | "Which skin spots need a dermatologist first?"; "Stryde" (4.0-5.9) | Match cut: the lens lands on its thumbnail |
+| 6.5-14.0 | The scan, real UI | the photo lands in the scope; Analyze; the ring sweeps while the model runs; pull back to the whole app; push into the verdict | "Result on the device" (12.25-13.75) | Hard cut |
+| 14.0-18.5 | Small model | a Raspberry Pi Zero 2 W drawn to scale; the 21 MB model file drops onto its chip; the ring closes | "Even on a $15 Raspberry Pi Zero 2 W" (14.2-18.5) | Hard cut on the ring |
+| 18.5-22.0 | One number | the lens as a gauge filling to 90 % in red | "90%" / "of melanomas caught at a 0.278 cutoff" (18.8-22.0) | Hard cut |
+| 22.0-27.5 | Outro | the lens becomes the Contours mark; the Stryde wordmark wipes in | URL, "Built by Jason Xiao", "Research prototype. Not a medical device." | End |
 
-SFX cues (if sound is added later): a soft click on the real cursor click (6.9 s), a low tick per
-ring sweep, one gentle impact when the verdict lands (8.8 s) and when the logo forms (21.0 s).
+SFX cues (if sound is added later): a soft click on each real cursor click (7.7 s and 9.2 s), a
+low tick per ring sweep, one gentle impact when the verdict lands (10.6 s) and when the logo forms
+(23.9 s).
 
 ## Music cue guidance
 

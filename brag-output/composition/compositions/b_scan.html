@@ -1,16 +1,17 @@
 <template>
   <style>
     @font-face {
-      font-family: "Geist";
-      src: url("assets/fonts/geist.woff2") format("woff2");
+      font-family: "Archivo";
+      src: url("assets/fonts/archivo.woff2") format("woff2");
       font-weight: 100 900;
+      font-stretch: 62% 125%;
     }
     #root {
       position: absolute;
       inset: 0;
       overflow: hidden;
-      font-family: "Geist", sans-serif;
-      background: #f5f7f8;
+      font-family: "Archivo", sans-serif;
+      background: #ececec url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='52' viewBox='0 0 30 52'%3E%3Cpath d='M0 0H30M0 26H30M0 52H30M0 0L30 52M30 0L0 52' stroke='rgba(20,33,61,0.05)' stroke-width='1' fill='none'/%3E%3Cg fill='rgba(20,33,61,0.2)'%3E%3Ccircle cx='0' cy='0' r='1.5'/%3E%3Ccircle cx='30' cy='0' r='1.5'/%3E%3Ccircle cx='15' cy='26' r='1.5'/%3E%3Ccircle cx='0' cy='52' r='1.5'/%3E%3Ccircle cx='30' cy='52' r='1.5'/%3E%3C/g%3E%3C/svg%3E") 15px 10px / 30px 52px;
     }
     /* the camera: page coordinates (the 1920 x 1080 viewport of the recording) */
     .cam {
@@ -30,7 +31,7 @@
       border-radius: 22px;
       overflow: hidden;
       background: #ffffff;
-      box-shadow: 0 0 0 1px #e2e7eb, 0 40px 90px -30px rgba(15, 27, 36, 0.35);
+      box-shadow: 0 0 0 2px #0b0e14, 12px 12px 0 2px #0b0e14;
     }
     .win-bar {
       position: absolute;
@@ -38,7 +39,7 @@
       top: 0;
       right: 0;
       height: 46px;
-      border-bottom: 1px solid #e2e7eb;
+      border-bottom: 1px solid #d5d7dc;
     }
     .win-dot {
       position: absolute;
@@ -46,7 +47,7 @@
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background: #cfd7dd;
+      background: #c4c8d0;
     }
     .win-url {
       position: absolute;
@@ -55,8 +56,8 @@
       width: 600px;
       height: 30px;
       border-radius: 9px;
-      background: #f0f3f5;
-      color: #4a5a66;
+      background: #f2f3f5;
+      color: #4c525d;
       font-size: 17px;
       font-weight: 500;
       line-height: 30px;
@@ -73,28 +74,28 @@
        drops frames while the model runs, so this is the one part redrawn on the footage */
     .app-ring {
       position: absolute;
-      left: 457.6px;
-      top: 121.3px;
+      left: 443.1px;
+      top: 91px;
       width: 400px;
       height: 400px;
       opacity: 0;
     }
     .app-ring circle {
       fill: none;
-      stroke: #0e7c7b;
+      stroke: #1b4fd8;
       stroke-width: 4;
       stroke-linecap: round;
     }
     .app-status {
       position: absolute;
-      left: 657.6px;
-      top: 452px;
+      left: 643.1px;
+      top: 422px;
       transform: translateX(-50%);
       padding: 0 14px;
       white-space: nowrap;
       height: 33px;
       border-radius: 999px;
-      background: rgba(15, 27, 36, 0.78);
+      background: rgba(11, 14, 20, 0.82);
       color: #ffffff;
       font-size: 14px;
       font-weight: 500;
@@ -121,12 +122,12 @@
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      background: #0e7c7b;
-      box-shadow: 0 0 0 4px #ffffff, 0 4px 10px rgba(15, 27, 36, 0.3);
+      background: #1b4fd8;
+      box-shadow: 0 0 0 4px #ffffff, 0 0 0 6px #0b0e14;
     }
     .lb-line {
       position: absolute;
-      background: #0e7c7b;
+      background: #1b4fd8;
     }
     .lb-card {
       position: absolute;
@@ -134,11 +135,11 @@
       padding: 14px 26px;
       border-radius: 16px;
       background: #ffffff;
-      color: #0f1b24;
+      color: #0b0e14;
       font-size: 40px;
       font-weight: 600;
       letter-spacing: -0.02em;
-      box-shadow: 0 0 0 1px #e2e7eb, 0 14px 34px -14px rgba(15, 27, 36, 0.4);
+      box-shadow: 0 0 0 2px #0b0e14, 5px 5px 0 2px #0b0e14;
     }
     .lb[data-side="left"] .lb-line {
       right: 0;
@@ -178,13 +179,13 @@
     }
     .lb-red .lb-dot,
     .lb-red .lb-line {
-      background: #d92d20;
+      background: #b42318;
     }
     /* the match cut from 01: the chosen lesion lands on its thumbnail */
     #sc-flood {
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse 80% 90% at 50% 42%, #16928e 0%, #0f6f6f 50%, #093f46 100%);
+      background: #ececec url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='52' viewBox='0 0 30 52'%3E%3Cpath d='M0 0H30M0 26H30M0 52H30M0 0L30 52M30 0L0 52' stroke='rgba(20,33,61,0.05)' stroke-width='1' fill='none'/%3E%3Cg fill='rgba(20,33,61,0.2)'%3E%3Ccircle cx='0' cy='0' r='1.5'/%3E%3Ccircle cx='30' cy='0' r='1.5'/%3E%3Ccircle cx='15' cy='26' r='1.5'/%3E%3Ccircle cx='0' cy='52' r='1.5'/%3E%3Ccircle cx='30' cy='52' r='1.5'/%3E%3C/g%3E%3C/svg%3E") 15px 10px / 30px 52px;
     }
     #sc-lens {
       position: absolute;
@@ -194,7 +195,7 @@
       height: 400px;
       border-radius: 50%;
       overflow: hidden;
-      box-shadow: 0 0 0 7px #ffffff, 0 30px 60px -26px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 0 0 7px #ffffff, 0 0 0 9px #0b0e14;
     }
     #sc-lens img {
       width: 100%;
@@ -202,7 +203,7 @@
       object-fit: cover;
     }
   </style>
-  <div id="root" data-composition-id="bscan" data-width="1920" data-height="1080" data-start="0" data-duration="7" data-motion-blur="on">
+  <div id="root" data-composition-id="scan" data-width="1920" data-height="1080" data-start="0" data-duration="7.5" data-motion-blur="on">
     <div id="sc-cam" class="cam" data-layout-allow-overflow>
       <div class="win">
         <div class="win-bar">
@@ -212,26 +213,24 @@
           <span class="win-url" data-layout-ignore>wangzi621.github.io/SkinCancer-AI</span>
         </div>
         <video id="sc-va" class="win-video clip" src="assets/capture/rec1_scan.mp4" data-start="0" data-duration="2.4" data-media-start="1.2" data-track-index="1" muted playsinline></video>
-        <video id="sc-vb" class="win-video clip" src="assets/capture/rec1_scan.mp4" data-start="2.4" data-duration="2.46" data-media-start="8.87" data-track-index="1" muted playsinline></video>
-        <video id="sc-vc" class="win-video clip" src="assets/capture/rec1_scan.mp4" data-start="4.86" data-duration="2.14" data-media-start="11.4" data-track-index="1" muted playsinline></video>
+        <video id="sc-vb" class="win-video clip" src="assets/capture/rec1_scan.mp4" data-start="2.4" data-duration="5.1" data-media-start="8.6" data-track-index="1" muted playsinline></video>
       </div>
       <svg id="sc-ring" class="app-ring" viewBox="0 0 400 400"><circle cx="200" cy="200" r="196" pathLength="100" transform="rotate(-90 200 200)" /></svg>
       <div id="sc-status" class="app-status">Analyzing</div>
 
-      <div id="sc-lb-result" class="lb lb-red" data-at="1233.2,177.3" data-z="1.4" data-side="top" style="--len: 44px">
+      <div id="sc-lb-result" class="lb lb-red" data-at="1247.1,147" data-z="2.15" data-side="top" style="--len: 44px">
         <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Result on the device</span></div>
       </div>
     </div>
 
     <div id="sc-flood" class="clip" data-start="0" data-duration="0.8" data-track-index="2"></div>
-    <div id="sc-dip" class="clip" data-start="6.85" data-duration="0.15" data-track-index="4" style="position: absolute; inset: 0; background: #000000; opacity: 0"></div>
     <div id="sc-lens-host" class="clip" data-start="0" data-duration="1" data-track-index="3" style="position: absolute; inset: 0">
       <div id="sc-lens"><img src="assets/img/samples/s1.jpg" alt="" /></div>
     </div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    const D = 7;
+    const D = 7.5;
 
     // Camera on the real page, adapted from the registry's cursor-zoom-follow: the aim steps
     // between shots and a critically damped spring (in log zoom) turns each step into a move
@@ -289,35 +288,34 @@
       if (tout != null) tl.to([sel + " .lb-dot", sel + " .lb-line", sel + " .lb-card"], { opacity: 0, duration: 0.2, ease: "power2.in" }, tout);
     }
 
-    // Shots. Recording 1 (signed in, scanned for Demo patient A) in three cuts: 1.2-3.6 s (pick
-    // Sample 1), 8.87-11.33 s (Analyze, the model runs), 11.4-13.54 s (the result).
-    // Scene times: click 1.37, Analyze 2.91, result 4.86. Analyze sits at the foot of the page.
+    // Shots, in page coordinates. Two pieces of the film's recording (rec1): media 1.2-3.6 (the
+    // sample click at 1.18 here, the photo lands at 1.34), then media 8.6 on (Analyze clicked at
+    // 2.67, the result at 4.09, the app scrolls it into view by 5.5).
     const cam = pageCamera(document.getElementById("sc-cam"), [
-      { t: 0, x: 657, y: 700, z: 1.9 },
-      { t: 1.45, x: 657.6, y: 330, z: 2.0 },
-      { t: 2.3, x: 1110, y: 796, z: 1.9 },
-      { t: 3.05, x: 657.6, y: 321.3, z: 2.1 },
-      { t: 4.95, x: 1120, y: 420, z: 1.4 },
+      { t: 0, x: 643, y: 677, z: 1.9 }, // the samples
+      { t: 1.25, x: 643.1, y: 300, z: 2.0 }, // the photo lands in the scope
+      { t: 2.2, x: 1112, y: 796, z: 1.9 }, // Analyze (the recording jumps ahead at 2.4)
+      { t: 2.8, x: 643.1, y: 291.3, z: 2.1 }, // the scope while the model runs
+      { t: 4.25, x: 960, y: 520, z: 0.86 }, // pull back: the whole app, on the device
+      { t: 5.55, x: 1247, y: 245, z: 2.15 }, // the verdict
     ], D);
     pinLabels();
     const clock = { t: 0 };
     tl.to(clock, { t: D, duration: D, ease: "none", onUpdate: () => cam.render(clock.t) }, 0);
     cam.render(0);
 
-    // match cut from 01: the lens keeps its move and lands on thumbnail 1 (screen 609.8, 609.4, d 136.8)
-    tl.fromTo("#sc-lens", { x: 0, y: 0, scale: 1 }, { x: 609.8 - 960, y: 609.4 - 540, scale: 136.8 / 400, duration: 0.72, ease: "power4.out" }, 0);
+    // match cut from 01: the lens keeps its move and lands on thumbnail 1 (screen 595.2, 608.4, d 136.8)
+    tl.fromTo("#sc-lens", { x: 0, y: 0, scale: 1 }, { x: 595.2 - 960, y: 608.4 - 540, scale: 136.8 / 400, duration: 0.72, ease: "power4.out" }, 0);
     tl.to("#sc-lens", { opacity: 0, duration: 0.15, ease: "power1.in" }, 0.78);
-    // colour flood: the teal ground gives way to the app around the still-moving lens
+    // the lattice gives way to the app around the still-moving lens
     tl.fromTo("#sc-flood", { opacity: 1 }, { opacity: 0, duration: 0.45, ease: "power2.inOut" }, 0.12);
 
-
     // the model runs: the app's ring sweeps (22 % arc, 1.1 s a turn), then the real red ring takes over
-    tl.fromTo(["#sc-ring", "#sc-status"], { opacity: 0 }, { opacity: 1, duration: 0.12 }, 2.95);
-    tl.fromTo("#sc-ring circle", { strokeDasharray: "22 78", strokeDashoffset: 0 }, { strokeDashoffset: -100 * (1.91 / 1.1), duration: 1.91, ease: "none" }, 2.95);
-    tl.to(["#sc-ring", "#sc-status"], { opacity: 0, duration: 0.1 }, 4.86);
+    tl.fromTo(["#sc-ring", "#sc-status"], { opacity: 0 }, { opacity: 1, duration: 0.12 }, 2.7);
+    tl.fromTo("#sc-ring circle", { strokeDasharray: "22 78", strokeDashoffset: 0 }, { strokeDashoffset: -100 * (1.39 / 1.1), duration: 1.39, ease: "none" }, 2.7);
+    tl.to(["#sc-ring", "#sc-status"], { opacity: 0, duration: 0.1 }, 4.09);
 
-    showLabel("#sc-lb-result", 5.3);
-    tl.fromTo("#sc-dip", { opacity: 0 }, { opacity: 0.4, duration: 0.1, ease: "none" }, 6.85);
-    window.__timelines["bscan"] = tl;
+    showLabel("#sc-lb-result", 5.75, 7.25);
+    window.__timelines["scan"] = tl;
   </script>
 </template>

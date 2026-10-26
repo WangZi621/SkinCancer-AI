@@ -1,17 +1,18 @@
 <template>
   <style>
     @font-face {
-      font-family: "Geist";
-      src: url("assets/fonts/geist.woff2") format("woff2");
+      font-family: "Archivo";
+      src: url("assets/fonts/archivo.woff2") format("woff2");
       font-weight: 100 900;
+      font-stretch: 62% 125%;
     }
     #root {
       position: absolute;
       inset: 0;
       overflow: hidden;
-      font-family: "Geist", sans-serif;
-      color: #ffffff;
-      background: radial-gradient(ellipse 80% 90% at 35% 45%, #16928e 0%, #0f6f6f 46%, #093f46 100%);
+      font-family: "Archivo", sans-serif;
+      color: #0b0e14;
+      background: #ececec url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='52' viewBox='0 0 30 52'%3E%3Cpath d='M0 0H30M0 26H30M0 52H30M0 0L30 52M30 0L0 52' stroke='rgba(20,33,61,0.05)' stroke-width='1' fill='none'/%3E%3Cg fill='rgba(20,33,61,0.2)'%3E%3Ccircle cx='0' cy='0' r='1.5'/%3E%3Ccircle cx='30' cy='0' r='1.5'/%3E%3Ccircle cx='15' cy='26' r='1.5'/%3E%3Ccircle cx='0' cy='52' r='1.5'/%3E%3Ccircle cx='30' cy='52' r='1.5'/%3E%3C/g%3E%3C/svg%3E") 15px 10px / 30px 52px;
     }
     #rs-lens {
       position: absolute;
@@ -25,7 +26,7 @@
       inset: 54px;
       border-radius: 50%;
       overflow: hidden;
-      box-shadow: 0 0 0 9px #ffffff, 0 40px 80px -30px rgba(0, 0, 0, 0.55);
+      box-shadow: 0 0 0 9px #ffffff, 0 0 0 11px #0b0e14;
     }
     #rs-face img {
       width: 100%;
@@ -43,10 +44,10 @@
       stroke-width: 6;
     }
     #rs-track {
-      stroke: rgba(255, 255, 255, 0.2);
+      stroke: #d5d7dc;
     }
     #rs-arc {
-      stroke: #ffffff;
+      stroke: #1b4fd8;
       stroke-linecap: round;
     }
     /* the number window: numbers swap inside it mid-move */
@@ -62,9 +63,11 @@
       position: absolute;
       left: 0;
       top: 18px;
+      color: #14213d;
       font-size: 200px;
-      font-weight: 650;
-      letter-spacing: -0.05em;
+      font-weight: 850;
+      font-stretch: 112%;
+      letter-spacing: -0.03em;
       line-height: 1;
       font-variant-numeric: tabular-nums;
     }
@@ -90,7 +93,7 @@
       text-align: center;
       font-size: 42px;
       font-weight: 500;
-      color: rgba(255, 255, 255, 0.88);
+      color: #4c525d;
     }
     #rs-dip {
       position: absolute;
@@ -117,9 +120,9 @@
   <script>
     const tl = gsap.timeline({ paused: true });
     tl.fromTo("#rs-lens", { scale: 0.96 }, { scale: 1, duration: 0.8, ease: "expo.out" }, 0);
-    tl.fromTo("#rs-arc", { strokeDasharray: "0 100", stroke: "#ffffff" }, { strokeDasharray: "90 10", stroke: "#d92d20", duration: 1.2, ease: "power3.out" }, 0.1);
+    tl.fromTo("#rs-arc", { strokeDasharray: "0 100", stroke: "#1b4fd8" }, { strokeDasharray: "90 10", stroke: "#b42318", duration: 1.2, ease: "power3.out" }, 0.1);
     tl.fromTo("#rs-n3", { y: 230 }, { y: 0, duration: 0.5, ease: "power3.out" }, 0.05);
-    tl.fromTo("#rs-l3 span", { opacity: 0, color: "#8fc7c3", filter: "blur(6px)" }, { opacity: 1, color: "#ffffff", filter: "blur(0px)", duration: 0.16, ease: "power2.out", stagger: 0.06 }, 0.3);
+    tl.fromTo("#rs-l3 span", { opacity: 0, color: "#a3a9b4", filter: "blur(6px)" }, { opacity: 1, color: "#0b0e14", filter: "blur(0px)", duration: 0.16, ease: "power2.out", stagger: 0.06 }, 0.3);
     window.__timelines["bresult"] = tl;
   </script>
 </template>

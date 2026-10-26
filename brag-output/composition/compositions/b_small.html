@@ -1,17 +1,18 @@
 <template>
   <style>
     @font-face {
-      font-family: "Geist";
-      src: url("assets/fonts/geist.woff2") format("woff2");
+      font-family: "Archivo";
+      src: url("assets/fonts/archivo.woff2") format("woff2");
       font-weight: 100 900;
+      font-stretch: 62% 125%;
     }
     #root {
       position: absolute;
       inset: 0;
       overflow: hidden;
-      font-family: "Geist", sans-serif;
-      background: #f5f7f8;
-      color: #0f1b24;
+      font-family: "Archivo", sans-serif;
+      background: #ececec url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='52' viewBox='0 0 30 52'%3E%3Cpath d='M0 0H30M0 26H30M0 52H30M0 0L30 52M30 0L0 52' stroke='rgba(20,33,61,0.05)' stroke-width='1' fill='none'/%3E%3Cg fill='rgba(20,33,61,0.2)'%3E%3Ccircle cx='0' cy='0' r='1.5'/%3E%3Ccircle cx='30' cy='0' r='1.5'/%3E%3Ccircle cx='15' cy='26' r='1.5'/%3E%3Ccircle cx='0' cy='52' r='1.5'/%3E%3Ccircle cx='30' cy='52' r='1.5'/%3E%3C/g%3E%3C/svg%3E") 15px 10px / 30px 52px;
+      color: #0b0e14;
     }
     /* two panels side by side; the camera slides from the browser to the board */
     #sm-world {
@@ -25,9 +26,11 @@
       position: absolute;
       left: 140px;
       top: 300px;
+      color: #14213d;
       font-size: 230px;
-      font-weight: 650;
-      letter-spacing: -0.05em;
+      font-weight: 850;
+      font-stretch: 112%;
+      letter-spacing: -0.03em;
       line-height: 1;
     }
     #sm-size span,
@@ -40,9 +43,11 @@
       left: 148px;
       top: 560px;
       width: 780px;
+      color: #14213d;
       font-size: 56px;
-      font-weight: 600;
-      letter-spacing: -0.03em;
+      font-weight: 750;
+      font-stretch: 108%;
+      letter-spacing: -0.015em;
       line-height: 1.15;
     }
     #sm-file {
@@ -57,7 +62,6 @@
       inset: 0;
       width: 100%;
       height: 100%;
-      filter: drop-shadow(0 24px 40px rgba(15, 27, 36, 0.22));
     }
     #sm-file img {
       position: absolute;
@@ -79,7 +83,7 @@
       position: absolute;
       left: 44px;
       bottom: 26px;
-      color: #4a5a66;
+      color: #4c525d;
       font-size: 30px;
       font-weight: 500;
     }
@@ -92,7 +96,7 @@
       border-radius: 16px;
       overflow: hidden;
       background: #ffffff;
-      box-shadow: 0 0 0 1px #e2e7eb, 0 40px 90px -30px rgba(15, 27, 36, 0.35);
+      box-shadow: 0 0 0 2px #0b0e14, 12px 12px 0 2px #0b0e14;
     }
     #sm-browser .bar {
       position: absolute;
@@ -100,7 +104,7 @@
       top: 0;
       right: 0;
       height: 36px;
-      border-bottom: 1px solid #e2e7eb;
+      border-bottom: 1px solid #d5d7dc;
     }
     #sm-browser .bar i {
       position: absolute;
@@ -108,7 +112,7 @@
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background: #cfd7dd;
+      background: #c4c8d0;
     }
     #sm-browser img {
       position: absolute;
@@ -158,9 +162,11 @@
       top: 120px;
       width: 1640px;
       text-align: center;
+      color: #14213d;
       font-size: 64px;
-      font-weight: 650;
-      letter-spacing: -0.03em;
+      font-weight: 800;
+      font-stretch: 112%;
+      letter-spacing: -0.015em;
     }
     .sm-line2 span {
       display: inline-block;
@@ -178,21 +184,23 @@
       inset: 0;
       width: 100%;
       height: 100%;
-      filter: drop-shadow(0 20px 34px rgba(15, 27, 36, 0.25));
     }
     #bs-file b {
       position: absolute;
       left: 32px;
       top: 150px;
-      font-size: 76px;
-      font-weight: 650;
-      letter-spacing: -0.04em;
+      color: #14213d;
+      font-size: 64px;
+      font-weight: 850;
+      font-stretch: 112%;
+      letter-spacing: -0.03em;
+      white-space: nowrap;
     }
     #bs-file small {
       position: absolute;
       left: 34px;
       bottom: 30px;
-      color: #4a5a66;
+      color: #4c525d;
       font-size: 28px;
       font-weight: 500;
     }
@@ -203,7 +211,7 @@
       <div id="sm-pi">
         <svg viewBox="-60 -20 1420 660">
           <!-- micro SD card slot, protruding from the left edge -->
-          <rect x="-40" y="218" width="160" height="240" rx="8" fill="#b8c0c5" />
+          <rect x="-40" y="218" width="160" height="240" rx="8" fill="#a3a9b4" />
           <rect x="-40" y="238" width="40" height="200" rx="4" fill="#8e979d" />
           <!-- the board -->
           <rect x="0" y="0" width="1300" height="600" rx="60" fill="#1f7a43" />
@@ -212,7 +220,7 @@
           <g fill="#d8b45a">
             <circle cx="70" cy="70" r="58" /><circle cx="1230" cy="70" r="58" /><circle cx="70" cy="530" r="58" /><circle cx="1230" cy="530" r="58" />
           </g>
-          <g fill="#f5f7f8">
+          <g fill="#ececec">
             <circle cx="70" cy="70" r="28" /><circle cx="1230" cy="70" r="28" /><circle cx="70" cy="530" r="28" /><circle cx="1230" cy="530" r="28" />
           </g>
           <!-- 2 x 20 header holes along the top edge -->
@@ -231,22 +239,22 @@
           <rect x="1200" y="170" width="96" height="270" rx="6" fill="#2a2f33" />
           <rect x="1270" y="180" width="18" height="250" rx="4" fill="#5a6168" />
           <!-- mini HDMI and two micro USB along the bottom edge -->
-          <rect x="136" y="520" width="224" height="92" rx="10" fill="#b8c0c5" />
+          <rect x="136" y="520" width="224" height="92" rx="10" fill="#a3a9b4" />
           <rect x="166" y="560" width="164" height="30" rx="6" fill="#4a5258" />
-          <rect x="748" y="508" width="160" height="104" rx="10" fill="#b8c0c5" />
+          <rect x="748" y="508" width="160" height="104" rx="10" fill="#a3a9b4" />
           <rect x="774" y="548" width="108" height="26" rx="6" fill="#4a5258" />
-          <rect x="1000" y="508" width="160" height="104" rx="10" fill="#b8c0c5" />
+          <rect x="1000" y="508" width="160" height="104" rx="10" fill="#a3a9b4" />
           <rect x="1026" y="548" width="108" height="26" rx="6" fill="#4a5258" />
           <!-- silkscreen -->
-          <text x="1020" y="480" fill="#e8f3ec" font-family="Geist" font-size="30" font-weight="600" text-anchor="middle" data-layout-ignore>Raspberry Pi Zero 2 W</text>
+          <text x="1020" y="480" fill="#e8f3ec" font-family="Archivo" font-size="30" font-weight="600" text-anchor="middle" data-layout-ignore>Raspberry Pi Zero 2 W</text>
         </svg>
       </div>
       <svg id="sm-chipring" viewBox="0 0 400 400">
         <circle id="sm-chipring-track" cx="200" cy="200" r="192" style="stroke: #ffffff; stroke-width: 16" />
-        <circle id="sm-chipring-arc" cx="200" cy="200" r="192" pathLength="100" transform="rotate(-90 200 200)" style="stroke: #0e7c7b; stroke-width: 7; stroke-linecap: round" />
+        <circle id="sm-chipring-arc" cx="200" cy="200" r="192" pathLength="100" transform="rotate(-90 200 200)" style="stroke: #1b4fd8; stroke-width: 7; stroke-linecap: round" />
       </svg>
       <div id="bs-file">
-        <svg viewBox="0 0 360 460"><path d="M24 0h232l104 104v332a24 24 0 0 1-24 24H24a24 24 0 0 1-24-24V24A24 24 0 0 1 24 0z" fill="#ffffff" /><path d="M256 0v80a24 24 0 0 0 24 24h80" fill="#e7ecef" /></svg>
+        <svg viewBox="0 0 360 460"><path d="M24 0h232l104 104v332a24 24 0 0 1-24 24H24a24 24 0 0 1-24-24V24A24 24 0 0 1 24 0z" fill="#ffffff" stroke="#0b0e14" stroke-width="4" /><path d="M256 0v80a24 24 0 0 0 24 24h80" fill="#e3e5ea" stroke="#0b0e14" stroke-width="4" stroke-linejoin="round" /></svg>
         <b>21 MB</b>
         <small>skinscan-v3.onnx</small>
       </div>
@@ -264,7 +272,7 @@
     }
     // the board is there from the first frame and settles
     tl.fromTo("#sm-pi", { scale: 0.97, y: 16 }, { scale: 1, y: 0, duration: 0.9, ease: "expo.out" }, 0);
-    tl.fromTo("#sm-l3 span", { opacity: 0, color: "#a9b6be", filter: "blur(6px)" }, { opacity: 1, color: "#0f1b24", filter: "blur(0px)", duration: 0.16, ease: "power2.out", stagger: 0.07 }, 0.2);
+    tl.fromTo("#sm-l3 span", { opacity: 0, color: "#a3a9b4", filter: "blur(6px)" }, { opacity: 1, color: "#0b0e14", filter: "blur(0px)", duration: 0.16, ease: "power2.out", stagger: 0.07 }, 0.2);
     // the 21 MB model file arrives above the chip, then drops onto it
     tl.fromTo("#bs-file", { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.5, ease: "expo.out" }, 0.45);
     tl.to("#bs-file", { y: 300, scale: 0.4, duration: 0.55, ease: "power3.in" }, 1.45);
