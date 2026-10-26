@@ -24,8 +24,8 @@ from build import FONT, SPOT, blob, f, ring
 ROOT = pathlib.Path(__file__).resolve().parent
 KIT = ROOT / 'kit'
 DOCS_ICONS = ROOT.parent.parent / 'docs' / 'icons'
-VIOLET = '#5A2CB0'
-INK = '#201A3D'
+COBALT = '#1B4FD8'
+NAVY = '#14213D'
 WHITE = '#FFFFFF'
 K = 1 / math.sqrt(2)
 
@@ -61,9 +61,9 @@ def placed(d, size, x, y):
     return f'<g transform="translate({f(x)} {f(y)}) scale({size / 256:.5f})">{d}</g>'
 
 
-# ---------------------------------------------------------------- wordmark (outlined Mona Sans)
-def wordmark(cap_px, x0=0.0, y0=0.0, text='SkinScan AI', wdth=115, wght=800, track=-0.012):
-    """Path data for the wordmark with its cap height `cap_px`, top of the caps at y0.
+# ---------------------------------------------------------------- wordmark (outlined Archivo)
+def wordmark(cap_px, x0=0.0, y0=0.0, text='SkinScan AI', wdth=115, wght=850, track=-0.01):
+    """Path data for the wordmark (Archivo, as the Stryde headlines) with its cap height `cap_px`, top of the caps at y0.
     Returns (d, width)."""
     font = TTFont(FONT)
     inst = instancer.instantiateVariableFont(font, {'wdth': wdth, 'wght': wght})
@@ -109,13 +109,13 @@ def wordmark_svg(fill):
 
 
 def tile(small=False, maskable=False):
-    """App icon: white mark on a violet square. Rounded for the favicon and app tile; full-bleed
+    """App icon: white mark on a cobalt square. Rounded for the favicon and app tile; full-bleed
     for the maskable icon, with the mark inside the 80% safe circle."""
     corner = '' if maskable else ' rx="56"'
     size = 150 if maskable else 168
     mark = path(contours_small() if small else contours(w=17), WHITE)
     # optical centre: the mark's weight sits upper left, so nudge it right and down a little
-    return svg('0 0 256 256', f'<rect width="256" height="256"{corner} fill="{VIOLET}"/>' + placed(mark, size, (256 - size) / 2 + 3, (256 - size) / 2 + 3))
+    return svg('0 0 256 256', f'<rect width="256" height="256"{corner} fill="{COBALT}"/>' + placed(mark, size, (256 - size) / 2 + 3, (256 - size) / 2 + 3))
 
 
 # ---------------------------------------------------------------- rendering (Chromium)
@@ -174,57 +174,57 @@ def usage_html():
     swatches = ''.join(
         f'<div class="sw"><i style="background:{hx}{";outline:1px solid #d7d5df" if hx == WHITE else ""}"></i><b>{n}</b><span>{hx}<br>RGB {r}</span><span>{u}</span></div>'
         for n, hx, r, u in [
-            ('Gentian violet', VIOLET, '90 44 176', 'The symbol, links, primary buttons, app icon'),
-            ('Ink', INK, '32 26 61', 'The wordmark and all text'),
-            ('White', WHITE, '255 255 255', 'The mark on violet or ink'),
+            ('Cobalt', COBALT, '27 79 216', 'The symbol, links, primary buttons, app icon'),
+            ('Dress blue', NAVY, '20 33 61', 'The wordmark and headlines'),
+            ('White', WHITE, '255 255 255', 'The mark on cobalt or dress blue'),
         ]
     )
     backgrounds = ''.join(
         f'<div class="bg" style="background:{bg}">{img(name, 54)}</div>'
-        for bg, name in [('#fff', 'skinscan-horizontal-color.svg'), ('#ececef', 'skinscan-horizontal-color.svg'), (VIOLET, 'skinscan-horizontal-white.svg'), (INK, 'skinscan-horizontal-white.svg')]
+        for bg, name in [('#fff', 'skinscan-horizontal-color.svg'), ('#ececec', 'skinscan-horizontal-color.svg'), (COBALT, 'skinscan-horizontal-white.svg'), (NAVY, 'skinscan-horizontal-white.svg')]
     )
-    sizes = ''.join(f'<div class="cell">{img("skinscan-symbol-violet.svg" if s >= 32 else "skinscan-symbol-small-violet.svg", s)}<span>{s} px</span></div>' for s in (128, 64, 32, 24, 16))
+    sizes = ''.join(f'<div class="cell">{img("skinscan-symbol-cobalt.svg" if s >= 32 else "skinscan-symbol-small-cobalt.svg", s)}<span>{s} px</span></div>' for s in (128, 64, 32, 24, 16))
     misuse = ''.join(
         f'<div class="cell bad">{img(n, 64, st)}<span>{t}</span></div>'
         for n, st, t in [
-            ('skinscan-symbol-violet.svg', 'transform:scaleX(1.35)', 'Stretched'),
-            ('skinscan-symbol-violet.svg', 'transform:rotate(90deg)', 'Rotated'),
-            ('skinscan-symbol-violet.svg', 'filter:drop-shadow(4px 6px 6px rgba(0,0,0,.35))', 'Shadow'),
-            ('skinscan-symbol-ink.svg', 'filter:hue-rotate(140deg) saturate(3)', 'Other colours'),
+            ('skinscan-symbol-cobalt.svg', 'transform:scaleX(1.35)', 'Stretched'),
+            ('skinscan-symbol-cobalt.svg', 'transform:rotate(90deg)', 'Rotated'),
+            ('skinscan-symbol-cobalt.svg', 'filter:drop-shadow(4px 6px 6px rgba(0,0,0,.35))', 'Shadow'),
+            ('skinscan-symbol-navy.svg', 'filter:hue-rotate(150deg) saturate(3)', 'Other colours'),
         ]
     )
     return f"""<!doctype html><meta charset="utf-8"><style>
-@font-face {{ font-family: 'Mona Sans'; src: url('../../docs/fonts/mona-sans.woff2') format('woff2'); font-weight: 200 900; font-stretch: 75% 125%; }}
-body {{ margin: 0; background: #ececef; color: {INK}; font-family: 'Mona Sans', sans-serif; }}
+@font-face {{ font-family: 'Archivo'; src: url('../../docs/fonts/archivo.woff2') format('woff2'); font-weight: 100 900; font-stretch: 62% 125%; }}
+body {{ margin: 0; background: #ececec; color: {NAVY}; font-family: 'Archivo', sans-serif; }}
 .page {{ display: grid; gap: 18px; padding: 48px; width: 1600px; box-sizing: border-box; }}
 section {{ display: grid; grid-template-columns: 320px 1fr; gap: 40px; padding: 40px; border-radius: 28px; background: #fff; align-items: center; }}
-h1 {{ margin: 0 0 4px; font-size: 52px; font-weight: 800; font-stretch: 115%; letter-spacing: -0.02em; }}
+h1 {{ margin: 0 0 4px; font-size: 52px; font-weight: 850; font-stretch: 115%; letter-spacing: -0.02em; }}
 h2 {{ margin: 0 0 8px; font-size: 26px; font-weight: 800; font-stretch: 112%; }}
-p {{ margin: 0; color: #5d5970; font-size: 17px; line-height: 1.45; }}
+p {{ margin: 0; color: #4c525d; font-size: 17px; line-height: 1.45; }}
 .row {{ display: flex; flex-wrap: wrap; gap: 48px; align-items: center; }}
-.cell {{ display: grid; justify-items: center; gap: 10px; color: #5d5970; font-size: 14px; }}
-.sw {{ display: grid; gap: 4px; width: 250px; font-size: 14px; color: #5d5970; }}
+.cell {{ display: grid; justify-items: center; gap: 10px; color: #4c525d; font-size: 14px; }}
+.sw {{ display: grid; gap: 4px; width: 250px; font-size: 14px; color: #4c525d; }}
 .sw i {{ height: 96px; border-radius: 16px; margin-bottom: 8px; }}
-.sw b {{ color: {INK}; font-size: 17px; }}
+.sw b {{ color: {NAVY}; font-size: 17px; }}
 .bg {{ display: grid; place-items: center; height: 140px; padding: 0 36px; border-radius: 20px; }}
-.space {{ position: relative; padding: 38px; outline: 2px dashed #bdbac9; outline-offset: -2px; border-radius: 4px; }}
-.space::before {{ content: ''; position: absolute; left: 0; top: 0; width: 38px; height: 38px; background: #ece5f8; }}
+.space {{ position: relative; padding: 38px; outline: 2px dashed #b9bdc6; outline-offset: -2px; border-radius: 4px; }}
+.space::before {{ content: ''; position: absolute; left: 0; top: 0; width: 38px; height: 38px; background: #e4ebfc; }}
 .bad {{ position: relative; }}
 .bad::after {{ content: ''; position: absolute; left: 50%; top: 32px; width: 92px; height: 3px; background: #b42318; transform: translate(-50%, 0) rotate(-35deg); }}
-.tab {{ display: flex; align-items: center; gap: 10px; width: 260px; padding: 12px 16px; border-radius: 14px 14px 0 0; background: #dedde5; font-size: 15px; }}
-.home {{ display: grid; grid-template-columns: repeat(4, 76px); gap: 18px 22px; padding: 26px; border-radius: 30px; background: #2b2540; }}
+.tab {{ display: flex; align-items: center; gap: 10px; width: 260px; padding: 12px 16px; border-radius: 14px 14px 0 0; background: #e3e5ea; font-size: 15px; }}
+.home {{ display: grid; grid-template-columns: repeat(4, 76px); gap: 18px 22px; padding: 26px; border-radius: 30px; background: #1e2433; }}
 .home div {{ display: grid; justify-items: center; gap: 6px; color: #fff; font-size: 12px; }}
-.home i {{ width: 64px; height: 64px; border-radius: 16px; background: #4a4560; }}
+.home i {{ width: 64px; height: 64px; border-radius: 16px; background: #3a4152; }}
 </style>
 <div class="page">
   <div style="padding:8px 8px 16px"><h1>SkinScan AI logo</h1><p>Contours: the outline of one skin spot at three visits, spreading toward the lower right where it grew. It stands for the job the app does between visits.</p></div>
   <section><div><h2>Lockups</h2><p>Use the horizontal lockup by default. Use the stacked lockup in square spaces, and the symbol alone when the name is already on screen.</p></div>
-    <div class="row">{img('skinscan-horizontal-color.svg', 80)}{img('skinscan-stacked-color.svg', 170)}{img('skinscan-symbol-violet.svg', 110)}</div></section>
-  <section><div><h2>Colour</h2><p>One colour per mark. The symbol is violet and the wordmark is ink. On violet or ink, everything is white.</p></div><div class="row" style="gap:28px">{swatches}</div></section>
-  <section><div><h2>Backgrounds</h2><p>White, the slide grey, violet or ink. Never over a photo or a pattern.</p></div><div class="row" style="gap:16px">{backgrounds}</div></section>
-  <section><div><h2>Clear space and sizes</h2><p>Keep clear space of a quarter of the symbol's height (the violet square) on every side. Below 32 px, use the small version, which drops the middle outline so the gaps stay open.</p></div>
-    <div class="row"><div class="space">{img('skinscan-symbol-violet.svg', 150)}</div>{sizes}</div></section>
-  <section><div><h2>In use</h2><p>The app icon and favicon put the white mark on a violet square.</p></div>
+    <div class="row">{img('skinscan-horizontal-color.svg', 80)}{img('skinscan-stacked-color.svg', 170)}{img('skinscan-symbol-cobalt.svg', 110)}</div></section>
+  <section><div><h2>Colour</h2><p>One colour per mark, from the Stryde palette. The symbol is cobalt and the wordmark is dress blue. On cobalt or dress blue, everything is white.</p></div><div class="row" style="gap:28px">{swatches}</div></section>
+  <section><div><h2>Backgrounds</h2><p>White, off-white, cobalt or dress blue. Never over a photo, and on the lattice only where it is quiet.</p></div><div class="row" style="gap:16px">{backgrounds}</div></section>
+  <section><div><h2>Clear space and sizes</h2><p>Keep clear space of a quarter of the symbol's height (the shaded square) on every side. Below 32 px, use the small version, which drops the middle outline so the gaps stay open.</p></div>
+    <div class="row"><div class="space">{img('skinscan-symbol-cobalt.svg', 150)}</div>{sizes}</div></section>
+  <section><div><h2>In use</h2><p>The app icon and favicon put the white mark on a cobalt square.</p></div>
     <div class="row"><div class="cell"><div class="tab">{img('skinscan-favicon.svg', 18)}SkinScan AI</div><span>Browser tab</span></div>
       <div class="cell"><div class="home">{''.join('<div><i></i>App</div>' for _ in range(2))}<div>{img('skinscan-app-icon.svg', 64)}SkinScan</div>{''.join('<div><i></i>App</div>' for _ in range(5))}</div><span>Home screen</span></div></div></section>
   <section><div><h2>Don't</h2><p>Stretch it, rotate it, add a shadow or gradient, or recolour it.</p></div><div class="row">{misuse}</div></section>
@@ -238,15 +238,15 @@ if __name__ == '__main__':
         if p.is_file():
             p.unlink()
     out = {}
-    for name, fill in (('violet', VIOLET), ('ink', INK), ('black', '#000'), ('white', WHITE)):
+    for name, fill in (('cobalt', COBALT), ('navy', NAVY), ('black', '#000'), ('white', WHITE)):
         out[f'skinscan-symbol-{name}.svg'] = svg('0 0 256 256', path(contours(w=17 if name == 'white' else 18), fill))
-    for name, fill in (('violet', VIOLET), ('white', WHITE)):
+    for name, fill in (('cobalt', COBALT), ('white', WHITE)):
         out[f'skinscan-symbol-small-{name}.svg'] = svg('0 0 256 256', path(contours_small(), fill))
-    for name, (sf, wf) in {'color': (VIOLET, INK), 'ink': (INK, INK), 'black': ('#000', '#000'), 'white': (WHITE, WHITE)}.items():
+    for name, (sf, wf) in {'color': (COBALT, NAVY), 'navy': (NAVY, NAVY), 'black': ('#000', '#000'), 'white': (WHITE, WHITE)}.items():
         out[f'skinscan-horizontal-{name}.svg'] = horizontal(sf, wf)[0]
-    for name, (sf, wf) in {'color': (VIOLET, INK), 'white': (WHITE, WHITE)}.items():
+    for name, (sf, wf) in {'color': (COBALT, NAVY), 'white': (WHITE, WHITE)}.items():
         out[f'skinscan-stacked-{name}.svg'] = stacked(sf, wf)
-    out['skinscan-wordmark-ink.svg'] = wordmark_svg(INK)
+    out['skinscan-wordmark-navy.svg'] = wordmark_svg(NAVY)
     out['skinscan-wordmark-white.svg'] = wordmark_svg(WHITE)
     out['skinscan-app-icon.svg'] = tile()
     out['skinscan-favicon.svg'] = tile(small=True)
@@ -257,7 +257,7 @@ if __name__ == '__main__':
     jobs = [(out['skinscan-favicon.svg'], KIT / f'favicon-{s}.png', s, s) for s in (16, 32)]
     jobs += [(out['skinscan-app-icon.svg'], KIT / f'icon-{s}.png', s, s) for s in (48, 180, 192, 512)]
     jobs += [(out['skinscan-maskable.svg'], KIT / 'icon-maskable-512.png', 512, 512)]
-    jobs += [(out['skinscan-horizontal-color.svg'], KIT / 'skinscan-horizontal-color-1200.png', 1200, round(1200 * 256 / horizontal(VIOLET, INK)[1]))]
+    jobs += [(out['skinscan-horizontal-color.svg'], KIT / 'skinscan-horizontal-color-1200.png', 1200, round(1200 * 256 / horizontal(COBALT, NAVY)[1]))]
     render_pngs(jobs)
     # favicon.ico with 16, 32 and 48 px images
     imgs = [Image.open(KIT / 'favicon-16.png'), Image.open(KIT / 'favicon-32.png'), Image.open(KIT / 'icon-48.png')]

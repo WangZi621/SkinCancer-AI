@@ -1,5 +1,5 @@
-Mona Sans (mona-sans.woff2, mona-sans-ext.woff2)
-Copyright 2023 The Mona Sans Project Authors (https://github.com/github/mona-sans)
+Archivo (archivo.woff2, archivo-ext.woff2)
+Copyright 2020 The Archivo Project Authors (https://github.com/Omnibus-Type/Archivo)
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:

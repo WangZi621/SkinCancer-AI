@@ -16,7 +16,7 @@ from fontTools.varLib import instancer
 ROOT = pathlib.Path(__file__).resolve().parent
 OUT = ROOT / 'concepts'
 OUT.mkdir(exist_ok=True)
-FONT = ROOT.parent.parent / 'docs' / 'fonts' / 'mona-sans.woff2'
+FONT = ROOT.parent.parent / 'docs' / 'fonts' / 'archivo.woff2'
 INK = '#000'
 
 

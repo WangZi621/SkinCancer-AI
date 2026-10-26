@@ -10,13 +10,13 @@ drawn the way a clinician traces a lesion's edge.
 
 | File | Use |
 | --- | --- |
-| `skinscan-horizontal-color.svg` | Default lockup: violet symbol, ink wordmark |
-| `skinscan-horizontal-white.svg`, `-ink.svg`, `-black.svg` | On violet or ink; one-colour print |
+| `skinscan-horizontal-color.svg` | Default lockup: cobalt symbol, dress-blue wordmark |
+| `skinscan-horizontal-white.svg`, `-navy.svg`, `-black.svg` | On cobalt or dress blue; one-colour print |
 | `skinscan-stacked-color.svg`, `-white.svg` | Square spaces |
-| `skinscan-symbol-violet.svg`, `-ink.svg`, `-black.svg`, `-white.svg` | Symbol alone, 32 px and up |
-| `skinscan-symbol-small-violet.svg`, `-white.svg` | Symbol alone, 16 to 31 px |
-| `skinscan-wordmark-ink.svg`, `-white.svg` | Name alone |
-| `skinscan-app-icon.svg`, `icon-48/180/192/512.png` | App icon (rounded violet square) |
+| `skinscan-symbol-cobalt.svg`, `-navy.svg`, `-black.svg`, `-white.svg` | Symbol alone, 32 px and up |
+| `skinscan-symbol-small-cobalt.svg`, `-white.svg` | Symbol alone, 16 to 31 px |
+| `skinscan-wordmark-navy.svg`, `-white.svg` | Name alone |
+| `skinscan-app-icon.svg`, `icon-48/180/192/512.png` | App icon (rounded cobalt square) |
 | `skinscan-maskable.svg`, `icon-maskable-512.png` | Android maskable icon |
 | `skinscan-favicon.svg`, `favicon.ico` (16, 32, 48) | Browser tab |
 | `skinscan-horizontal-color-1200.png` | Documents and slides |
@@ -37,26 +37,27 @@ drawn the way a clinician traces a lesion's edge.
 
 ## Wordmark
 
-"SkinScan AI" in Mona Sans (SIL Open Font License, which allows logo use), width 115, weight 800,
-tracking -0.012 em, converted to outlines. In the horizontal lockup the cap height is 0.40 of the symbol's
+"SkinScan AI" in Archivo (SIL Open Font License, which allows logo use), width 115, weight 850,
+tracking -0.01 em, converted to outlines. It matches the Stryde headlines. In the horizontal lockup the cap height is 0.40 of the symbol's
 height and the gap is 0.27 of it.
 
 ## Colour
 
+From the Stryde palette.
+
 | Name | HEX | RGB | Use |
 | --- | --- | --- | --- |
-| Gentian violet | `#5A2CB0` | 90 44 176 | Symbol, app icon |
-| Ink | `#201A3D` | 32 26 61 | Wordmark |
-| White | `#FFFFFF` | 255 255 255 | Everything, on violet or ink |
+| Cobalt | `#1B4FD8` | 27 79 216 | Symbol, app icon |
+| Dress blue | `#14213D` | 20 33 61 | Wordmark |
+| White | `#FFFFFF` | 255 255 255 | Everything, on cobalt or dress blue |
 
-Gentian violet is the ink of the surgical skin marker. No Pantone match has been checked against a physical
-swatch; do that before printing in spot colour.
+No Pantone match has been checked against a physical swatch; do that before printing in spot colour.
 
 ## Rules
 
 - Clear space: a quarter of the symbol's height on every side.
 - Minimum sizes: symbol 16 px (small version below 32 px); horizontal lockup 24 px tall.
-- Backgrounds: white, the slide grey `#ECECEF`, violet or ink. Not over photos or patterns.
+- Backgrounds: white, off-white `#ECECEC` (the lattice is fine where it is quiet), cobalt or dress blue. Not over photos.
 - Don't stretch, rotate, recolour, outline, or add shadows, gradients or effects.
 
 ## Open items
