@@ -138,6 +138,7 @@ function updateChrome() {
 store.onChange((me) => {
   updateChrome();
   if (!me) {
+    refreshProfiles(); // the sign-in link and screen list every profile on this device
     const r = parseHash();
     if (AUTH.has(r.name) || (r.name === 'report' && r.id !== 'current')) {
       intended = location.hash;
