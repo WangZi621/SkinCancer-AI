@@ -1,4 +1,4 @@
-// "Inside the model": one real forward pass of SkinScan v3, shown stage by stage.
+// "Inside the model": one real forward pass of Stryde v3, shown stage by stage.
 // Every number and map on this page comes from the model's own intermediate tensors
 // (model.explain), computed in this browser for the chosen photo and patient details.
 
@@ -151,7 +151,7 @@ export function createExplainer({ root, model, samples, samplesReady, getScan })
   root.innerHTML = '';
   const head = h('div', { class: 'ex-head' },
     h('h1', { text: 'Inside the model' }),
-    h('p', { text: 'Follow one photo through SkinScan, from raw pixels to a referral. Every map and number on this page is computed in your browser by the trained network, for the photo and patient details you pick.' }));
+    h('p', { text: 'Follow one photo through Stryde, from raw pixels to a referral. Every map and number on this page is computed in your browser by the trained network, for the photo and patient details you pick.' }));
   const picker = h('div', { class: 'ex-picker', role: 'group', 'aria-label': 'Choose a photo' });
   const status = h('p', { class: 'ex-status', role: 'status', 'aria-live': 'polite' });
   const playBtn = h('button', { class: 'btn btn-secondary', type: 'button', text: 'Play the forward pass' });

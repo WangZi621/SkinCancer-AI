@@ -1,4 +1,4 @@
-"""Build the SkinScan AI logo kit from concept C, Contours: the outline of one spot at three
+"""Build the Stryde logo kit from concept C, Contours: the outline of one spot at three
 visits, growing toward the lower right.
 
     python3 brand/logo/kit.py        # needs fonttools, brotli, Pillow and Playwright's Chromium
@@ -62,7 +62,7 @@ def placed(d, size, x, y):
 
 
 # ---------------------------------------------------------------- wordmark (outlined Archivo)
-def wordmark(cap_px, x0=0.0, y0=0.0, text='SkinScan AI', wdth=115, wght=850, track=-0.01):
+def wordmark(cap_px, x0=0.0, y0=0.0, text='Stryde', wdth=115, wght=850, track=-0.01):
     """Path data for the wordmark (Archivo, as the Stryde headlines) with its cap height `cap_px`, top of the caps at y0.
     Returns (d, width)."""
     font = TTFont(FONT)
@@ -181,16 +181,16 @@ def usage_html():
     )
     backgrounds = ''.join(
         f'<div class="bg" style="background:{bg}">{img(name, 54)}</div>'
-        for bg, name in [('#fff', 'skinscan-horizontal-color.svg'), ('#ececec', 'skinscan-horizontal-color.svg'), (COBALT, 'skinscan-horizontal-white.svg'), (NAVY, 'skinscan-horizontal-white.svg')]
+        for bg, name in [('#fff', 'stryde-horizontal-color.svg'), ('#ececec', 'stryde-horizontal-color.svg'), (COBALT, 'stryde-horizontal-white.svg'), (NAVY, 'stryde-horizontal-white.svg')]
     )
-    sizes = ''.join(f'<div class="cell">{img("skinscan-symbol-cobalt.svg" if s >= 32 else "skinscan-symbol-small-cobalt.svg", s)}<span>{s} px</span></div>' for s in (128, 64, 32, 24, 16))
+    sizes = ''.join(f'<div class="cell">{img("stryde-symbol-cobalt.svg" if s >= 32 else "stryde-symbol-small-cobalt.svg", s)}<span>{s} px</span></div>' for s in (128, 64, 32, 24, 16))
     misuse = ''.join(
         f'<div class="cell bad">{img(n, 64, st)}<span>{t}</span></div>'
         for n, st, t in [
-            ('skinscan-symbol-cobalt.svg', 'transform:scaleX(1.35)', 'Stretched'),
-            ('skinscan-symbol-cobalt.svg', 'transform:rotate(90deg)', 'Rotated'),
-            ('skinscan-symbol-cobalt.svg', 'filter:drop-shadow(4px 6px 6px rgba(0,0,0,.35))', 'Shadow'),
-            ('skinscan-symbol-navy.svg', 'filter:hue-rotate(150deg) saturate(3)', 'Other colours'),
+            ('stryde-symbol-cobalt.svg', 'transform:scaleX(1.35)', 'Stretched'),
+            ('stryde-symbol-cobalt.svg', 'transform:rotate(90deg)', 'Rotated'),
+            ('stryde-symbol-cobalt.svg', 'filter:drop-shadow(4px 6px 6px rgba(0,0,0,.35))', 'Shadow'),
+            ('stryde-symbol-navy.svg', 'filter:hue-rotate(150deg) saturate(3)', 'Other colours'),
         ]
     )
     return f"""<!doctype html><meta charset="utf-8"><style>
@@ -217,16 +217,16 @@ p {{ margin: 0; color: #4c525d; font-size: 17px; line-height: 1.45; }}
 .home i {{ width: 64px; height: 64px; border-radius: 16px; background: #3a4152; }}
 </style>
 <div class="page">
-  <div style="padding:8px 8px 16px"><h1>SkinScan AI logo</h1><p>Contours: the outline of one skin spot at three visits, spreading toward the lower right where it grew. It stands for the job the app does between visits.</p></div>
+  <div style="padding:8px 8px 16px"><h1>Stryde logo</h1><p>Contours: the outline of one skin spot at three visits, spreading toward the lower right where it grew. It stands for the job the app does between visits.</p></div>
   <section><div><h2>Lockups</h2><p>Use the horizontal lockup by default. Use the stacked lockup in square spaces, and the symbol alone when the name is already on screen.</p></div>
-    <div class="row">{img('skinscan-horizontal-color.svg', 80)}{img('skinscan-stacked-color.svg', 170)}{img('skinscan-symbol-cobalt.svg', 110)}</div></section>
+    <div class="row">{img('stryde-horizontal-color.svg', 80)}{img('stryde-stacked-color.svg', 170)}{img('stryde-symbol-cobalt.svg', 110)}</div></section>
   <section><div><h2>Colour</h2><p>One colour per mark, from the Stryde palette. The symbol is cobalt and the wordmark is dress blue. On cobalt or dress blue, everything is white.</p></div><div class="row" style="gap:28px">{swatches}</div></section>
   <section><div><h2>Backgrounds</h2><p>White, off-white, cobalt or dress blue. Never over a photo, and on the lattice only where it is quiet.</p></div><div class="row" style="gap:16px">{backgrounds}</div></section>
   <section><div><h2>Clear space and sizes</h2><p>Keep clear space of a quarter of the symbol's height (the shaded square) on every side. Below 32 px, use the small version, which drops the middle outline so the gaps stay open.</p></div>
-    <div class="row"><div class="space">{img('skinscan-symbol-cobalt.svg', 150)}</div>{sizes}</div></section>
+    <div class="row"><div class="space">{img('stryde-symbol-cobalt.svg', 150)}</div>{sizes}</div></section>
   <section><div><h2>In use</h2><p>The app icon and favicon put the white mark on a cobalt square.</p></div>
-    <div class="row"><div class="cell"><div class="tab">{img('skinscan-favicon.svg', 18)}SkinScan AI</div><span>Browser tab</span></div>
-      <div class="cell"><div class="home">{''.join('<div><i></i>App</div>' for _ in range(2))}<div>{img('skinscan-app-icon.svg', 64)}SkinScan</div>{''.join('<div><i></i>App</div>' for _ in range(5))}</div><span>Home screen</span></div></div></section>
+    <div class="row"><div class="cell"><div class="tab">{img('stryde-favicon.svg', 18)}Stryde</div><span>Browser tab</span></div>
+      <div class="cell"><div class="home">{''.join('<div><i></i>App</div>' for _ in range(2))}<div>{img('stryde-app-icon.svg', 64)}Stryde</div>{''.join('<div><i></i>App</div>' for _ in range(5))}</div><span>Home screen</span></div></div></section>
   <section><div><h2>Don't</h2><p>Stretch it, rotate it, add a shadow or gradient, or recolour it.</p></div><div class="row">{misuse}</div></section>
 </div>"""
 
@@ -239,25 +239,25 @@ if __name__ == '__main__':
             p.unlink()
     out = {}
     for name, fill in (('cobalt', COBALT), ('navy', NAVY), ('black', '#000'), ('white', WHITE)):
-        out[f'skinscan-symbol-{name}.svg'] = svg('0 0 256 256', path(contours(w=17 if name == 'white' else 18), fill))
+        out[f'stryde-symbol-{name}.svg'] = svg('0 0 256 256', path(contours(w=17 if name == 'white' else 18), fill))
     for name, fill in (('cobalt', COBALT), ('white', WHITE)):
-        out[f'skinscan-symbol-small-{name}.svg'] = svg('0 0 256 256', path(contours_small(), fill))
+        out[f'stryde-symbol-small-{name}.svg'] = svg('0 0 256 256', path(contours_small(), fill))
     for name, (sf, wf) in {'color': (COBALT, NAVY), 'navy': (NAVY, NAVY), 'black': ('#000', '#000'), 'white': (WHITE, WHITE)}.items():
-        out[f'skinscan-horizontal-{name}.svg'] = horizontal(sf, wf)[0]
+        out[f'stryde-horizontal-{name}.svg'] = horizontal(sf, wf)[0]
     for name, (sf, wf) in {'color': (COBALT, NAVY), 'white': (WHITE, WHITE)}.items():
-        out[f'skinscan-stacked-{name}.svg'] = stacked(sf, wf)
-    out['skinscan-wordmark-navy.svg'] = wordmark_svg(NAVY)
-    out['skinscan-wordmark-white.svg'] = wordmark_svg(WHITE)
-    out['skinscan-app-icon.svg'] = tile()
-    out['skinscan-favicon.svg'] = tile(small=True)
-    out['skinscan-maskable.svg'] = tile(maskable=True)
+        out[f'stryde-stacked-{name}.svg'] = stacked(sf, wf)
+    out['stryde-wordmark-navy.svg'] = wordmark_svg(NAVY)
+    out['stryde-wordmark-white.svg'] = wordmark_svg(WHITE)
+    out['stryde-app-icon.svg'] = tile()
+    out['stryde-favicon.svg'] = tile(small=True)
+    out['stryde-maskable.svg'] = tile(maskable=True)
     for n, text in out.items():
         (KIT / n).write_text(text)
 
-    jobs = [(out['skinscan-favicon.svg'], KIT / f'favicon-{s}.png', s, s) for s in (16, 32)]
-    jobs += [(out['skinscan-app-icon.svg'], KIT / f'icon-{s}.png', s, s) for s in (48, 180, 192, 512)]
-    jobs += [(out['skinscan-maskable.svg'], KIT / 'icon-maskable-512.png', 512, 512)]
-    jobs += [(out['skinscan-horizontal-color.svg'], KIT / 'skinscan-horizontal-color-1200.png', 1200, round(1200 * 256 / horizontal(COBALT, NAVY)[1]))]
+    jobs = [(out['stryde-favicon.svg'], KIT / f'favicon-{s}.png', s, s) for s in (16, 32)]
+    jobs += [(out['stryde-app-icon.svg'], KIT / f'icon-{s}.png', s, s) for s in (48, 180, 192, 512)]
+    jobs += [(out['stryde-maskable.svg'], KIT / 'icon-maskable-512.png', 512, 512)]
+    jobs += [(out['stryde-horizontal-color.svg'], KIT / 'stryde-horizontal-color-1200.png', 1200, round(1200 * 256 / horizontal(COBALT, NAVY)[1]))]
     render_pngs(jobs)
     # favicon.ico with 16, 32 and 48 px images
     imgs = [Image.open(KIT / 'favicon-16.png'), Image.open(KIT / 'favicon-32.png'), Image.open(KIT / 'icon-48.png')]
@@ -266,7 +266,7 @@ if __name__ == '__main__':
     screenshot(usage_html(), ROOT / 'usage.png')
 
     # web icons for the site
-    shutil.copy(KIT / 'skinscan-favicon.svg', DOCS_ICONS / 'icon.svg')
+    shutil.copy(KIT / 'stryde-favicon.svg', DOCS_ICONS / 'icon.svg')
     shutil.copy(KIT / 'favicon.ico', DOCS_ICONS.parent / 'favicon.ico')
     for src, dst in (('icon-180.png', 'apple-touch-icon.png'), ('icon-192.png', 'icon-192.png'), ('icon-512.png', 'icon-512.png'), ('icon-maskable-512.png', 'icon-maskable-512.png')):
         shutil.copy(KIT / src, DOCS_ICONS / dst)

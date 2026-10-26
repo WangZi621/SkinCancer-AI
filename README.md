@@ -1,10 +1,10 @@
-# SkinScan AI
+# Stryde
 
 Skin cancer triage that reads a dermoscopic photo and the patient's details together, and runs on hardware a small clinic already has.
 
 **Try it:** https://wangzi621.github.io/SkinCancer-AI/
 
-SkinScan AI sorts a skin lesion into one of three groups (melanoma, other skin cancer, or benign) and suggests how soon the patient should see a dermatologist: refer urgently, refer for review, or routine follow-up. It is built to help a clinician decide who to send first. It does not diagnose.
+Stryde (formerly SkinScan AI) sorts a skin lesion into one of three groups (melanoma, other skin cancer, or benign) and suggests how soon the patient should see a dermatologist: refer urgently, refer for review, or routine follow-up. It is built to help a clinician decide who to send first. It does not diagnose.
 
 It comes in two forms built on the same trained model:
 
@@ -80,7 +80,7 @@ The melanoma cutoff is 0.278 instead of 0.5 because a missed melanoma costs much
 - The melanocytic input carries a lot of weight. In the training data, lesions marked melanocytic were never basal or squamous cell carcinoma, lesions marked not melanocytic were almost never melanoma, and 72% of lesions with no answer were basal or squamous cell carcinoma.
 - On 78 newer ISIC images that are not in the training data, the web model flagged 1 of 5 melanoma in situ images (from two lesions), flagged all 3 images of one benign mole as possible melanoma, referred 23 of 40 basal cell carcinomas, and called 17 of 30 seborrheic keratoses routine. The set is small and skewed, but it shows that real-world results are weaker than the validation numbers.
 - The model expects a dermoscopic close-up of one lesion.
-- SkinScan AI is a research prototype, not a medical device, and it is not FDA-cleared.
+- Stryde is a research prototype, not a medical device, and it is not FDA-cleared.
 
 ## Repository layout
 

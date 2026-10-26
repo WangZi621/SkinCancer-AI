@@ -1,4 +1,4 @@
-# SkinScan AI: visual system
+# Stryde: visual system
 
 What it is: a skin-lesion triage tool for clinicians and medical students, used in a clinic,
 often offline. Its job: scan a spot, say how soon to refer, keep each lesion's history.

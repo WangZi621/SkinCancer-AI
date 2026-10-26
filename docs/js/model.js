@@ -1,4 +1,4 @@
-// SkinScan AI: on-device inference with ONNX Runtime Web (WebAssembly).
+// Stryde: on-device inference with ONNX Runtime Web (WebAssembly).
 // Preprocessing mirrors the training notebook exactly:
 //   image  -> RGB, bilinear resize (half-pixel centers, like cv2.resize / tf.image.resize)
 //             to the model's input size, raw 0-255 floats (EfficientNet normalizes internally)
