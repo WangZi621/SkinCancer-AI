@@ -3,10 +3,11 @@
 //   time they load, so later visits work without a network.
 // - Pages served through this worker get cross-origin isolation headers, which lets
 //   ONNX Runtime use several CPU threads on return visits. Everything is same-origin.
-const VERSION = 'skinscan-2026-10-24c';
+const VERSION = 'skinscan-2026-10-26a';
 const SHELL = [
   './', 'index.html', 'app.css', 'manifest.webmanifest',
-  'js/app.js', 'js/model.js', 'js/bodymap.js', 'js/heatmap.js', 'js/history.js',
+  'js/app.js', 'js/model.js', 'js/bodymap.js', 'js/heatmap.js', 'js/store.js', 'js/ui.js',
+  'js/pages.js', 'js/quality.js', 'js/chart.js',
   'vendor/ort/ort.wasm.min.mjs', 'vendor/ort/ort-wasm-simd-threaded.mjs',
   'fonts/geist.woff2', 'icons/icon.svg', 'samples/samples.json', 'img/kiosk.jpg',
 ];

@@ -18,13 +18,30 @@ It comes in two forms built on the same trained model:
 
 ## What the web app does
 
-- Takes a photo from a file, the camera, drag and drop, or one of eight sample images.
-- Asks for optional patient details: age, sex, body site (tap a body map), Fitzpatrick skin type, lesion diameter, and whether the lesion looks melanocytic.
+**Profiles and privacy**
+- Sign up with a name, role and clinic. Profiles live only in this browser; several people can share one device and each keeps their own patients.
+- An optional passcode encrypts every patient and scan with AES-GCM 256, under a key derived from the passcode with PBKDF2 (SHA-256, 210,000 iterations). The key exists only in memory while the profile is unlocked, and the profile locks itself after a chosen idle time.
+- Backups export to a file (still encrypted when a passcode is set) and restore on another device.
+
+**Patients and lesions**
+- A home dashboard with the lesions to see first (most urgent result first), rechecks that are due or overdue, and recent scans.
+- Patient records with year of birth, sex and skin type, which fill in on every scan for that patient.
+- A body map per patient with a numbered marker for each tracked lesion, colored by its latest result.
+- A page per lesion with its score history on one chart (with the melanoma cutoff line), a side-by-side photo comparison slider, a scan timeline, and a recheck date.
+- A filterable list of all scans with CSV export.
+- Demo patients built from the eight sample images, with every score computed by the model on the device.
+
+**Scanning**
+- Takes a photo from a file, the camera, drag and drop, paste, or one of eight sample images.
+- Checks the photo before the model runs: focus, exposure, contrast and resolution.
+- Asks for optional patient details: age, sex, body site (tap a body map), Fitzpatrick skin type, lesion diameter, and whether the lesion looks melanocytic. The clinician can also record ABCDE observations, which are saved and printed but not used by the model.
 - Shows the three model scores, the triage suggestion, and the reason for it.
 - Reruns the model with the details blanked out to show how much the patient information changed the result.
 - Draws a heat map of the image areas the model relied on (occlusion sensitivity, 16 extra passes).
-- Saves scans to a local history, exports them as CSV, and prints a one-page referral note.
-- Never uploads the photo. Everything runs in the browser, and saved scans stay in the browser.
+- Saves the scan to a patient and a new or existing lesion, with notes and a recheck date. A scan made before signing up is kept and saved once the profile exists.
+- Prints a one-page referral report with the photo, heat map, scores, details, observations, notes and the lesion's history.
+- Light and dark themes, a mobile layout with a tab bar, and offline use after the first visit.
+- Never uploads anything. Everything runs and stays in the browser.
 
 ## The model
 
@@ -69,8 +86,13 @@ The melanoma cutoff is 0.278 instead of 0.5 because a missed melanoma costs much
 ```
 docs/                 the web app (served by GitHub Pages)
   js/model.js         preprocessing, metadata encoding, ONNX Runtime Web inference, triage rule
-  js/app.js           interface: scope, form, results, heat map, history, printing
-  js/bodymap.js       front and back body map for the eight ISIC body sites
+  js/app.js           router, sign-in guard, scan workbench, saving, heat map
+  js/pages.js         sign-up, sign-in, home, patients, lesions, scans, report, settings
+  js/store.js         on-device profiles and records (IndexedDB), passcode encryption, backups
+  js/chart.js         score history chart for a lesion
+  js/quality.js       photo check: focus, exposure, contrast, resolution
+  js/ui.js            small DOM helpers, dialogs, toasts
+  js/bodymap.js       front and back body map: site picker and lesion markers
   js/heatmap.js       occlusion sensitivity map
   model/              skinscan-v3.onnx (float activations, int8 weights)
   samples/            held-out ISIC sample images and their metadata
