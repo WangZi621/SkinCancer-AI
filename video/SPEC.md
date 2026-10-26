@@ -1,15 +1,17 @@
-# SPEC: SkinScan AI demo film (storyline A, "One lesion, start to finish")
+# SPEC: Stryde demo film (storyline A, "One lesion, start to finish")
 
 GOAL: a judge who has never seen the app understands, without the narration, that it reads a
 spot and the patient together, says how soon to refer, keeps every patient's lesions and reports
 encrypted on the device, and is small enough to run offline on a browser or a $15 board.
 
-OUTPUT: HyperFrames, 1920 x 1080, 30 fps, silent (the narrator records over it). Sixteen scenes,
-each also rendered on its own.
+OUTPUT: HyperFrames, 1920 x 1080, 30 fps. Seventeen scenes, each also rendered on its own. The
+hook (00) keeps the sound of Jason's own footage; everything after it is silent, for the voiceover
+(VOICEOVER.md).
 
-TIME: 168.3 s = 5,049 frames, in four acts: one lesion start to finish (01, 02, 04, 13, 14, 54.7 s),
-what the model does (10, 03, 11, 07, 46 s), the rest of the app (15, 16, 05, 09, 39.6 s), small and
-honest (06, 12, 08, 28 s). No music clock; cuts follow the motion.
+TIME: 177.85 s = 5,336 frames, under the competition's 3:00. A hook (00, 11.45 s), then four acts:
+one lesion start to finish (01, 02, 04, 13, 14, 57 s), what the model does (10, 03, 11, 07,
+43.2 s), the rest of the app (15, 16, 05, 09, 38.7 s), small and honest (06, 12, 08, 27.5 s). No
+music clock; cuts follow the motion.
 
 LOOK (the app's own system, which follows the Stryde design system; see docs/DESIGN.md)
 - One world, the app's. Ground: off-white #ececec under the fixed lattice (a triangular grid of
@@ -68,10 +70,16 @@ Plus colour floods where a scene changes world around a still lens (01 -> 02, 10
 A label leaves (0.2 s) before any cut it would otherwise be cut off by.
 
 SHOTS
-01 open      0-8 s     8 lesions already on screen; the question types per word; the lens ring
+00 hook      0-11.45 s Jason's earlier video, with its sound. The kiosk on a card (ink outline,
+                       hard offset) pressed to his mom's arm; beside it, "I think you might have
+                       cancer, Mom." and "Am I gonna die?" appear word by word as they are said.
+                       Hard cut to him sitting down full frame, name card "Jason Xiao, Sophomore,
+                       Conestoga High School". Cut to him on a card: "And don't worry, my mom
+                       doesn't actually have cancer.", held half a second after he finishes.
+01 open      0-6.5 s   8 lesions already on screen; the question types per word; the lens ring
                        visits three spots and locks on Sample 1; the rest fall away; it grows to
-                       the centre; the ring closes; "SkinScan AI" lands per letter.
-02 scan      0-15.6 s  the lattice gives way to the app as the lens lands on thumbnail 1 (Demo patient A's
+                       the centre; the ring closes; "Stryde" lands per letter.
+02 scan      0-14.6 s  the lattice gives way to the app as the lens lands on thumbnail 1 (Demo patient A's
                        left cheek, details filled in from her record); camera follows: samples ->
                        scope (photo lands, "Add a photo") -> the check under it ("Photo check") ->
                        form ("Patient details") -> Analyze -> scope while the ring sweeps -> pull
@@ -83,17 +91,18 @@ SHOTS
                        device"); the lesion's page; the cursor reads its three scans on the chart
                        ("Every scan of this lesion"). The cursor travel between clicks plays at
                        3.3-4.25x, the clicks at 1-2.2x.
-14 report    0-8.6 s   same take: Report; the one-page report ("Referral report"); Print or save
-                       as PDF; the page scrolls to the lesion's history ("The lesion's history");
-                       whip out.
+14 report    0-13.4 s  same take: Report; the one-page report; Print or save as PDF; the page
+                       scrolls to the lesion's history ("The lesion's history"), then the referral
+                       letter, filled in as onset, "has grown" and "changed color" are picked
+                       ("Referral letter"); whip out.
 10 form      0-14 s    whip in; Sample 2 typed by hand: age, sex, body map (punch-in 2.3x),
                        skin type, diameter; Analyze; routine result.
 03 branches  0-12 s    the green-ringed spot leaves the app for the lattice; the typed values become chips that
                        compress into 17 dots; the photo steps down into EfficientNet-B4; both
                        merge into three bars; "It reads the photo and the patient together."
-11 training  0-10 s    45,400 cells draw in; 9,080 of them split off for validation; 218 ticks
+11 training  0-8.5 s    45,400 cells draw in; 9,080 of them split off for validation; 218 ticks
                        draw for the epochs.
-07 results   0-10 s    the lens as a gauge: 45,400 -> 93.2% AUC -> 90% at a 0.278 cutoff, each
+07 results   0-9.5 s    the lens as a gauge: 45,400 -> 93.2% AUC -> 90% at a 0.278 cutoff, each
                        number swapped mid-move; "Tested on 9,080 images it never trained on."
 15 clinic    0-11.8 s  the lens lands on Demo patient A's row, first in "See first" ("Urgent
                        first"); the overdue recheck ("Overdue rechecks"); Patients; Demo patient
@@ -102,17 +111,18 @@ SHOTS
                        sign-in screen with the stored ciphertext beside the profile ("Encrypted on
                        this device"); the passcode typed ("Only the passcode opens it"); back on
                        the patient; dip.
-05 private   0-8 s     window on its ground; Wi-Fi crosses out ("Works offline"); punch-in to
+05 private   0-7.1 s     window on its ground; Wi-Fi crosses out ("Works offline"); punch-in to
                        the scope while the scan runs offline; result; "Nothing is uploaded".
 09 mobile    0-9 s     the window morphs into the phone; the phone's home screen; the Scan tab;
                        Sample 3; ring turns orange behind it; dip.
 06 small     0-10 s    the model file and "21 MB"; it drops into a browser running the app;
                        the camera slides to a Pi Zero 2 W; the file lands on its chip; the ring
                        closes around it; "Even on a $15 Raspberry Pi Zero 2 W"; dip.
-12 limits    0-13 s    the real How it works page; camera travels to 78.6 % overall accuracy and
+12 limits    0-12 s     the real How it works page; camera travels to 78.6 % overall accuracy and
                        circles it; then to "It does not diagnose"; then the disclaimer line.
-08 outro     0-5 s     the lens becomes the logo (circle to rounded square, scan corners draw);
-                       wordmark, URL, "Built by Jason Xiao", the disclaimer.
+08 outro     0-5.5 s   the lens becomes the Contours mark (three outlines build); it slides left
+                       and the Stryde wordmark wipes in; URL, "Built by Jason Xiao", the
+                       disclaimer.
 
 FACTS (only these on motion text): 45,400 biopsy-confirmed images (36,320 training, 9,080
 validation); 93.2 % AUC (0.940 melanoma); 90.0 % melanoma sensitivity at 81.5 % specificity, cutoff
@@ -121,7 +131,7 @@ epochs; 21 MB model in the browser; photos never leave the device; offline after
 research prototype, not a medical device; never "diagnoses". Raspberry Pi Zero 2 W at $15: the
 author's own statement. No count-ups (they show numbers that are not facts). The app scenes add
 labels with no numbers: photo check, linked to the lesion, notes and a recheck, saved on this
-device, every scan of this lesion, referral report, the lesion's history, urgent first, overdue
+device, every scan of this lesion, the lesion's history, referral letter, urgent first, overdue
 rechecks, every lesion on a body map, lock when you step away, encrypted on this device, only the
 passcode opens it.
 
@@ -131,7 +141,7 @@ hard cuts between every scene; titles that drift after landing; a dark void with
 glow, particles, glass; numbers that count through values; "$300"; gradients of any kind;
 violet or teal; soft drop shadows; a colour accent on one word of a headline.
 
-QA: 01 at 0.0 (not empty), 3.0 (lock), 7.5 (name); every seam at -0.2/+0.2 s; 02 at each label;
+QA: 00 on each spoken line and the name card; 01 at 0.0 (not empty), 3.0 (lock), 7.5 (name); every seam at -0.2/+0.2 s; 02 at each label;
 04 mid-wipe; 13 at the dialog and the chart; 14 on the report; 15 when the lens lands and on the
 body map; 16 on the ciphertext and the passcode; 03 when the dots merge; 06 on the Pi; 12 on the
 circled 78.6 %; 08 last frame.

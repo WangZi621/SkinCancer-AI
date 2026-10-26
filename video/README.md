@@ -1,27 +1,32 @@
-# SkinScan AI demo film
+# Stryde demo film
 
-A silent 1920 x 1080, 30 fps film (2 min 48 s) for the Congressional App Challenge, built with
-[HyperFrames](https://hyperframes.heygen.com). Narration and face-cam are recorded separately.
-Each of the sixteen scenes also renders as its own clip.
+A 1920 x 1080, 30 fps film (2 min 58 s) for the Congressional App Challenge, built with
+[HyperFrames](https://hyperframes.heygen.com). It opens on 11 seconds of Jason's own footage with
+its own sound (the kiosk on his mom's arm, then hello); the rest is silent, for the voiceover in
+`VOICEOVER.md`. Each of the seventeen scenes also renders as its own clip.
 
 ```
 STORYLINES.md         the three storylines considered, and why A was built
 SPEC.md               the film as numbers: look, motion, transitions, shots, facts allowed on screen
 REVIEW.md             what was checked, what was rebuilt, the weakest shot
+VOICEOVER.md          the narration, line by line with its start time
 capture/capture.mjs   Playwright script that records the real app
 capture/out/          raw recordings, full-resolution stills, timings.json (click times and element boxes)
 compositions/         one HyperFrames scene per clip; components/ holds the registry items they adapt
-assets/               fonts, logo, sample photos, and the captures the scenes use
+assets/               fonts, logo, sample photos, the captures the scenes use, and footage/ and
+                      audio/ cut from Jason's earlier video for the hook
 index.html            the full film: the scenes back to back in edit order
-scripts/              render.mjs (every clip, frames, contact sheet, the film), build-roots.mjs
-out/                  skinscan_demo.mp4, the sixteen clips, frames/ and contact_sheet.png
+scripts/              render.mjs (every clip, frames, contact sheet, the film), build-roots.mjs,
+                      retime.py (moves the scenes onto a new take of the recordings)
+out/                  stryde_demo.mp4, the seventeen clips, frames/ and contact_sheet.png
 ```
 
 ## The film, in order
 
 | # | Scene | What happens |
 | --- | --- | --- |
-| 01 | open | Eight biopsy-confirmed lesions; the question; the lens picks Sample 1; "SkinScan AI" |
+| 00 | hook | Jason's footage: the kiosk on his mom's arm ("I think you might have cancer, Mom." "Am I gonna die?"), his name card as he sits down, then "And don't worry, my mom doesn't actually have cancer." Words appear as they are said |
+| 01 | open | Eight biopsy-confirmed lesions; the question; the lens picks Sample 1; "Stryde" |
 | 02 | scan | Match cut onto Sample 1 in the real app, scanned for Demo patient A's left cheek; photo check; Refer urgently |
 | 04 | heatmap | Same frame continues; "Show where it looked"; 16 passes; before/after wipe |
 | 13 | track | Same take: saved to her lesion with a note and a recheck; the lesion's page and its scans on one chart |
@@ -58,8 +63,10 @@ each new browser). It waits for the model before each recording, records through
 DevTools screencast at 2x, and rebuilds each recording at a constant 30 fps. A 34 px arrow cursor
 is drawn on the page so clicks read after a punch-in. `timings.json` logs the moment of every click
 and the on-screen box of every part the camera aims at; the scenes' camera shots are written from
-it. A new recording can shift those times by a few tenths of a second, so check them before
-re-rendering.
+it. A new recording can shift those times by a few tenths of a second. Keep a copy of the old
+`timings.json`, then `python3 scripts/retime.py OLD_TIMINGS.json` moves every scene's video clips
+onto the new take through the logged click times; check the element boxes for layout changes by
+hand, since camera shots and labels are page positions.
 
 | File | What it shows |
 | --- | --- |
@@ -85,7 +92,7 @@ npm install
 node scripts/build-roots.mjs            # after changing the clip list, durations or order
 npx hyperframes preview                 # the whole film in the Studio
 npx hyperframes check                   # lint, layout and contrast checks
-node scripts/render.mjs --film          # every clip, frames, contact sheet, and out/skinscan_demo.mp4
+node scripts/render.mjs --film          # every clip, frames, contact sheet, and out/stryde_demo.mp4
 node scripts/render.mjs --only 04 --quality draft
 ```
 

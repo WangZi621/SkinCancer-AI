@@ -44,9 +44,9 @@ for (const c of CLIPS.filter((c) => ONLY.includes(c.n))) {
 
 execFileSync('python3', [path.join(ROOT, 'scripts', 'contact_sheet.py'), OUT], { stdio: 'inherit' });
 
-// --film also renders index.html, every clip back to back, to out/skinscan_demo.mp4
+// --film also renders index.html, every clip back to back, to out/stryde_demo.mp4
 if (args.includes('--film')) {
-  const film = path.join(OUT, 'skinscan_demo.mp4');
+  const film = path.join(OUT, 'stryde_demo.mp4');
   console.log(`rendering the full film (${QUALITY})`);
   execFileSync('npx', ['hyperframes', 'render', '-o', film, '--quality', QUALITY], {
     cwd: ROOT,

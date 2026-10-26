@@ -1,5 +1,28 @@
 # Review notes
 
+## Third pass: the hook, the name Stryde, and a fresh take
+
+- **Hook from Jason's own video.** 00 opens on 11.45 s of his earlier footage with its own sound:
+  the kiosk on his mom's arm, "I think you might have cancer, Mom", "Am I gonna die?", him sitting
+  down with a name card, then "my mom doesn't actually have cancer". The spoken lines are set beside
+  the footage word by word at the transcript's times. The footage sits on the app's cards (ink
+  outline, hard offset) over the lattice, so it already looks like the rest of the film.
+- **Under 3:00.** Six scenes were trimmed (01, 02, 05, 07, 11, 12) to make room for the hook and
+  the referral letter in 14; the film is 2:57.85.
+- **Renamed.** The app, the title in 01, the outro wordmark and every recording now say Stryde.
+- **Re-recorded and retimed.** The new take's clicks land up to 0.8 s later than the last one.
+  `scripts/retime.py` moved every scene's video clips onto it through the logged click times, so
+  the labels and camera moves still meet their clicks. Two layout changes needed hand fixes: the How
+  it works page is 90 px taller (the new pipeline diagram), so 12's circle, underlines, label and
+  camera moved down; and the shorter brand name moved the nav, which no shot depends on.
+- **Wordmark clipped.** The kit's wordmark SVG used the cap height as its viewBox, which cut off
+  the y's tail and the top of the d, so the outro read "Strvde". `brand/logo/kit.py` now sizes
+  the wordmark and the stacked lockup to the outline's real bounds, and 08 uses the new box.
+- **Check.** `hyperframes check`: 0 errors. Craft warnings fixed: the hook's last line now holds
+  2.8 s, 07's footnote and 06's first line hold longer. Left as is: one contrast sample catches a
+  hook word mid-fade (grey on its way to dress blue), and the "21 MB" chip on the drawn file is 11 px
+  on purpose (it is a label on a drawing; the same number is set large beside it).
+
 ## Second pass: the app grew, so the film did
 
 The app went from one page to a product: profiles with an optional passcode that encrypts

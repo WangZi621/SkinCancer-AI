@@ -71,8 +71,8 @@
       line-height: 1;
     }
   </style>
-  <div id="root" data-composition-id="open" data-width="1920" data-height="1080" data-start="0" data-duration="8">
-    <div id="op-stage" class="clip" data-start="0" data-duration="8" data-track-index="1" data-layout-allow-overlap>
+  <div id="root" data-composition-id="open" data-width="1920" data-height="1080" data-start="0" data-duration="6.5">
+    <div id="op-stage" class="clip" data-start="0" data-duration="6.5" data-track-index="1" data-layout-allow-overlap>
       <!-- eight biopsy-confirmed samples from the app; s1 is the melanoma in situ the app flags -->
       <div id="op-l3" class="op-lens" data-lens="300,330,230"><img src="assets/img/samples/s3.jpg" alt="" /></div>
       <div id="op-l5" class="op-lens" data-lens="660,250,190"><img src="assets/img/samples/s5.jpg" alt="" /></div>
@@ -88,7 +88,7 @@
       </svg>
 
       <p id="op-q"><span>Which </span><span>skin </span><span>spots </span><span>need </span><span>a </span><span>dermatologist </span><span>first?</span></p>
-      <h1 id="op-name" aria-label="SkinScan AI"><span>S</span><span>k</span><span>i</span><span>n</span><span>S</span><span>c</span><span>a</span><span>n</span><span> </span><span>A</span><span>I</span></h1>
+      <h1 id="op-name" aria-label="Stryde"><span>S</span><span>t</span><span>r</span><span>y</span><span>d</span><span>e</span></h1>
     </div>
   </div>
   <script>
@@ -114,30 +114,30 @@
 
     // the lens ring looks: visits three spots, then locks on Sample 1
     tl.set("#op-ring-arc", ringAt("op-l2"), 0);
-    tl.fromTo("#op-ring", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 1.15);
-    tl.fromTo("#op-ring-arc", { strokeDasharray: "22 78", strokeDashoffset: 0 }, { strokeDashoffset: -300, duration: 2.6, ease: "none" }, 1.15);
-    tl.to("#op-ring-arc", { ...ringAt("op-l6"), duration: 0.42, ease: "power3.inOut" }, 1.75);
-    tl.to("#op-ring-arc", { ...ringAt("op-l7"), duration: 0.42, ease: "power3.inOut" }, 2.35);
-    tl.to("#op-ring-arc", { ...ringAt("op-l1"), duration: 0.5, ease: "power3.inOut" }, 2.95);
+    tl.fromTo("#op-ring", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 0.95);
+    tl.fromTo("#op-ring-arc", { strokeDasharray: "22 78", strokeDashoffset: 0 }, { strokeDashoffset: -230, duration: 2.0, ease: "none" }, 0.95);
+    tl.to("#op-ring-arc", { ...ringAt("op-l6"), duration: 0.38, ease: "power3.inOut" }, 1.4);
+    tl.to("#op-ring-arc", { ...ringAt("op-l7"), duration: 0.38, ease: "power3.inOut" }, 1.88);
+    tl.to("#op-ring-arc", { ...ringAt("op-l1"), duration: 0.45, ease: "power3.inOut" }, 2.36);
     // lock: the arc closes around it
-    tl.to("#op-ring-arc", { strokeDasharray: "100 0", duration: 0.55, ease: "power2.inOut" }, 3.6);
+    tl.to("#op-ring-arc", { strokeDasharray: "100 0", duration: 0.5, ease: "power2.inOut" }, 2.95);
 
     // everything else falls away; Sample 1 comes forward and grows
     const others = ["#op-l3", "#op-l5", "#op-l4", "#op-l2", "#op-l6", "#op-l7", "#op-l8"];
-    tl.to(others, { opacity: 0, scale: 0.86, duration: 0.32, ease: "power2.in", stagger: 0.035 }, 4.05);
-    tl.to("#op-q", { opacity: 0, filter: "blur(6px)", duration: 0.2, ease: "power2.in" }, 4.05);
+    tl.to(others, { opacity: 0, scale: 0.86, duration: 0.32, ease: "power2.in", stagger: 0.035 }, 3.35);
+    tl.to("#op-q", { opacity: 0, filter: "blur(6px)", duration: 0.2, ease: "power2.in" }, 3.35);
     const big = 520;
     const s1 = lens["op-l1"];
-    tl.to("#op-l1", { x: 960 - s1.cx, y: 450 - s1.cy, scale: big / s1.d, duration: 0.9, ease: "power3.inOut" }, 4.15);
-    tl.to("#op-ring-arc", { attr: { cx: 960, cy: 450, r: (big * 1.12) / 2 }, duration: 0.9, ease: "power3.inOut" }, 4.15);
+    tl.to("#op-l1", { x: 960 - s1.cx, y: 450 - s1.cy, scale: big / s1.d, duration: 0.9, ease: "power3.inOut" }, 3.45);
+    tl.to("#op-ring-arc", { attr: { cx: 960, cy: 450, r: (big * 1.12) / 2 }, duration: 0.9, ease: "power3.inOut" }, 3.45);
 
     // the name lands under it, one letter at a time, and holds
-    tl.fromTo("#op-name span", { opacity: 0.0, filter: "blur(4px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.12, ease: "power2.out", stagger: 0.075 }, 4.7);
-    tl.to("#op-name", { opacity: 0, filter: "blur(6px)", duration: 0.2, ease: "power2.in" }, 7.38);
-    tl.to("#op-ring", { opacity: 0, duration: 0.2, ease: "power2.in" }, 7.3);
+    tl.fromTo("#op-name span", { opacity: 0.0, filter: "blur(4px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.12, ease: "power2.out", stagger: 0.075 }, 4.0);
+    tl.to("#op-name", { opacity: 0, filter: "blur(6px)", duration: 0.2, ease: "power2.in" }, 5.88);
+    tl.to("#op-ring", { opacity: 0, duration: 0.2, ease: "power2.in" }, 5.8);
 
     // match cut: the lens accelerates into the cut (02 continues the same move)
-    tl.to("#op-l1", { y: 540 - s1.cy, scale: 400 / s1.d, duration: 0.45, ease: "power4.in" }, 7.55);
+    tl.to("#op-l1", { y: 540 - s1.cy, scale: 400 / s1.d, duration: 0.45, ease: "power4.in" }, 6.05);
     window.__timelines["open"] = tl;
   </script>
 </template>

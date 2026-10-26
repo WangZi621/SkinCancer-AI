@@ -186,12 +186,12 @@
       left: 0;
       top: 0;
       width: 1920px;
-      height: 1641px;
+      height: 1731px;
     }
     #lm-below {
       position: absolute;
       left: 0;
-      top: 1641px;
+      top: 1731px;
       width: 1920px;
       height: 700px;
       background: #ececec;
@@ -201,7 +201,7 @@
       left: 0;
       top: 0;
       width: 1920px;
-      height: 1641px;
+      height: 1731px;
       overflow: visible;
     }
     #lm-pen path,
@@ -212,27 +212,27 @@
       stroke-linecap: round;
     }
   </style>
-  <div id="root" data-composition-id="limits" data-width="1920" data-height="1080" data-start="0" data-duration="13" data-motion-blur="on">
+  <div id="root" data-composition-id="limits" data-width="1920" data-height="1080" data-start="0" data-duration="12" data-motion-blur="on">
     <div id="lm-cam" class="cam" data-layout-allow-overflow>
       <!-- the real How it works page, captured whole -->
       <img id="lm-page" src="assets/capture/06_how_it_works.png" alt="" />
       <div id="lm-below"></div>
-      <svg id="lm-pen" viewBox="0 0 1920 1641">
-        <ellipse id="lm-circle" cx="1415" cy="744" rx="88" ry="36" pathLength="100" transform="rotate(-4 1415 744)" />
-        <path id="lm-under1" pathLength="100" d="M400 993 C450 995 505 992 548 994" />
-        <path id="lm-under2" pathLength="100" d="M420 1529 C545 1531 670 1528 798 1530" style="stroke: #ffffff" />
+      <svg id="lm-pen" viewBox="0 0 1920 1731">
+        <ellipse id="lm-circle" cx="1415" cy="834" rx="88" ry="36" pathLength="100" transform="rotate(-4 1415 834)" />
+        <path id="lm-under1" pathLength="100" d="M400 1083 C450 1085 505 1082 548 1084" />
+        <path id="lm-under2" pathLength="100" d="M420 1619 C535 1621 650 1618 762 1620" style="stroke: #ffffff" />
       </svg>
-      <div id="lm-lb-acc" class="lb" data-at="1415,780" data-z="2.1" data-side="bottom" style="--len: 60px">
+      <div id="lm-lb-acc" class="lb" data-at="1415,870" data-z="2.1" data-side="bottom" style="--len: 60px">
         <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">78.6% overall accuracy</span></div>
       </div>
-      <div id="lm-lb-refer" class="lb" data-at="474,995" data-z="2.2" data-side="bottom" style="--len: 120px">
+      <div id="lm-lb-refer" class="lb" data-at="392,1084" data-z="2.2" data-side="left" style="--len: 44px">
         <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">It suggests how soon to refer</span></div>
       </div>
     </div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    const D = 13;
+    const D = 12;
 
     // Camera on the real page, adapted from the registry's cursor-zoom-follow: the aim steps
     // between shots and a critically damped spring (in log zoom) turns each step into a move
@@ -290,12 +290,12 @@
       if (tout != null) tl.to([sel + " .lb-dot", sel + " .lb-line", sel + " .lb-card"], { opacity: 0, duration: 0.2, ease: "power2.in" }, tout);
     }
 
-    // Shots on the page (1920 x 1641): the results table, the limits card, the footer disclaimer.
+    // Shots on the page (1920 x 1731): the results table, the limits card, the footer disclaimer.
     const cam = pageCamera(document.getElementById("lm-cam"), [
       { t: 0, x: 960, y: 540, z: 1.0 }, // the top of the page
-      { t: 0.9, x: 1263, y: 744, z: 2.1 }, // overall accuracy
-      { t: 4.4, x: 532, y: 1000, z: 2.2 }, // "It does not diagnose."
-      { t: 8.3, x: 610, y: 1518, z: 2.0 }, // the footer (dress blue): a research prototype, not a medical device
+      { t: 0.9, x: 1263, y: 834, z: 2.1 }, // overall accuracy
+      { t: 4.4, x: 532, y: 1090, z: 2.2 }, // "It does not diagnose."
+      { t: 8.3, x: 600, y: 1608, z: 2.0 }, // the footer (dress blue): a research prototype, not a medical device
     ], D, 6);
     pinLabels();
     const clock = { t: 0 };

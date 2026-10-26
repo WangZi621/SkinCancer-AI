@@ -16,15 +16,15 @@
   },
   "rec1_scan": {
     "file": "rec1_scan.mp4",
-    "frames": 102,
-    "seconds": 18.28,
+    "frames": 105,
+    "seconds": 15.71,
     "marks": {
-      "click sample 1": 3.52,
-      "photo loaded": 3.71,
-      "click analyze": 11.25,
-      "result shown": 12.87,
-      "app scroll done": 14.27,
-      "end": 18.28
+      "click sample 1": 2.38,
+      "photo loaded": 2.54,
+      "click analyze": 8.87,
+      "result shown": 10.29,
+      "app scroll done": 11.7,
+      "end": 15.71
     },
     "boxes": {
       "start": {
@@ -133,7 +133,7 @@
         }
       },
       "photo": {
-        "t": 3.99,
+        "t": 2.7,
         "samples": {
           "x": 392,
           "y": 798.7,
@@ -238,7 +238,7 @@
         }
       },
       "result": {
-        "t": 14.28,
+        "t": 11.7,
         "samples": {
           "x": 392,
           "y": 798.7,
@@ -363,7 +363,7 @@
           "x": 966.2,
           "y": 147,
           "w": 561.8,
-          "h": 735.1
+          "h": 791.1
         },
         "save": {
           "x": 966.2,
@@ -375,7 +375,7 @@
           "x": 966.2,
           "y": 790.6,
           "w": 561.8,
-          "h": 50
+          "h": 106
         }
       }
     }
@@ -390,12 +390,12 @@
   },
   "rec2_heatmap": {
     "file": "rec2_heatmap.mp4",
-    "frames": 56,
-    "seconds": 15.18,
+    "frames": 55,
+    "seconds": 15.6,
     "marks": {
-      "click heat map": 2,
-      "heat map on": 12.15,
-      "end": 15.18
+      "click heat map": 2.21,
+      "heat map on": 12.6,
+      "end": 15.6
     },
     "boxes": {
       "start": {
@@ -524,7 +524,7 @@
           "x": 966.2,
           "y": 147,
           "w": 561.8,
-          "h": 735.1
+          "h": 791.1
         },
         "save": {
           "x": 966.2,
@@ -536,31 +536,31 @@
           "x": 966.2,
           "y": 790.6,
           "w": 561.8,
-          "h": 50
+          "h": 106
         }
       }
     }
   },
   "rec3_form": {
     "file": "rec3_form.mp4",
-    "frames": 315,
+    "frames": 308,
     "seconds": 20.66,
     "marks": {
-      "click sample 2": 2.19,
-      "photo loaded": 2.39,
-      "click age": 4.4,
-      "click sex": 6.44,
-      "click body map": 8.23,
-      "click skin type": 10.28,
-      "click diameter": 12,
-      "click analyze": 14.25,
+      "click sample 2": 2.15,
+      "photo loaded": 2.33,
+      "click age": 4.37,
+      "click sex": 6.43,
+      "click body map": 8.21,
+      "click skin type": 10.23,
+      "click diameter": 12.01,
+      "click analyze": 14.23,
       "result shown": 15.75,
       "app scroll done": 17.15,
       "end": 20.66
     },
     "boxes": {
       "start": {
-        "t": 0,
+        "t": 0.01,
         "samples": {
           "x": 392,
           "y": 689,
@@ -665,7 +665,7 @@
         }
       },
       "form": {
-        "t": 2.41,
+        "t": 2.35,
         "samples": {
           "x": 392,
           "y": 819.7,
@@ -895,7 +895,7 @@
           "x": 966.2,
           "y": 163,
           "w": 561.8,
-          "h": 735.1
+          "h": 791.1
         },
         "save": {
           "x": 966.2,
@@ -907,43 +907,43 @@
           "x": 966.2,
           "y": 806.6,
           "w": 561.8,
-          "h": 50
+          "h": 106
         }
       }
     }
   },
   "rec4_how": {
     "file": "rec4_how.mp4",
-    "frames": 386,
-    "seconds": 17.01,
+    "frames": 413,
+    "seconds": 17.03,
     "marks": {
       "scroll start": 1.5,
-      "scroll end": 15.51
+      "scroll end": 15.53
     },
     "boxes": {}
   },
   "rec5_mobile": {
     "file": "rec5_mobile.mp4",
-    "frames": 234,
-    "seconds": 14.32,
+    "frames": 233,
+    "seconds": 14.3,
     "marks": {
       "tap scan tab": 1.6,
-      "tap sample 3": 4.08,
-      "photo loaded": 4.19,
-      "tap analyze": 8.07,
-      "result shown": 9.5,
-      "end": 14.32
+      "tap sample 3": 4.09,
+      "photo loaded": 4.2,
+      "tap analyze": 8.09,
+      "result shown": 9.49,
+      "end": 14.3
     },
     "boxes": {}
   },
   "rec6_offline": {
     "file": "rec6_offline.mp4",
-    "frames": 70,
+    "frames": 72,
     "seconds": 9.71,
     "marks": {
       "network off": 1.51,
       "click analyze": 3.8,
-      "result shown": 5.29,
+      "result shown": 5.3,
       "app scroll done": 6.7,
       "end": 9.71
     },
@@ -1179,7 +1179,7 @@
           "x": 966.2,
           "y": 168,
           "w": 561.8,
-          "h": 735.1
+          "h": 791.1
         },
         "save": {
           "x": 966.2,
@@ -1191,34 +1191,34 @@
           "x": 966.2,
           "y": 811.6,
           "w": 561.8,
-          "h": 50
+          "h": 106
         }
       }
     }
   },
   "how_page": {
-    "pageHeight": 1641,
+    "pageHeight": 1731,
     "accuracyRow": {
       "x": 1000,
-      "y": 721.6,
+      "y": 811.8,
       "w": 536,
       "h": 45.8
     },
     "resultsCard": {
       "x": 968,
-      "y": 469.2,
+      "y": 559.4,
       "w": 600,
       "h": 414.5
     },
     "limitsCard": {
       "x": 352,
-      "y": 899.8,
+      "y": 990,
       "w": 600,
       "h": 483.1
     },
     "notDiagnose": {
       "x": 401.6,
-      "y": 967.7,
+      "y": 1057.9,
       "w": 518.4,
       "h": 49.6
     },
@@ -1226,11 +1226,11 @@
       "x": 352,
       "y": 273.1,
       "w": 1216,
-      "h": 180.1
+      "h": 270.3
     },
     "footer": {
       "x": 384,
-      "y": 1506.8,
+      "y": 1597,
       "w": 1152,
       "h": 26
     }
@@ -1256,22 +1256,22 @@
   ],
   "rec7_track": {
     "file": "rec7_track.mp4",
-    "frames": 332,
-    "seconds": 22.2,
+    "frames": 333,
+    "seconds": 22.81,
     "marks": {
-      "click save": 2.01,
-      "dialog open": 2.14,
-      "click notes": 4.67,
-      "recheck set": 8.07,
-      "click save scan": 9.88,
-      "saved": 10.09,
-      "click open lesion": 12.82,
-      "lesion page": 12.98,
-      "hover scan 1": 15.32,
-      "hover scan 2": 16.78,
-      "hover scan 3": 18.21,
-      "hover scan 4": 19.65,
-      "end": 22.2
+      "click save": 2.15,
+      "dialog open": 2.27,
+      "click notes": 4.77,
+      "recheck set": 8.26,
+      "click save scan": 10.23,
+      "saved": 10.43,
+      "click open lesion": 13.22,
+      "lesion page": 13.39,
+      "hover scan 1": 15.86,
+      "hover scan 2": 17.32,
+      "hover scan 3": 18.93,
+      "hover scan 4": 20.31,
+      "end": 22.81
     },
     "boxes": {
       "start": {
@@ -1400,7 +1400,7 @@
           "x": 966.2,
           "y": 147,
           "w": 561.8,
-          "h": 754.6
+          "h": 810.6
         },
         "save": {
           "x": 966.2,
@@ -1412,11 +1412,11 @@
           "x": 966.2,
           "y": 790.6,
           "w": 561.8,
-          "h": 50
+          "h": 106
         }
       },
       "dialog": {
-        "t": 2.49,
+        "t": 2.63,
         "dlg": {
           "x": 680,
           "y": 207.2,
@@ -1461,7 +1461,7 @@
         }
       },
       "saved": {
-        "t": 10.24,
+        "t": 10.59,
         "savedTo": {
           "x": 966.2,
           "y": 790.6,
@@ -1478,17 +1478,17 @@
           "x": 966.2,
           "y": 147,
           "w": 561.8,
-          "h": 823.9
+          "h": 879.9
         },
         "actions": {
           "x": 966.2,
           "y": 859.9,
           "w": 561.8,
-          "h": 50
+          "h": 106
         }
       },
       "lesion": {
-        "t": 13.18,
+        "t": 13.6,
         "crumbs": {
           "x": 352,
           "y": 81,
@@ -1548,25 +1548,25 @@
   },
   "rec9_report": {
     "file": "rec9_report.mp4",
-    "frames": 306,
-    "seconds": 17.76,
+    "frames": 294,
+    "seconds": 17.87,
     "marks": {
       "click report": 1.87,
-      "report shown": 2.02,
-      "hover print": 4.51,
-      "scroll start": 5.51,
-      "scroll end": 7.04,
-      "letter scroll start": 8.44,
-      "letter scroll end": 9.75,
-      "click onset": 11.27,
-      "onset set": 11.4,
-      "click grown": 13.22,
-      "click color": 15.06,
-      "end": 17.76
+      "report shown": 2.04,
+      "hover print": 4.64,
+      "scroll start": 5.65,
+      "scroll end": 7.16,
+      "letter scroll start": 8.56,
+      "letter scroll end": 9.87,
+      "click onset": 11.46,
+      "onset set": 11.59,
+      "click grown": 13.47,
+      "click color": 15.22,
+      "end": 17.87
     },
     "boxes": {
       "report": {
-        "t": 2.23,
+        "t": 2.24,
         "doc": {
           "x": 510,
           "y": 169,
@@ -1635,7 +1635,7 @@
         }
       },
       "scrolled": {
-        "t": 7.04,
+        "t": 7.16,
         "doc": {
           "x": 510,
           "y": -524,
@@ -1704,7 +1704,7 @@
         }
       },
       "letter": {
-        "t": 9.76,
+        "t": 9.87,
         "letter": {
           "x": 558,
           "y": 165.4,
@@ -1743,7 +1743,7 @@
         }
       },
       "letter filled": {
-        "t": 15.34,
+        "t": 15.48,
         "letter": {
           "x": 558,
           "y": 165.4,
@@ -1785,17 +1785,17 @@
   },
   "rec8_clinic": {
     "file": "rec8_clinic.mp4",
-    "frames": 144,
-    "seconds": 14.37,
+    "frames": 143,
+    "seconds": 14.81,
     "marks": {
-      "hover first": 3.06,
-      "hover overdue": 5.41,
-      "click patients": 8.11,
-      "patients": 8.25,
-      "click patient A": 10.48,
-      "patient": 10.67,
-      "hover mark 1": 12.77,
-      "end": 14.37
+      "hover first": 3.17,
+      "hover overdue": 5.61,
+      "click patients": 8.27,
+      "patients": 8.47,
+      "click patient A": 10.81,
+      "patient": 11.02,
+      "hover mark 1": 13.21,
+      "end": 14.81
     },
     "boxes": {
       "home": {
@@ -1843,14 +1843,14 @@
           "h": 425.8
         },
         "navPatients": {
-          "x": 629.3,
+          "x": 567.8,
           "y": 16.4,
           "w": 80.2,
           "h": 39.3
         }
       },
       "patients": {
-        "t": 8.25,
+        "t": 8.48,
         "rows": {
           "x": 352,
           "y": 304.9,
@@ -1865,7 +1865,7 @@
         }
       },
       "patient": {
-        "t": 10.87,
+        "t": 11.23,
         "head": {
           "x": 352,
           "y": 130.7,
@@ -1907,22 +1907,22 @@
   },
   "cipher_sample": {
     "kind": "scan",
-    "bytes": 87958,
-    "base64": "tXObz1KH7qWAGe/oKTG736vDrzO7zJprUAf4sS8ruJmdTmLv8+mIb3r0p8DGfcn/vunju7dYUjewjmXfAx9h9u33eM9QJSI5EQQ+lgHMKu070YXi8Iv9xp868vKg9ltG"
+    "bytes": 194124,
+    "base64": "D/+hc0l44+S7HRfiqqrqA4rlbJA7ovtY5+zZ+9TpswRX8MtrI52nRshUyG71kFnX0dUjUm5euqfc8DzvREJzq1U9fgHF5C+f6IM+8g6L+DdHw4f1So5Riu12RCt1zpT/"
   },
   "rec10_lock": {
     "file": "rec10_lock.mp4",
-    "frames": 192,
-    "seconds": 15.12,
+    "frames": 181,
+    "seconds": 15.93,
     "marks": {
-      "click account": 2.23,
-      "click lock": 4.74,
-      "locked": 4.87,
-      "click profile": 7.74,
-      "click passcode": 9.79,
-      "click unlock": 12.78,
-      "unlocked": 12.99,
-      "end": 15.12
+      "click account": 2.56,
+      "click lock": 5.1,
+      "locked": 5.29,
+      "click profile": 8.25,
+      "click passcode": 10.35,
+      "click unlock": 13.54,
+      "unlocked": 13.75,
+      "end": 15.93
     },
     "boxes": {
       "start": {
@@ -1947,7 +1947,7 @@
         }
       },
       "menu": {
-        "t": 2.48,
+        "t": 2.8,
         "account": {
           "x": 1371.8,
           "y": 16,
@@ -1968,7 +1968,7 @@
         }
       },
       "signin": {
-        "t": 5.02,
+        "t": 5.44,
         "account": {
           "x": 0,
           "y": 0,
@@ -1995,7 +1995,7 @@
         }
       },
       "unlock": {
-        "t": 8,
+        "t": 8.51,
         "account": {
           "x": 0,
           "y": 0,

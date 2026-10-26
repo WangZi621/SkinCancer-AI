@@ -114,8 +114,8 @@
       opacity: 0;
     }
   </style>
-  <div id="root" data-composition-id="training" data-width="1920" data-height="1080" data-start="0" data-duration="10">
-    <div id="tr-stage" class="clip" data-start="0" data-duration="10" data-track-index="1" data-layout-allow-overlap>
+  <div id="root" data-composition-id="training" data-width="1920" data-height="1080" data-start="0" data-duration="8.5">
+    <div id="tr-stage" class="clip" data-start="0" data-duration="8.5" data-track-index="1" data-layout-allow-overlap>
       <canvas id="tr-grid" width="908" height="840"></canvas>
 
       <p id="tr-num" aria-label="45,400"><span>4</span><span>5</span><span>,</span><span>4</span><span>0</span><span>0</span></p>
@@ -133,7 +133,7 @@
       <i id="tr-lead-b" class="tr-lead" style="left: 1060px; top: 935px; width: 52px"></i>
       <p id="tr-val" class="tr-words" style="left: 1130px; top: 912px"><b>9,080</b> for validation</p>
     </div>
-    <div id="tr-dip" class="clip" data-start="9.85" data-duration="0.15" data-track-index="2"></div>
+    <div id="tr-dip" class="clip" data-start="8.35" data-duration="0.15" data-track-index="2"></div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
@@ -195,7 +195,7 @@
     tl.fromTo("#tr-epochs b", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "power2.out" }, 4.8);
     tl.fromTo("#tr-epochs span", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 5.05);
     // dip cut into 07
-    tl.fromTo("#tr-dip", { opacity: 0 }, { opacity: 0.4, duration: 0.1, ease: "none" }, 9.85);
+    tl.fromTo("#tr-dip", { opacity: 0 }, { opacity: 0.4, duration: 0.1, ease: "none" }, 8.35);
     window.__timelines["training"] = tl;
   </script>
 </template>

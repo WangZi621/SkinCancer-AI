@@ -13,6 +13,7 @@ import pathlib
 import shutil
 import subprocess
 
+from fontTools.pens.boundsPen import BoundsPen
 from fontTools.pens.svgPathPen import SVGPathPen
 from fontTools.pens.transformPen import TransformPen
 from fontTools.ttLib import TTFont
@@ -62,20 +63,25 @@ def placed(d, size, x, y):
 
 
 # ---------------------------------------------------------------- wordmark (outlined Archivo)
-def wordmark(cap_px, x0=0.0, y0=0.0, text='Stryde', wdth=115, wght=850, track=-0.01):
+def wordmark(cap_px, x0=0.0, y0=0.0, text='Stryde', wdth=115, wght=850, track=-0.01, bounds=False):
     """Path data for the wordmark (Archivo, as the Stryde headlines) with its cap height `cap_px`, top of the caps at y0.
-    Returns (d, width)."""
+    Returns (d, width), plus the outline's bounds when `bounds` is set: the y's tail falls below the
+    baseline and the d's stem rises above the caps, so layouts size to the bounds, not the cap height."""
     font = TTFont(FONT)
     inst = instancer.instantiateVariableFont(font, {'wdth': wdth, 'wght': wght})
     gs, cmap, hmtx = inst.getGlyphSet(), inst.getBestCmap(), inst['hmtx']
     upm, cap = inst['head'].unitsPerEm, inst['OS/2'].sCapHeight
     s = cap_px / cap
     pen = SVGPathPen(gs, ntos=lambda v: f'{v:.2f}'.rstrip('0').rstrip('.'))
+    box = BoundsPen(gs)
     x = 0
     for ch in text:
         g = cmap[ord(ch)]
-        gs[g].draw(TransformPen(pen, (s, 0, 0, -s, x0 + x * s, y0 + cap * s)))
+        for p in (pen, box):
+            gs[g].draw(TransformPen(p, (s, 0, 0, -s, x0 + x * s, y0 + cap * s)))
         x += hmtx[g][0] + track * upm
+    if bounds:
+        return pen.getCommands(), (x - track * upm) * s, box.bounds  # bounds: xMin, yMin, xMax, yMax
     return pen.getCommands(), (x - track * upm) * s
 
 
@@ -96,16 +102,17 @@ def stacked(sym_fill, word_fill, H=256):
     cap = CAP * H * 0.75
     _, w = wordmark(cap)
     width = max(w, H)
-    d, _ = wordmark(cap, (width - w) / 2, H * (1 + STACK_GAP))
-    total = H * (1 + STACK_GAP) + cap
+    d, _, (_, _, _, bottom) = wordmark(cap, (width - w) / 2, H * (1 + STACK_GAP), bounds=True)
+    total = bottom + 1
     sym = placed(path(contours(), sym_fill), H, (width - H) / 2, 0)
     return svg(f'0 0 {f(width)} {f(total)}', sym + path(d, word_fill))
 
 
 def wordmark_svg(fill):
     cap = 100
-    d, w = wordmark(cap)
-    return svg(f'0 0 {f(w)} {cap}', path(d, fill))
+    d, w, (_, top, _, bottom) = wordmark(cap, bounds=True)
+    top, bottom = math.floor(top), math.ceil(bottom)
+    return svg(f'0 {top} {f(w)} {bottom - top}', path(d, fill))
 
 
 def tile(small=False, maskable=False):

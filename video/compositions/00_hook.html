@@ -1,0 +1,154 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Archivo";
+      src: url("assets/fonts/archivo.woff2") format("woff2");
+      font-weight: 100 900;
+      font-stretch: 62% 125%;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      font-family: "Archivo", sans-serif;
+      color: #0b0e14;
+      background: #ececec url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='52' viewBox='0 0 30 52'%3E%3Cpath d='M0 0H30M0 26H30M0 52H30M0 0L30 52M30 0L0 52' stroke='rgba(20,33,61,0.05)' stroke-width='1' fill='none'/%3E%3Cg fill='rgba(20,33,61,0.2)'%3E%3Ccircle cx='0' cy='0' r='1.5'/%3E%3Ccircle cx='30' cy='0' r='1.5'/%3E%3Ccircle cx='15' cy='26' r='1.5'/%3E%3Ccircle cx='0' cy='52' r='1.5'/%3E%3Ccircle cx='30' cy='52' r='1.5'/%3E%3C/g%3E%3C/svg%3E") 15px 10px / 30px 52px;
+    }
+    /* real footage from Jason's earlier video, on cards with the app's line: ink outline, hard offset */
+    .hk-card {
+      position: absolute;
+      left: 250px;
+      width: 700px;
+      z-index: 1;
+    }
+    .hk-card video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 28px;
+      background: #0b0e14;
+      box-shadow: 0 0 0 2px #0b0e14, 12px 12px 0 2px #0b0e14;
+    }
+    #hk-kiosk-card {
+      top: 87px;
+      height: 906px;
+    }
+    #hk-mom-card {
+      top: 98px;
+      height: 884px;
+    }
+    /* what is said, set beside the footage as it is said */
+    .hk-line {
+      position: absolute;
+      left: 1080px;
+      width: 660px;
+      color: #14213d;
+      font-size: 76px;
+      font-weight: 800;
+      font-stretch: 112%;
+      letter-spacing: -0.015em;
+      line-height: 1.04;
+    }
+    .hk-line span {
+      display: inline-block;
+      white-space: pre;
+    }
+    .hk-who {
+      position: absolute;
+      left: 1084px;
+      color: #4c525d;
+      font-size: 30px;
+      font-weight: 600;
+    }
+    #hk-hi {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      width: 1920px;
+      height: 1080px;
+      object-fit: cover;
+    }
+    /* the introduction: a name card in the app's style */
+    #hk-name {
+      position: absolute;
+      z-index: 2;
+      left: 150px;
+      top: 812px;
+      display: grid;
+      gap: 6px;
+      padding: 22px 30px 24px;
+      border-radius: 20px;
+      background: #ffffff;
+      box-shadow: 0 0 0 2px #0b0e14, 6px 6px 0 2px #0b0e14;
+    }
+    #hk-name b {
+      color: #14213d;
+      font-size: 48px;
+      font-weight: 850;
+      font-stretch: 115%;
+      letter-spacing: -0.01em;
+      line-height: 1;
+    }
+    #hk-name span {
+      color: #4c525d;
+      font-size: 32px;
+      font-weight: 500;
+    }
+  </style>
+  <div id="root" data-composition-id="hook" data-width="1920" data-height="1080" data-start="0" data-duration="11.45">
+    <!-- 1. the kiosk on a real arm (source 3.3-8.3 s) -->
+    <div id="hk-kiosk-card" class="hk-card"><video id="hk-kiosk" class="clip" src="assets/footage/hook-kiosk.mp4" data-start="0" data-duration="5" data-track-index="2" muted playsinline></video></div>
+    <div id="hk-a" class="clip" data-start="0" data-duration="5" data-track-index="1" style="position: absolute; inset: 0">
+      <p id="hk-l1" class="hk-line" style="top: 300px"><span>I </span><span>think </span><span>you </span><span>might </span><span>have </span><span>cancer, </span><span>Mom.</span></p>
+      <p id="hk-l2" class="hk-line" style="top: 560px"><span>Am </span><span>I </span><span>gonna </span><span>die?</span></p>
+    </div>
+
+    <!-- 2. Jason sits down and says hello (source 8.3-11.75 s) -->
+    <video id="hk-hi" class="clip" src="assets/footage/hook-hi.mp4" data-start="5" data-duration="3.45" data-track-index="2" muted playsinline></video>
+    <div id="hk-b" class="clip" data-start="5" data-duration="3.45" data-track-index="1" style="position: absolute; inset: 0; z-index: 2">
+      <div id="hk-name"><b>Jason Xiao</b><span>Sophomore, Conestoga High School</span></div>
+    </div>
+
+    <!-- 3. the payoff (source 64.3-67.3 s; his voice ends at 66.8, the picture holds half a second more) -->
+    <div id="hk-mom-card" class="hk-card"><video id="hk-mom" class="clip" src="assets/footage/hook-mom.mp4" data-start="8.45" data-duration="3" data-track-index="2" muted playsinline></video></div>
+    <div id="hk-c" class="clip" data-start="8.45" data-duration="3" data-track-index="1" style="position: absolute; inset: 0">
+      <p id="hk-l3" class="hk-line" style="top: 330px"><span>And </span><span>don&#8217;t </span><span>worry, </span><span>my </span><span>mom </span><span>doesn&#8217;t </span><span>actually </span><span>have </span><span>cancer.</span></p>
+    </div>
+
+    <!-- the original sound of each piece, cut with short fades -->
+    <audio id="hk-snd-a" src="assets/audio/hook-kiosk.wav" data-start="0" data-duration="5" data-track-index="6"></audio>
+    <audio id="hk-snd-b" src="assets/audio/hook-hi.wav" data-start="5" data-duration="3.45" data-track-index="6"></audio>
+    <audio id="hk-snd-c" src="assets/audio/hook-mom.wav" data-start="8.45" data-duration="2.5" data-track-index="6"></audio>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+
+    // Words appear as they are spoken (transcript times, shifted to this scene), each from a
+    // short blur and grey to dress blue. A word's share of its line's time follows its length.
+    function speak(sel, t0, t1) {
+      const spans = [...document.querySelectorAll(sel + " span")];
+      const total = spans.reduce((n, s) => n + s.textContent.trim().length + 2, 0);
+      let t = t0;
+      spans.forEach((s) => {
+        tl.fromTo(s, { opacity: 0, color: "#a3a9b4", filter: "blur(6px)" }, { opacity: 1, color: "#14213d", filter: "blur(0px)", duration: 0.14, ease: "power2.out" }, t);
+        t += ((t1 - t0) * (s.textContent.trim().length + 2)) / total;
+      });
+    }
+
+    // 1. the card is already there on frame 0; it settles while the first line is spoken
+    tl.fromTo("#hk-kiosk-card", { scale: 1.03 }, { scale: 1, duration: 1.4, ease: "expo.out" }, 0);
+    speak("#hk-l1", 1.34, 2.55);
+    speak("#hk-l2", 3.17, 3.9);
+
+    // 2. hard cut to the couch as he sits; his name card while he says it
+    tl.fromTo("#hk-name", { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, 5.95);
+    tl.to("#hk-name", { opacity: 0, duration: 0.2, ease: "power2.in" }, 8.2);
+
+    // 3. the line that defuses the hook; the card lands with a small push
+    tl.fromTo("#hk-mom-card", { scale: 1.04 }, { scale: 1, duration: 0.9, ease: "expo.out" }, 8.45);
+    speak("#hk-l3", 8.58, 10.7);
+    window.__timelines["hook"] = tl;
+  </script>
+</template>
