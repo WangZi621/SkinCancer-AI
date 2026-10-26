@@ -1,0 +1,312 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Archivo";
+      src: url("assets/fonts/archivo.woff2") format("woff2");
+      font-weight: 100 900;
+      font-stretch: 62% 125%;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      font-family: "Archivo", sans-serif;
+      background: #ececec url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='52' viewBox='0 0 30 52'%3E%3Cpath d='M0 0H30M0 26H30M0 52H30M0 0L30 52M30 0L0 52' stroke='rgba(20,33,61,0.05)' stroke-width='1' fill='none'/%3E%3Cg fill='rgba(20,33,61,0.2)'%3E%3Ccircle cx='0' cy='0' r='1.5'/%3E%3Ccircle cx='30' cy='0' r='1.5'/%3E%3Ccircle cx='15' cy='26' r='1.5'/%3E%3Ccircle cx='0' cy='52' r='1.5'/%3E%3Ccircle cx='30' cy='52' r='1.5'/%3E%3C/g%3E%3C/svg%3E") 15px 10px / 30px 52px;
+    }
+    /* the camera: page coordinates (the 1920 x 1080 viewport of the recording) */
+    .cam {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      transform-origin: 0 0;
+    }
+    .win {
+      position: absolute;
+      left: 0;
+      top: -46px;
+      width: 1920px;
+      height: 1126px;
+      border-radius: 22px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 0 0 2px #0b0e14, 12px 12px 0 2px #0b0e14;
+    }
+    .win-bar {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      height: 46px;
+      border-bottom: 1px solid #d5d7dc;
+    }
+    .win-dot {
+      position: absolute;
+      top: 17px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #c4c8d0;
+    }
+    .win-url {
+      position: absolute;
+      left: 660px;
+      top: 8px;
+      width: 600px;
+      height: 30px;
+      border-radius: 9px;
+      background: #f2f3f5;
+      color: #4c525d;
+      font-size: 17px;
+      font-weight: 500;
+      line-height: 30px;
+      text-align: center;
+    }
+    .win-video {
+      position: absolute;
+      left: 0;
+      top: 46px;
+      width: 1920px;
+      height: 1080px;
+    }
+    /* (rings rebuilt over footage live in the scan scenes) */
+    .app-ring {
+      position: absolute;
+      left: 457.6px;
+      top: 121.3px;
+      width: 400px;
+      height: 400px;
+      opacity: 0;
+    }
+    .app-ring circle {
+      fill: none;
+      stroke: #1b4fd8;
+      stroke-width: 4;
+      stroke-linecap: round;
+    }
+    .app-status {
+      position: absolute;
+      left: 657.6px;
+      top: 452px;
+      transform: translateX(-50%);
+      padding: 0 14px;
+      white-space: nowrap;
+      height: 33px;
+      border-radius: 999px;
+      background: rgba(11, 14, 20, 0.82);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 33px;
+      text-align: center;
+      opacity: 0;
+    }
+    /* labels pinned to the part they name */
+    .lb {
+      position: absolute;
+      width: 0;
+      height: 0;
+    }
+    .lb-w {
+      position: absolute;
+      left: 0;
+      top: 0;
+      transform-origin: 0 0;
+    }
+    .lb-dot {
+      position: absolute;
+      left: -10px;
+      top: -10px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #1b4fd8;
+      box-shadow: 0 0 0 4px #ffffff, 0 0 0 6px #0b0e14;
+    }
+    .lb-line {
+      position: absolute;
+      background: #1b4fd8;
+    }
+    .lb-card {
+      position: absolute;
+      white-space: nowrap;
+      padding: 14px 26px;
+      border-radius: 16px;
+      background: #ffffff;
+      color: #0b0e14;
+      font-size: 40px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      box-shadow: 0 0 0 2px #0b0e14, 5px 5px 0 2px #0b0e14;
+    }
+    .lb[data-side="left"] .lb-line {
+      right: 0;
+      top: -1.5px;
+      height: 3px;
+      width: var(--len);
+      transform-origin: 100% 50%;
+    }
+    .lb[data-side="left"] .lb-card {
+      right: var(--len);
+      top: 0;
+      transform: translateY(-50%);
+    }
+    .lb[data-side="bottom"] .lb-line {
+      left: -1.5px;
+      top: 0;
+      width: 3px;
+      height: var(--len);
+      transform-origin: 50% 0;
+    }
+    .lb[data-side="bottom"] .lb-card {
+      left: 0;
+      top: var(--len);
+      transform: translateX(-50%);
+    }
+    .lb[data-side="top"] .lb-line {
+      left: -1.5px;
+      bottom: 0;
+      width: 3px;
+      height: var(--len);
+      transform-origin: 50% 100%;
+    }
+    .lb[data-side="top"] .lb-card {
+      left: 0;
+      bottom: var(--len);
+      transform: translateX(-50%);
+    }
+    .lb-red .lb-dot,
+    .lb-red .lb-line {
+      background: #b42318;
+    }
+    .lb[data-side="right"] .lb-line {
+      left: 0;
+      top: -1.5px;
+      height: 3px;
+      width: var(--len);
+      transform-origin: 0 50%;
+    }
+    .lb[data-side="right"] .lb-card {
+      left: var(--len);
+      top: 0;
+      transform: translateY(-50%);
+    }
+    .whip {
+      position: absolute;
+      inset: 0;
+    }
+  </style>
+  <div id="root" data-composition-id="report" data-width="1920" data-height="1080" data-start="0" data-duration="13.4" data-motion-blur="on">
+    <div id="report-whip" class="whip">
+    <div id="report-cam" class="cam" data-layout-allow-overflow>
+      <div class="win">
+        <div class="win-bar">
+          <span class="win-dot" style="left: 22px"></span>
+          <span class="win-dot" style="left: 42px"></span>
+          <span class="win-dot" style="left: 62px"></span>
+          <span class="win-url" data-layout-ignore>wangzi621.github.io/SkinCancer-AI</span>
+        </div>
+        <video id="rp-video" class="win-video clip" src="assets/capture/rec9_report.mp4" data-start="0" data-duration="7.6" data-media-start="0.45" data-track-index="1" muted playsinline></video>
+        <!-- the referral letter: two answers, and the letter in the report rewrites itself (1.6x) -->
+        <video id="rp-video-b" class="win-video clip" src="assets/capture/rec9_report.mp4" data-start="7.6" data-duration="5.8" data-media-start="8.05" data-playback-rate="1.6" data-track-index="1" muted playsinline></video>
+      </div>
+      <div id="rp-lb-doc" class="lb" data-at="1410,480" data-z="0.95" data-side="right" style="--len: 40px">
+        <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Referral report</span></div>
+      </div>
+      <div id="rp-lb-hist" class="lb" data-at="1362,489" data-z="1.1" data-side="right" style="--len: 40px">
+        <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">The lesion&#8217;s history</span></div>
+      </div>
+      <div id="rp-lb-letter" class="lb" data-at="1362,250" data-z="1.3" data-side="right" style="--len: 40px">
+        <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Referral letter</span></div>
+      </div>
+    </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const D = 13.4;
+
+    // Camera on the real page, adapted from the registry's cursor-zoom-follow: the aim steps
+    // between shots and a critically damped spring (in log zoom) turns each step into a move
+    // that leads, settles and then holds still while the app works.
+    function pageCamera(el, shots, duration, omega = 7) {
+      const W = 1920, H = 1080, FPS = 60, SUB = 4, dt = 1 / (FPS * SUB);
+      const aim = (t) => {
+        let s = shots[0];
+        for (const k of shots) if (t >= k.t) s = k;
+        return { x: s.x, y: s.y, z: Math.log(s.z) };
+      };
+      const n = Math.ceil(duration * FPS) + 1;
+      const out = [];
+      const s = aim(0);
+      const v = { x: 0, y: 0, z: 0 };
+      for (let f = 0; f <= n; f++) {
+        out.push({ x: s.x, y: s.y, z: s.z });
+        for (let j = 0; j < SUB; j++) {
+          const a = aim((f * SUB + j) * dt);
+          for (const k of ["x", "y", "z"]) {
+            v[k] += (omega * omega * (a[k] - s[k]) - 2 * omega * v[k]) * dt;
+            s[k] += v[k] * dt;
+          }
+        }
+      }
+      const at = (t) => {
+        const p = Math.max(0, Math.min(n, t * FPS));
+        const i = Math.floor(p);
+        const u = p - i;
+        const a = out[i];
+        const b = out[Math.min(n, i + 1)];
+        return { x: a.x + (b.x - a.x) * u, y: a.y + (b.y - a.y) * u, z: Math.exp(a.z + (b.z - a.z) * u) };
+      };
+      const render = (t) => {
+        const c = at(t);
+        el.style.transform = `translate(${(W / 2 - c.x * c.z).toFixed(2)}px,${(H / 2 - c.y * c.z).toFixed(2)}px) scale(${c.z.toFixed(4)})`;
+      };
+      return { at, render };
+    }
+    // Labels ride the camera and are counter-scaled to the zoom they are read at.
+    function pinLabels() {
+      document.querySelectorAll("#root .lb").forEach((el) => {
+        const [x, y] = el.dataset.at.split(",").map(Number);
+        el.style.left = x + "px";
+        el.style.top = y + "px";
+        el.firstElementChild.style.transform = `scale(${1 / Number(el.dataset.z)})`;
+      });
+    }
+    function showLabel(sel, tin, tout) {
+      const side = document.querySelector(sel).dataset.side;
+      const axis = side === "left" || side === "right" ? "scaleX" : "scaleY";
+      tl.fromTo(sel + " .lb-dot", { scale: 0 }, { scale: 1, duration: 0.3, ease: "expo.out" }, tin);
+      tl.fromTo(sel + " .lb-line", { [axis]: 0 }, { [axis]: 1, duration: 0.3, ease: "power2.out" }, tin + 0.06);
+      tl.fromTo(sel + " .lb-card", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.28, ease: "power2.out" }, tin + 0.22);
+      if (tout != null) tl.to([sel + " .lb-dot", sel + " .lb-line", sel + " .lb-card"], { opacity: 0, duration: 0.2, ease: "power2.in" }, tout);
+    }
+
+    // Shots. Recording 9 starts on the last frame of recording 7 (13's last framing). Report click
+    // 1.4, the report 1.53, Print hovered 4.07, the scroll to the history 5.07-6.59. From 7.6 the
+    // recording plays at 1.6x: the scroll to the letter 7.84-8.66, the onset chosen 9.63, "It has
+    // grown" ticked 10.84 and "It has changed color" 11.94; the letter rewrites itself each time.
+    const cam = pageCamera(document.getElementById("report-cam"), [
+      { t: 0, x: 1000, y: 729, z: 1.45 }, // 13's last framing: the chart
+      { t: 0.15, x: 1267, y: 328, z: 1.8 }, // the Report button
+      { t: 1.65, x: 990, y: 560, z: 0.95 }, // the whole report
+      { t: 3.85, x: 1257, y: 300, z: 1.8 }, // Print or save as PDF
+      { t: 5.2, x: 1060, y: 530, z: 1.1 }, // the lesion history, after the scroll
+      { t: 7.7, x: 960, y: 560, z: 1.3 }, // the letter and the two questions under it
+      { t: 12.1, x: 960, y: 330, z: 1.75 }, // into the letter as it reads now
+    ], D);
+    pinLabels();
+    const clock = { t: 0 };
+    tl.to(clock, { t: D, duration: D, ease: "none", onUpdate: () => cam.render(clock.t) }, 0);
+    cam.render(0);
+
+    showLabel("#rp-lb-doc", 2.1, 3.8);
+    showLabel("#rp-lb-hist", 6.1, 7.55);
+    showLabel("#rp-lb-letter", 8.95, 11.95);
+
+    // whip out to the next sample (10 lands the other half of the whip)
+    tl.to("#report-whip", { x: -1100, duration: 0.28, ease: "power3.in" }, 13.12);
+    window.__timelines["report"] = tl;
+  </script>
+</template>

@@ -1,0 +1,124 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Geist";
+      src: url("assets/fonts/geist.woff2") format("woff2");
+      font-weight: 100 900;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      font-family: "Geist", sans-serif;
+      background: radial-gradient(ellipse 80% 90% at 50% 42%, #16928e 0%, #0f6f6f 50%, #093f46 100%);
+    }
+    /* each lesion is a lens: photo in a circle with a white rim */
+    .op-lens {
+      position: absolute;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 0 0 7px #ffffff, 0 30px 60px -26px rgba(0, 0, 0, 0.55);
+    }
+    .op-lens img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    #op-ring {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+    }
+    #op-ring circle {
+      fill: none;
+      stroke-width: 5;
+    }
+    #op-ring-arc {
+      stroke: #ffffff;
+      stroke-linecap: round;
+    }
+    #op-q {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 862px;
+      text-align: center;
+      color: #ffffff;
+      font-size: 60px;
+      font-weight: 650;
+      letter-spacing: -0.03em;
+    }
+    #op-q span,
+    #op-name span {
+      display: inline-block;
+      white-space: pre;
+    }
+    #op-name {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 828px;
+      text-align: center;
+      color: #ffffff;
+      font-size: 110px;
+      font-weight: 650;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+  </style>
+  <div id="root" data-composition-id="hook" data-width="1920" data-height="1080" data-start="0" data-duration="5.5">
+    <div id="op-stage" class="clip" data-start="0" data-duration="5.5" data-track-index="1" data-layout-allow-overlap>
+      <!-- eight biopsy-confirmed samples from the app; s1 is the melanoma in situ the app flags -->
+      <div id="op-l3" class="op-lens" data-lens="300,330,230"><img src="assets/img/samples/s3.jpg" alt="" /></div>
+      <div id="op-l5" class="op-lens" data-lens="660,250,190"><img src="assets/img/samples/s5.jpg" alt="" /></div>
+      <div id="op-l1" class="op-lens" data-lens="1240,330,260"><img src="assets/img/samples/s1.jpg" alt="" /></div>
+      <div id="op-l4" class="op-lens" data-lens="1630,290,210"><img src="assets/img/samples/s4.jpg" alt="" /></div>
+      <div id="op-l2" class="op-lens" data-lens="500,640,250"><img src="assets/img/samples/s2.jpg" alt="" /></div>
+      <div id="op-l6" class="op-lens" data-lens="880,600,200"><img src="assets/img/samples/s6.jpg" alt="" /></div>
+      <div id="op-l7" class="op-lens" data-lens="1380,650,230"><img src="assets/img/samples/s7.jpg" alt="" /></div>
+      <div id="op-l8" class="op-lens" data-lens="1720,640,180"><img src="assets/img/samples/s8.jpg" alt="" /></div>
+
+      <svg id="op-ring" viewBox="0 0 1920 1080">
+        <circle id="op-ring-arc" cx="0" cy="0" r="10" pathLength="100" />
+      </svg>
+
+      <p id="op-q"><span>Which </span><span>skin </span><span>spots </span><span>need </span><span>a </span><span>dermatologist </span><span>first?</span></p>
+      <h1 id="op-name" aria-label="SkinScan AI"><span>S</span><span>k</span><span>i</span><span>n</span><span>S</span><span>c</span><span>a</span><span>n</span><span> </span><span>A</span><span>I</span></h1>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const lens = {};
+    document.querySelectorAll("#root .op-lens").forEach((el) => {
+      const [cx, cy, d] = el.dataset.lens.split(",").map(Number);
+      Object.assign(el.style, { left: cx - d / 2 + "px", top: cy - d / 2 + "px", width: d + "px", height: d + "px" });
+      lens[el.id] = { cx, cy, d };
+    });
+    const ringAt = (id, gap = 1.16) => {
+      const l = lens[id];
+      return { attr: { cx: l.cx, cy: l.cy, r: (l.d * gap) / 2 } };
+    };
+    tl.fromTo("#root .op-lens", { scale: 1.035 }, { scale: 1, duration: 1.0, ease: "expo.out", stagger: 0.03 }, 0);
+    tl.fromTo("#op-q span", { opacity: 0, color: "#8fc7c3", filter: "blur(6px)" }, { opacity: 1, color: "#ffffff", filter: "blur(0px)", duration: 0.16, ease: "power2.out", stagger: 0.08 }, 0.1);
+    tl.set("#op-ring-arc", ringAt("op-l2"), 0);
+    tl.fromTo("#op-ring", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 0.85);
+    tl.fromTo("#op-ring-arc", { strokeDasharray: "22 78", strokeDashoffset: 0 }, { strokeDashoffset: -200, duration: 1.6, ease: "none" }, 0.85);
+    tl.to("#op-ring-arc", { ...ringAt("op-l6"), duration: 0.4, ease: "power3.inOut" }, 1.3);
+    tl.to("#op-ring-arc", { ...ringAt("op-l1"), duration: 0.45, ease: "power3.inOut" }, 1.85);
+    tl.to("#op-ring-arc", { strokeDasharray: "100 0", duration: 0.5, ease: "power2.inOut" }, 2.4);
+    const others = ["#op-l3", "#op-l5", "#op-l4", "#op-l2", "#op-l6", "#op-l7", "#op-l8"];
+    tl.to(others, { opacity: 0, scale: 0.86, duration: 0.3, ease: "power2.in", stagger: 0.03 }, 2.95);
+    tl.to("#op-q", { opacity: 0, filter: "blur(6px)", duration: 0.2, ease: "power2.in" }, 2.95);
+    const big = 520;
+    const s1 = lens["op-l1"];
+    tl.to("#op-l1", { x: 960 - s1.cx, y: 450 - s1.cy, scale: big / s1.d, duration: 0.8, ease: "power3.inOut" }, 3.0);
+    tl.to("#op-ring-arc", { attr: { cx: 960, cy: 450, r: (big * 1.12) / 2 }, duration: 0.8, ease: "power3.inOut" }, 3.0);
+    tl.fromTo("#op-name", { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 3.6);
+    tl.to("#op-name", { opacity: 0, filter: "blur(6px)", duration: 0.18, ease: "power2.in" }, 5.05);
+    tl.to("#op-ring", { opacity: 0, duration: 0.18, ease: "power2.in" }, 5.05);
+    tl.to("#op-l1", { y: 540 - s1.cy, scale: 400 / s1.d, duration: 0.42, ease: "power4.in" }, 5.08);
+    window.__timelines["hook"] = tl;
+  </script>
+</template>

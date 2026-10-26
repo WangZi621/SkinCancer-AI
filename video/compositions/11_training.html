@@ -1,0 +1,201 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Archivo";
+      src: url("assets/fonts/archivo.woff2") format("woff2");
+      font-weight: 100 900;
+      font-stretch: 62% 125%;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      font-family: "Archivo", sans-serif;
+      background: #ececec url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='52' viewBox='0 0 30 52'%3E%3Cpath d='M0 0H30M0 26H30M0 52H30M0 0L30 52M30 0L0 52' stroke='rgba(20,33,61,0.05)' stroke-width='1' fill='none'/%3E%3Cg fill='rgba(20,33,61,0.2)'%3E%3Ccircle cx='0' cy='0' r='1.5'/%3E%3Ccircle cx='30' cy='0' r='1.5'/%3E%3Ccircle cx='15' cy='26' r='1.5'/%3E%3Ccircle cx='0' cy='52' r='1.5'/%3E%3Ccircle cx='30' cy='52' r='1.5'/%3E%3C/g%3E%3C/svg%3E") 15px 10px / 30px 52px;
+      color: #0b0e14;
+    }
+    #tr-grid {
+      position: absolute;
+      left: 140px;
+      top: 160px;
+      width: 908px;
+      height: 840px;
+    }
+    #tr-num {
+      position: absolute;
+      left: 1130px;
+      top: 150px;
+      color: #14213d;
+      font-size: 120px;
+      font-weight: 850;
+      font-stretch: 112%;
+      letter-spacing: -0.025em;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    #tr-num span,
+    .tr-words span {
+      display: inline-block;
+      white-space: pre;
+    }
+    .tr-words {
+      position: absolute;
+      color: #4c525d;
+      font-size: 36px;
+      font-weight: 500;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+    }
+    .tr-words b {
+      color: #0b0e14;
+      font-weight: 650;
+    }
+    .tr-lead {
+      position: absolute;
+      height: 3px;
+      background: #1b4fd8;
+      transform-origin: 0 50%;
+    }
+    #tr-lens {
+      position: absolute;
+      left: 1140px;
+      top: 570px;
+      width: 300px;
+      height: 300px;
+    }
+    #tr-face {
+      position: absolute;
+      inset: 40px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 0 0 6px #ffffff, 0 0 0 8px #0b0e14;
+    }
+    #tr-face img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    #tr-ticks {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    #tr-ticks line {
+      stroke: #1b4fd8;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+    }
+    #tr-epochs {
+      position: absolute;
+      left: 1478px;
+      top: 650px;
+    }
+    #tr-epochs b {
+      display: block;
+      color: #14213d;
+      font-size: 96px;
+      font-weight: 850;
+      font-stretch: 112%;
+      letter-spacing: -0.025em;
+      line-height: 1;
+    }
+    #tr-epochs span {
+      display: block;
+      margin-top: 8px;
+      color: #4c525d;
+      font-size: 36px;
+      font-weight: 500;
+    }
+    #tr-dip {
+      position: absolute;
+      inset: 0;
+      background: #000000;
+      opacity: 0;
+    }
+  </style>
+  <div id="root" data-composition-id="training" data-width="1920" data-height="1080" data-start="0" data-duration="10">
+    <div id="tr-stage" class="clip" data-start="0" data-duration="10" data-track-index="1" data-layout-allow-overlap>
+      <canvas id="tr-grid" width="908" height="840"></canvas>
+
+      <p id="tr-num" aria-label="45,400"><span>4</span><span>5</span><span>,</span><span>4</span><span>0</span><span>0</span></p>
+      <p id="tr-what" class="tr-words" style="left: 1132px; top: 286px"><span>biopsy-confirmed </span><span>images </span><br /><span>from </span><span>the </span><span>ISIC </span><span>Archive</span></p>
+
+      <i id="tr-lead-a" class="tr-lead" style="left: 1060px; top: 479px; width: 52px"></i>
+      <p id="tr-train" class="tr-words" style="left: 1130px; top: 456px"><b>36,320</b> for training</p>
+
+      <div id="tr-lens">
+        <div id="tr-face"><img src="assets/img/samples/s1.jpg" alt="" /></div>
+        <svg id="tr-ticks" viewBox="0 0 300 300"></svg>
+      </div>
+      <div id="tr-epochs" data-hold><b>218</b><span>training epochs</span></div>
+
+      <i id="tr-lead-b" class="tr-lead" style="left: 1060px; top: 935px; width: 52px"></i>
+      <p id="tr-val" class="tr-words" style="left: 1130px; top: 912px"><b>9,080</b> for validation</p>
+    </div>
+    <div id="tr-dip" class="clip" data-start="9.85" data-duration="0.15" data-track-index="2"></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+
+    // 45,400 cells, one per image: 227 columns x 200 rows. The last 40 rows (9,080) are the
+    // validation set; the first 160 rows (36,320) trained the model.
+    const COLS = 227, ROWS = 200, P = 4, C = 3, VAL_ROW = 160, GAP = 36;
+    const cv = document.getElementById("tr-grid");
+    const ctx = cv.getContext("2d");
+    const st = { draw: 0, split: 0 };
+    const mix = (a, b, u) => Math.round(a + (b - a) * u);
+    const render = () => {
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      const reach = st.draw * (COLS + ROWS * 1.1);
+      const train = [164, 184, 238];
+      const val = [mix(164, 27, st.split), mix(184, 79, st.split), mix(238, 216, st.split)];
+      for (let r = 0; r < ROWS; r++) {
+        const isVal = r >= VAL_ROW;
+        const dy = isVal ? GAP * st.split : 0;
+        const rgb = isVal ? val : train;
+        ctx.fillStyle = `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
+        for (let c = 0; c < COLS; c++) {
+          if (c + r * 1.1 > reach) break;
+          ctx.fillRect(c * P, r * P + dy, C, C);
+        }
+      }
+    };
+    tl.fromTo(st, { draw: 0.04 }, { draw: 1, duration: 1.6, ease: "power2.out", onUpdate: render }, 0);
+    tl.fromTo(st, { split: 0 }, { split: 1, duration: 0.7, ease: "power3.inOut", onUpdate: render }, 2.7);
+    render();
+
+    // 218 ticks around the lens, one per epoch, filling clockwise
+    const svg = document.getElementById("tr-ticks");
+    const ticks = [];
+    for (let i = 0; i < 218; i++) {
+      const a = (i / 218) * Math.PI * 2 - Math.PI / 2;
+      const l = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      l.setAttribute("x1", (150 + Math.cos(a) * 128).toFixed(2));
+      l.setAttribute("y1", (150 + Math.sin(a) * 128).toFixed(2));
+      l.setAttribute("x2", (150 + Math.cos(a) * 146).toFixed(2));
+      l.setAttribute("y2", (150 + Math.sin(a) * 146).toFixed(2));
+      svg.appendChild(l);
+      ticks.push(l);
+    }
+
+    // 45,400 lands per digit, then what it is
+    tl.fromTo("#tr-num span", { opacity: 0.15, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.22, ease: "power2.out", stagger: 0.06 }, 0);
+    tl.fromTo("#tr-what span", { opacity: 0, color: "#a3a9b4" }, { opacity: 1, color: "#4c525d", duration: 0.16, ease: "power2.out", stagger: 0.07 }, 0.55);
+
+    // the split, labelled where it happens
+    tl.fromTo("#tr-lead-a", { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "power2.out" }, 3.0);
+    tl.fromTo("#tr-train", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.28, ease: "power2.out" }, 3.15);
+    tl.fromTo("#tr-lead-b", { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "power2.out" }, 3.35);
+    tl.fromTo("#tr-val", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.28, ease: "power2.out" }, 3.5);
+
+    // 218 epochs: the lens arrives and its ring is drawn one tick per epoch
+    tl.fromTo("#tr-lens", { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 0.7, ease: "expo.out" }, 4.3);
+    tl.fromTo(ticks, { opacity: 0 }, { opacity: 1, duration: 0.01, stagger: 1.5 / 218, ease: "none" }, 4.7);
+    tl.fromTo("#tr-epochs b", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "power2.out" }, 4.8);
+    tl.fromTo("#tr-epochs span", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 5.05);
+    // dip cut into 07
+    tl.fromTo("#tr-dip", { opacity: 0 }, { opacity: 0.4, duration: 0.1, ease: "none" }, 9.85);
+    window.__timelines["training"] = tl;
+  </script>
+</template>

@@ -621,7 +621,7 @@ export function createExplainer({ root, model, samples, samplesReady, getScan })
     const catCanvas = stripCanvas(cat, 64, quantile(cat, 0.99), true, 6);
     // Outline the 64 patient numbers at the end of the joined list.
     const g = catCanvas.getContext('2d');
-    g.strokeStyle = '#0e7c7b';
+    g.strokeStyle = '#1b4fd8';
     g.lineWidth = 2;
     g.strokeRect(1, 28 * 6 + 1, 64 * 6 - 3, 6 - 2);
     flow.append(h('figure', { class: 'ex-strip' }, catCanvas,

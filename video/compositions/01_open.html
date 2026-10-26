@@ -1,0 +1,143 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Archivo";
+      src: url("assets/fonts/archivo.woff2") format("woff2");
+      font-weight: 100 900;
+      font-stretch: 62% 125%;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      font-family: "Archivo", sans-serif;
+      background: #ececec url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='52' viewBox='0 0 30 52'%3E%3Cpath d='M0 0H30M0 26H30M0 52H30M0 0L30 52M30 0L0 52' stroke='rgba(20,33,61,0.05)' stroke-width='1' fill='none'/%3E%3Cg fill='rgba(20,33,61,0.2)'%3E%3Ccircle cx='0' cy='0' r='1.5'/%3E%3Ccircle cx='30' cy='0' r='1.5'/%3E%3Ccircle cx='15' cy='26' r='1.5'/%3E%3Ccircle cx='0' cy='52' r='1.5'/%3E%3Ccircle cx='30' cy='52' r='1.5'/%3E%3C/g%3E%3C/svg%3E") 15px 10px / 30px 52px;
+    }
+    /* each lesion is a lens: photo in a circle with a white rim */
+    .op-lens {
+      position: absolute;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 0 0 7px #ffffff, 0 0 0 9px #0b0e14;
+    }
+    .op-lens img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    #op-ring {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+    }
+    #op-ring circle {
+      fill: none;
+      stroke-width: 5;
+    }
+    #op-ring-arc {
+      stroke: #1b4fd8;
+      stroke-linecap: round;
+    }
+    #op-q {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 862px;
+      text-align: center;
+      color: #14213d;
+      font-size: 60px;
+      font-weight: 750;
+      font-stretch: 108%;
+      letter-spacing: -0.015em;
+    }
+    #op-q span,
+    #op-name span {
+      display: inline-block;
+      white-space: pre;
+    }
+    #op-name {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 828px;
+      text-align: center;
+      color: #14213d;
+      font-size: 110px;
+      font-weight: 850;
+      font-stretch: 115%;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+  </style>
+  <div id="root" data-composition-id="open" data-width="1920" data-height="1080" data-start="0" data-duration="8">
+    <div id="op-stage" class="clip" data-start="0" data-duration="8" data-track-index="1" data-layout-allow-overlap>
+      <!-- eight biopsy-confirmed samples from the app; s1 is the melanoma in situ the app flags -->
+      <div id="op-l3" class="op-lens" data-lens="300,330,230"><img src="assets/img/samples/s3.jpg" alt="" /></div>
+      <div id="op-l5" class="op-lens" data-lens="660,250,190"><img src="assets/img/samples/s5.jpg" alt="" /></div>
+      <div id="op-l1" class="op-lens" data-lens="1240,330,260"><img src="assets/img/samples/s1.jpg" alt="" /></div>
+      <div id="op-l4" class="op-lens" data-lens="1630,290,210"><img src="assets/img/samples/s4.jpg" alt="" /></div>
+      <div id="op-l2" class="op-lens" data-lens="500,640,250"><img src="assets/img/samples/s2.jpg" alt="" /></div>
+      <div id="op-l6" class="op-lens" data-lens="880,600,200"><img src="assets/img/samples/s6.jpg" alt="" /></div>
+      <div id="op-l7" class="op-lens" data-lens="1380,650,230"><img src="assets/img/samples/s7.jpg" alt="" /></div>
+      <div id="op-l8" class="op-lens" data-lens="1720,640,180"><img src="assets/img/samples/s8.jpg" alt="" /></div>
+
+      <svg id="op-ring" viewBox="0 0 1920 1080">
+        <circle id="op-ring-arc" cx="0" cy="0" r="10" pathLength="100" />
+      </svg>
+
+      <p id="op-q"><span>Which </span><span>skin </span><span>spots </span><span>need </span><span>a </span><span>dermatologist </span><span>first?</span></p>
+      <h1 id="op-name" aria-label="SkinScan AI"><span>S</span><span>k</span><span>i</span><span>n</span><span>S</span><span>c</span><span>a</span><span>n</span><span> </span><span>A</span><span>I</span></h1>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Lay out the lenses from their data-lens "cx,cy,d" (centre and diameter at 1920x1080).
+    const lens = {};
+    document.querySelectorAll("#root .op-lens").forEach((el) => {
+      const [cx, cy, d] = el.dataset.lens.split(",").map(Number);
+      Object.assign(el.style, { left: cx - d / 2 + "px", top: cy - d / 2 + "px", width: d + "px", height: d + "px" });
+      lens[el.id] = { cx, cy, d };
+    });
+    // The ring is one circle whose centre and radius move (attributes, so the stroke stays 5 px).
+    const ringAt = (id, gap = 1.16) => {
+      const l = lens[id];
+      return { attr: { cx: l.cx, cy: l.cy, r: (l.d * gap) / 2 } };
+    };
+
+    // frame 0 is already the contact sheet; the lenses settle a few px as the film starts
+    tl.fromTo("#root .op-lens", { scale: 1.035 }, { scale: 1, duration: 1.2, ease: "expo.out", stagger: 0.03 }, 0);
+
+    // the question, per word, grey to dress blue with a short blur
+    tl.fromTo("#op-q span", { opacity: 0, color: "#a3a9b4", filter: "blur(6px)" }, { opacity: 1, color: "#14213d", filter: "blur(0px)", duration: 0.16, ease: "power2.out", stagger: 0.085 }, 0.25);
+
+    // the lens ring looks: visits three spots, then locks on Sample 1
+    tl.set("#op-ring-arc", ringAt("op-l2"), 0);
+    tl.fromTo("#op-ring", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 1.15);
+    tl.fromTo("#op-ring-arc", { strokeDasharray: "22 78", strokeDashoffset: 0 }, { strokeDashoffset: -300, duration: 2.6, ease: "none" }, 1.15);
+    tl.to("#op-ring-arc", { ...ringAt("op-l6"), duration: 0.42, ease: "power3.inOut" }, 1.75);
+    tl.to("#op-ring-arc", { ...ringAt("op-l7"), duration: 0.42, ease: "power3.inOut" }, 2.35);
+    tl.to("#op-ring-arc", { ...ringAt("op-l1"), duration: 0.5, ease: "power3.inOut" }, 2.95);
+    // lock: the arc closes around it
+    tl.to("#op-ring-arc", { strokeDasharray: "100 0", duration: 0.55, ease: "power2.inOut" }, 3.6);
+
+    // everything else falls away; Sample 1 comes forward and grows
+    const others = ["#op-l3", "#op-l5", "#op-l4", "#op-l2", "#op-l6", "#op-l7", "#op-l8"];
+    tl.to(others, { opacity: 0, scale: 0.86, duration: 0.32, ease: "power2.in", stagger: 0.035 }, 4.05);
+    tl.to("#op-q", { opacity: 0, filter: "blur(6px)", duration: 0.2, ease: "power2.in" }, 4.05);
+    const big = 520;
+    const s1 = lens["op-l1"];
+    tl.to("#op-l1", { x: 960 - s1.cx, y: 450 - s1.cy, scale: big / s1.d, duration: 0.9, ease: "power3.inOut" }, 4.15);
+    tl.to("#op-ring-arc", { attr: { cx: 960, cy: 450, r: (big * 1.12) / 2 }, duration: 0.9, ease: "power3.inOut" }, 4.15);
+
+    // the name lands under it, one letter at a time, and holds
+    tl.fromTo("#op-name span", { opacity: 0.0, filter: "blur(4px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.12, ease: "power2.out", stagger: 0.075 }, 4.7);
+    tl.to("#op-name", { opacity: 0, filter: "blur(6px)", duration: 0.2, ease: "power2.in" }, 7.38);
+    tl.to("#op-ring", { opacity: 0, duration: 0.2, ease: "power2.in" }, 7.3);
+
+    // match cut: the lens accelerates into the cut (02 continues the same move)
+    tl.to("#op-l1", { y: 540 - s1.cy, scale: 400 / s1.d, duration: 0.45, ease: "power4.in" }, 7.55);
+    window.__timelines["open"] = tl;
+  </script>
+</template>

@@ -1,0 +1,134 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #ececec url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='52' viewBox='0 0 30 52'%3E%3Cpath d='M0 0H30M0 26H30M0 52H30M0 0L30 52M30 0L0 52' stroke='rgba(20,33,61,0.05)' stroke-width='1' fill='none'/%3E%3Cg fill='rgba(20,33,61,0.2)'%3E%3Ccircle cx='0' cy='0' r='1.5'/%3E%3Ccircle cx='30' cy='0' r='1.5'/%3E%3Ccircle cx='15' cy='26' r='1.5'/%3E%3Ccircle cx='0' cy='52' r='1.5'/%3E%3Ccircle cx='30' cy='52' r='1.5'/%3E%3C/g%3E%3C/svg%3E") 15px 10px / 30px 52px;
+    }
+    #mb-ring {
+      position: absolute;
+      left: 470px;
+      top: 50px;
+      width: 980px;
+      height: 980px;
+    }
+    #mb-ring circle {
+      fill: none;
+      stroke-width: 2.6;
+    }
+    #mb-track {
+      stroke: #d5d7dc;
+    }
+    #mb-arc {
+      stroke: #1b4fd8;
+      stroke-linecap: round;
+    }
+    #mb-push {
+      position: absolute;
+      inset: 0;
+      transform-origin: 960px 380px;
+    }
+    #mb-phone {
+      position: absolute;
+      left: 738px;
+      top: 76px;
+      width: 444px;
+      height: 928px;
+      border-radius: 64px;
+      background: #0b0e14;
+    }
+    #mb-screen {
+      position: absolute;
+      left: 14px;
+      top: 14px;
+      width: 416px;
+      height: 900px;
+      border-radius: 50px;
+      overflow: hidden;
+      background: #ececec;
+    }
+    #mb-video,
+    #mb-video-b {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 416px;
+      height: 900px;
+      object-fit: cover;
+    }
+    #mb-island {
+      position: absolute;
+      left: 148px;
+      top: 22px;
+      width: 120px;
+      height: 34px;
+      border-radius: 20px;
+      background: #0b0e14;
+    }
+    /* the container morph: 05's browser window (its exact last framing) narrows into the phone */
+    #mb-morph {
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+    }
+    #mb-morph img {
+      position: absolute;
+      left: 134.4px;
+      top: 92.8px;
+      width: 1651.2px;
+      height: 928.8px;
+    }
+    #mb-dip {
+      position: absolute;
+      inset: 0;
+      background: #000000;
+      opacity: 0;
+    }
+  </style>
+  <div id="root" data-composition-id="mobile" data-width="1920" data-height="1080" data-start="0" data-duration="9">
+    <svg id="mb-ring" viewBox="0 0 400 400">
+      <circle id="mb-track" cx="200" cy="200" r="196" />
+      <circle id="mb-arc" cx="200" cy="200" r="196" pathLength="100" transform="rotate(-90 200 200)" />
+    </svg>
+    <div id="mb-push">
+      <div id="mb-phone">
+        <div id="mb-screen">
+          <!-- the phone's home screen at 1x, then the scan at 1.6x -->
+          <video id="mb-video" class="clip" src="assets/capture/rec5_mobile.mp4" data-start="0" data-duration="1.7" data-media-start="0" data-track-index="1" muted playsinline></video>
+          <video id="mb-video-b" class="clip" src="assets/capture/rec5_mobile.mp4" data-start="1.7" data-duration="7.3" data-media-start="1.7" data-playback-rate="1.6" data-track-index="1" muted playsinline></video>
+          <div id="mb-island"></div>
+        </div>
+      </div>
+    </div>
+    <div id="mb-morph-host" class="clip" data-start="0" data-duration="0.9" data-track-index="2" style="position: absolute; inset: 0">
+      <div id="mb-morph"><img id="mb-morph-shot" src="assets/capture/08_offline_result.png" alt="" /></div>
+    </div>
+    <div id="mb-dip" class="clip" data-start="8.85" data-duration="0.15" data-track-index="3"></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // morph: window rect (134.4, 53.24, 1651.2 x 968.4, radius 18.9) to the phone (738, 76, 444 x 928, radius 64)
+    tl.fromTo(
+      "#mb-morph",
+      { clipPath: "inset(53.24px 134.4px 58.4px 134.4px round 18.9px)", opacity: 1 },
+      { clipPath: "inset(76px 738px 76px 738px round 64px)", duration: 0.75, ease: "power3.inOut" },
+      0,
+    );
+    tl.to("#mb-morph-shot", { opacity: 0, duration: 0.3, ease: "power1.in" }, 0.22);
+    tl.to("#mb-morph", { opacity: 0, duration: 0.2, ease: "power1.in" }, 0.62);
+    tl.fromTo("#mb-ring", { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1, duration: 1.0, ease: "expo.out" }, 0.55);
+
+    // The phone opens on the home screen; the Scan tab is tapped at 1.6 s and Sample 3 at 3.19 s.
+    // Analyze is tapped at 5.69 s, the result (Refer for review) lands at 6.08 s
+    tl.fromTo("#mb-arc", { strokeDasharray: "0 100", strokeDashoffset: 0 }, { strokeDasharray: "18 82", duration: 0.2, ease: "power2.out" }, 5.69);
+    tl.to("#mb-arc", { strokeDashoffset: -60, duration: 0.42, ease: "power1.inOut" }, 5.69);
+    tl.to("#mb-arc", { strokeDasharray: "100 0", stroke: "#9a4a06", strokeWidth: 3.4, duration: 0.7, ease: "power2.inOut" }, 6.11);
+    // push toward the verdict at the top of the phone
+    tl.fromTo("#mb-push", { scale: 1 }, { scale: 1.16, duration: 0.8, ease: "power2.inOut" }, 7.2);
+
+    // dip cut into 06
+    tl.fromTo("#mb-dip", { opacity: 0 }, { opacity: 0.4, duration: 0.1, ease: "none" }, 8.85);
+    window.__timelines["mobile"] = tl;
+  </script>
+</template>

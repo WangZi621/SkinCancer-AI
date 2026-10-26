@@ -1,0 +1,7 @@
+SkinScan AI picks out which skin spots need a dermatologist first.
+
+Add a dermoscopic photo and a few patient details, and the model suggests how soon to refer: urgently, for review, or routine follow-up. It runs on the device, offline, in a 21 MB model that fits in a browser or on a $15 Raspberry Pi Zero 2 W. 90% of melanomas caught at a 0.278 cutoff on 9,080 images it never trained on.
+
+Try it: https://wangzi621.github.io/SkinCancer-AI/
+
+Research prototype. Not a medical device.
