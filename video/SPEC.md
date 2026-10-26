@@ -7,7 +7,7 @@ encrypted on the device, and is small enough to run offline on a browser or a $1
 OUTPUT: HyperFrames, 1920 x 1080, 30 fps, silent (the narrator records over it). Sixteen scenes,
 each also rendered on its own.
 
-TIME: 168.3 s = 5,049 frames, in four acts: one lesion start to finish (01, 02, 04, 13, 14, 63.3 s),
+TIME: 168.3 s = 5,049 frames, in four acts: one lesion start to finish (01, 02, 04, 13, 14, 54.7 s),
 what the model does (10, 03, 11, 07, 46 s), the rest of the app (15, 16, 05, 09, 39.6 s), small and
 honest (06, 12, 08, 28 s). No music clock; cuts follow the motion.
 

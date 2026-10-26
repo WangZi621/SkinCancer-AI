@@ -212,8 +212,8 @@
           <span class="win-url" data-layout-ignore>wangzi621.github.io/SkinCancer-AI</span>
         </div>
         <video id="sc-va" class="win-video clip" src="assets/capture/rec1_scan.mp4" data-start="0" data-duration="2.4" data-media-start="1.2" data-track-index="1" muted playsinline></video>
-        <video id="sc-vb" class="win-video clip" src="assets/capture/rec1_scan.mp4" data-start="2.4" data-duration="2.46" data-media-start="7.5" data-track-index="1" muted playsinline></video>
-        <video id="sc-vc" class="win-video clip" src="assets/capture/rec1_scan.mp4" data-start="4.86" data-duration="2.14" data-media-start="9.96" data-track-index="1" muted playsinline></video>
+        <video id="sc-vb" class="win-video clip" src="assets/capture/rec1_scan.mp4" data-start="2.4" data-duration="2.46" data-media-start="8.87" data-track-index="1" muted playsinline></video>
+        <video id="sc-vc" class="win-video clip" src="assets/capture/rec1_scan.mp4" data-start="4.86" data-duration="2.14" data-media-start="11.4" data-track-index="1" muted playsinline></video>
       </div>
       <svg id="sc-ring" class="app-ring" viewBox="0 0 400 400"><circle cx="200" cy="200" r="196" pathLength="100" transform="rotate(-90 200 200)" /></svg>
       <div id="sc-status" class="app-status">Analyzing</div>
@@ -289,12 +289,13 @@
       if (tout != null) tl.to([sel + " .lb-dot", sel + " .lb-line", sel + " .lb-card"], { opacity: 0, duration: 0.2, ease: "power2.in" }, tout);
     }
 
-    // Shots. Recording 1 in three cuts: 1.2-3.6 s (pick Sample 1), 7.5-9.96 s (Analyze, the model runs),
-    // 9.96-12.1 s (the result). Scene times: click 1.37, Analyze 2.91, result 4.86.
+    // Shots. Recording 1 (signed in, scanned for Demo patient A) in three cuts: 1.2-3.6 s (pick
+    // Sample 1), 8.87-11.33 s (Analyze, the model runs), 11.4-13.54 s (the result).
+    // Scene times: click 1.37, Analyze 2.91, result 4.86. Analyze sits at the foot of the page.
     const cam = pageCamera(document.getElementById("sc-cam"), [
       { t: 0, x: 657, y: 700, z: 1.9 },
       { t: 1.45, x: 657.6, y: 330, z: 2.0 },
-      { t: 2.3, x: 1110, y: 800, z: 1.9 },
+      { t: 2.3, x: 1110, y: 796, z: 1.9 },
       { t: 3.05, x: 657.6, y: 321.3, z: 2.1 },
       { t: 4.95, x: 1120, y: 420, z: 1.4 },
     ], D);
