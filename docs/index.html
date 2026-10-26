@@ -38,6 +38,7 @@
         <a href="#/patients" data-route="patients" data-auth>Patients</a>
         <a href="#/scan" data-route="scan">Scan</a>
         <a href="#/scans" data-route="scans" data-auth>Scans</a>
+        <a href="#/inside" data-route="inside">Inside the model</a>
         <a href="#/how" data-route="how">How it works</a>
         <a href="#/kiosk" data-route="kiosk">Kiosk</a>
       </nav>
@@ -85,6 +86,7 @@
         <div>
           <h1>Scan a skin spot</h1>
           <p>Add a dermoscopic photo and what you know about the patient. SkinScan AI scores it for melanoma, other skin cancers and benign lesions, then suggests how soon to refer.</p>
+          <p class="hero-link"><a href="#/inside">See how the model reads a photo, one layer at a time</a></p>
         </div>
         <p class="hero-note">The photo stays on this device. Scans without a profile are not saved.</p>
       </div>
@@ -272,6 +274,7 @@
             <div class="result-actions">
               <button class="btn btn-primary" type="button" id="save-btn">Save to patient</button>
               <button class="btn btn-secondary" type="button" id="report-btn">Referral report</button>
+              <a class="btn btn-secondary" href="#/inside" id="inside-btn">See every step</a>
               <button class="btn btn-ghost" type="button" id="edit-btn">Edit details</button>
               <button class="btn btn-ghost" type="button" id="new-btn">New scan</button>
             </div>
@@ -291,6 +294,11 @@
     <!-- SETTINGS -->
     <section class="view" id="view-settings" data-view="settings" hidden></section>
 
+    <!-- INSIDE THE MODEL -->
+    <section class="view view-inside" id="view-inside" data-view="inside" hidden>
+      <div id="inside-root"></div>
+    </section>
+
     <!-- HOW IT WORKS -->
     <section class="view view-how" id="view-how" data-view="how" hidden>
       <div class="page-head">
@@ -298,21 +306,22 @@
         <p>A dermatologist never judges a lesion from the picture alone. Age, body site, and skin type change what a spot is likely to be, so SkinScan AI reads the image and those details together.</p>
       </div>
 
-      <figure class="pipeline" aria-label="Model diagram">
+      <figure class="pipeline" aria-label="Model diagram: an image branch and a patient branch join into one head that gives three scores.">
         <div class="pipe pipe-img">
-          <p class="pipe-tag">Image branch</p>
-          <h3>Dermoscopic photo</h3>
-          <p>Resized to 380 by 380 pixels, then an EfficientNet-B4 backbone, channel attention, and GeM pooling turn it into 1,792 features.</p>
+          <h3>Image branch</h3>
+          <p>The photo, resized to 380 by 380, goes through an EfficientNet-B4 backbone, channel attention, and GeM pooling, which turn it into 1,792 numbers.</p>
         </div>
         <div class="pipe pipe-meta">
-          <p class="pipe-tag">Patient branch</p>
-          <h3>17 patient features</h3>
-          <p>Age, sex, body site, lesion size, skin type, and melanocytic look pass through dense layers of 256, 128, and 64 units.</p>
+          <h3>Patient branch</h3>
+          <p>17 numbers for age, sex, body site, size, skin type, and melanocytic look pass through dense layers of 256, 128, and 64 units.</p>
         </div>
+        <svg class="pipe-join" viewBox="0 0 48 200" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 50 C24 50 24 100 48 100 M0 150 C24 150 24 100 48 100" vector-effect="non-scaling-stroke"/>
+        </svg>
         <div class="pipe pipe-fuse">
-          <p class="pipe-tag">Fusion</p>
-          <h3>Three scores</h3>
-          <p>Both branches join and pass through layers of 768, 384, and 128 units to give melanoma, benign, and other skin cancer scores.</p>
+          <h3>Fusion head</h3>
+          <p>Both branches join into 1,856 numbers, then layers of 768, 384, and 128 units give three scores: melanoma, benign, and other skin cancer.</p>
+          <p><a href="#/inside">Watch it run on a sample, layer by layer</a></p>
         </div>
       </figure>
 

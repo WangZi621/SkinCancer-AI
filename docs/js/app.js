@@ -7,6 +7,7 @@ import { occlusionMap, heatToCanvas } from './heatmap.js';
 import { checkPhoto } from './quality.js';
 import * as store from './store.js';
 import * as pages from './pages.js';
+import { createExplainer } from './explain.js';
 import { $, $$, html, raw, render, pct, toast, dialog, initials, SITE_NAMES, ageFrom, isoToday, LEVELS } from './ui.js';
 
 const model = new SkinScanModel();
@@ -63,9 +64,11 @@ const state = {
 
 // ---------------------------------------------------------------- routing
 const AUTH = new Set(['home', 'patients', 'patient', 'lesion', 'scans', 'settings']);
-const VIEWS = ['welcome', 'signin', 'home', 'patients', 'patient', 'lesion', 'scan', 'scans', 'report', 'settings', 'how', 'kiosk'];
+const VIEWS = ['welcome', 'signin', 'home', 'patients', 'patient', 'lesion', 'scan', 'scans', 'report', 'settings', 'inside', 'how', 'kiosk'];
 let profiles = [];
 let intended = null;
+let explainer = null; // Inside the model (explain.js), created once the samples start loading
+let explainScan = false;
 
 function parseHash() {
   const h = location.hash.replace(/^#\/?/, '');
@@ -102,7 +105,10 @@ async function route() {
   const view = $(`#view-${name}`);
   try {
     if (name === 'scan') enterScan(r);
-    else if (pages[name]) await pages[name](view, { ...r, name });
+    else if (name === 'inside') {
+      explainer.open({ preferScan: explainScan });
+      explainScan = false;
+    } else if (pages[name]) await pages[name](view, { ...r, name });
   } catch (err) {
     console.error(err);
     render(view, html`<div class="empty"><h2>Something went wrong</h2><p>Reload the page to try again.</p></div>`);
@@ -885,6 +891,31 @@ pages.init({
   },
 });
 
+// ---------------------------------------------------------------- inside the model
+function explainData() {
+  if (!state.bitmap) return null;
+  if (!state.tensor) state.tensor = resizeToInput(readPixels(state.bitmap), model.inputSize);
+  return {
+    tensor: state.tensor,
+    original: [state.bitmap.width, state.bitmap.height],
+    patient: state.result ? state.result.patient : readPatient(),
+    thumb: squareJpeg(state.bitmap, 96),
+    truth: state.sample ? state.sample.diagnosis : null,
+  };
+}
+explainer = createExplainer({
+  root: $('#inside-root'),
+  model,
+  samples: () => SAMPLES,
+  samplesReady,
+  getScan: explainData,
+});
+$('#inside-btn').addEventListener('click', (e) => {
+  e.preventDefault();
+  explainScan = true;
+  go('#/inside');
+});
+
 // ---------------------------------------------------------------- offline support
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
@@ -902,4 +933,4 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
 })();
 
 // Expose a tiny hook for automated checks.
-window.skinscan = { model, state, store, encodeMetadata, readPixels, resizeToInput };
+window.skinscan = { model, state, store, encodeMetadata, readPixels, resizeToInput, get explainer() { return explainer; } };
