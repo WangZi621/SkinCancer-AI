@@ -3,3 +3,4 @@ node_modules/
 .render-*.html
 capture/out/.frames/
 out/.*.hf-transaction-*/
+out/work-*/
