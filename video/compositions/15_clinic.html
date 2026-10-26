@@ -1,0 +1,333 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Geist";
+      src: url("assets/fonts/geist.woff2") format("woff2");
+      font-weight: 100 900;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      font-family: "Geist", sans-serif;
+      background: #f5f7f8;
+    }
+    /* the camera: page coordinates (the 1920 x 1080 viewport of the recording) */
+    .cam {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      transform-origin: 0 0;
+    }
+    .win {
+      position: absolute;
+      left: 0;
+      top: -46px;
+      width: 1920px;
+      height: 1126px;
+      border-radius: 22px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 0 0 1px #e2e7eb, 0 40px 90px -30px rgba(15, 27, 36, 0.35);
+    }
+    .win-bar {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      height: 46px;
+      border-bottom: 1px solid #e2e7eb;
+    }
+    .win-dot {
+      position: absolute;
+      top: 17px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #cfd7dd;
+    }
+    .win-url {
+      position: absolute;
+      left: 660px;
+      top: 8px;
+      width: 600px;
+      height: 30px;
+      border-radius: 9px;
+      background: #f0f3f5;
+      color: #4a5a66;
+      font-size: 17px;
+      font-weight: 500;
+      line-height: 30px;
+      text-align: center;
+    }
+    .win-video {
+      position: absolute;
+      left: 0;
+      top: 46px;
+      width: 1920px;
+      height: 1080px;
+    }
+    /* (rings rebuilt over footage live in the scan scenes) */
+    .app-ring {
+      position: absolute;
+      left: 457.6px;
+      top: 121.3px;
+      width: 400px;
+      height: 400px;
+      opacity: 0;
+    }
+    .app-ring circle {
+      fill: none;
+      stroke: #0e7c7b;
+      stroke-width: 4;
+      stroke-linecap: round;
+    }
+    .app-status {
+      position: absolute;
+      left: 657.6px;
+      top: 452px;
+      transform: translateX(-50%);
+      padding: 0 14px;
+      white-space: nowrap;
+      height: 33px;
+      border-radius: 999px;
+      background: rgba(15, 27, 36, 0.78);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 33px;
+      text-align: center;
+      opacity: 0;
+    }
+    /* labels pinned to the part they name */
+    .lb {
+      position: absolute;
+      width: 0;
+      height: 0;
+    }
+    .lb-w {
+      position: absolute;
+      left: 0;
+      top: 0;
+      transform-origin: 0 0;
+    }
+    .lb-dot {
+      position: absolute;
+      left: -10px;
+      top: -10px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #0e7c7b;
+      box-shadow: 0 0 0 4px #ffffff, 0 4px 10px rgba(15, 27, 36, 0.3);
+    }
+    .lb-line {
+      position: absolute;
+      background: #0e7c7b;
+    }
+    .lb-card {
+      position: absolute;
+      white-space: nowrap;
+      padding: 14px 26px;
+      border-radius: 16px;
+      background: #ffffff;
+      color: #0f1b24;
+      font-size: 40px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      box-shadow: 0 0 0 1px #e2e7eb, 0 14px 34px -14px rgba(15, 27, 36, 0.4);
+    }
+    .lb[data-side="left"] .lb-line {
+      right: 0;
+      top: -1.5px;
+      height: 3px;
+      width: var(--len);
+      transform-origin: 100% 50%;
+    }
+    .lb[data-side="left"] .lb-card {
+      right: var(--len);
+      top: 0;
+      transform: translateY(-50%);
+    }
+    .lb[data-side="bottom"] .lb-line {
+      left: -1.5px;
+      top: 0;
+      width: 3px;
+      height: var(--len);
+      transform-origin: 50% 0;
+    }
+    .lb[data-side="bottom"] .lb-card {
+      left: 0;
+      top: var(--len);
+      transform: translateX(-50%);
+    }
+    .lb[data-side="top"] .lb-line {
+      left: -1.5px;
+      bottom: 0;
+      width: 3px;
+      height: var(--len);
+      transform-origin: 50% 100%;
+    }
+    .lb[data-side="top"] .lb-card {
+      left: 0;
+      bottom: var(--len);
+      transform: translateX(-50%);
+    }
+    .lb-red .lb-dot,
+    .lb-red .lb-line {
+      background: #d92d20;
+    }
+    .lb[data-side="right"] .lb-line {
+      left: 0;
+      top: -1.5px;
+      height: 3px;
+      width: var(--len);
+      transform-origin: 0 50%;
+    }
+    .lb[data-side="right"] .lb-card {
+      left: var(--len);
+      top: 0;
+      transform: translateY(-50%);
+    }
+    .whip {
+      position: absolute;
+      inset: 0;
+    }
+    /* the match cut from 07: the lens leaves the teal world and lands on Sample 1's row */
+    #cl-flood {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 90% at 35% 45%, #16928e 0%, #0f6f6f 46%, #093f46 100%);
+    }
+    #cl-lens {
+      position: absolute;
+      left: 284px;
+      top: 284px;
+      width: 452px;
+      height: 452px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 0 0 9px #ffffff, 0 40px 80px -30px rgba(0, 0, 0, 0.55);
+    }
+    #cl-lens img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+  <div id="root" data-composition-id="clinic" data-width="1920" data-height="1080" data-start="0" data-duration="11.8" data-motion-blur="on">
+    <div id="clinic-cam" class="cam" data-layout-allow-overflow>
+      <div class="win">
+        <div class="win-bar">
+          <span class="win-dot" style="left: 22px"></span>
+          <span class="win-dot" style="left: 42px"></span>
+          <span class="win-dot" style="left: 62px"></span>
+          <span class="win-url" data-layout-ignore>wangzi621.github.io/SkinCancer-AI</span>
+        </div>
+        <video id="cl-va" class="win-video clip" src="assets/capture/rec8_clinic.mp4" data-start="0" data-duration="2.6" data-media-start="0.6" data-track-index="1" muted playsinline></video>
+        <video id="cl-vb" class="win-video clip" src="assets/capture/rec8_clinic.mp4" data-start="2.6" data-duration="6.8" data-media-start="3.2" data-playback-rate="1.5" data-track-index="1" muted playsinline></video>
+        <video id="cl-vc" class="win-video clip" src="assets/capture/rec8_clinic.mp4" data-start="9.4" data-duration="2.4" data-media-start="13.4" data-track-index="1" muted playsinline></video>
+      </div>
+      <div id="cl-lb-first" class="lb lb-red" data-at="1040,485" data-z="1.7" data-side="right" style="--len: 40px">
+        <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Urgent first</span></div>
+      </div>
+      <div id="cl-lb-recheck" class="lb" data-at="1090,433" data-z="1.8" data-side="left" style="--len: 64px">
+        <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Overdue rechecks</span></div>
+      </div>
+      <div id="cl-lb-map" class="lb" data-at="511,347.7" data-z="2" data-side="right" style="--len: 40px">
+        <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Every lesion on a body map</span></div>
+      </div>
+    </div>
+    <div id="cl-flood" class="clip" data-start="0" data-duration="0.8" data-track-index="2"></div>
+    <div id="cl-lens-host" class="clip" data-start="0" data-duration="1" data-track-index="3" style="position: absolute; inset: 0">
+      <div id="cl-lens"><img src="assets/img/samples/s1.jpg" alt="" /></div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const D = 11.8;
+
+    // Camera on the real page, adapted from the registry's cursor-zoom-follow: the aim steps
+    // between shots and a critically damped spring (in log zoom) turns each step into a move
+    // that leads, settles and then holds still while the app works.
+    function pageCamera(el, shots, duration, omega = 7) {
+      const W = 1920, H = 1080, FPS = 60, SUB = 4, dt = 1 / (FPS * SUB);
+      const aim = (t) => {
+        let s = shots[0];
+        for (const k of shots) if (t >= k.t) s = k;
+        return { x: s.x, y: s.y, z: Math.log(s.z) };
+      };
+      const n = Math.ceil(duration * FPS) + 1;
+      const out = [];
+      const s = aim(0);
+      const v = { x: 0, y: 0, z: 0 };
+      for (let f = 0; f <= n; f++) {
+        out.push({ x: s.x, y: s.y, z: s.z });
+        for (let j = 0; j < SUB; j++) {
+          const a = aim((f * SUB + j) * dt);
+          for (const k of ["x", "y", "z"]) {
+            v[k] += (omega * omega * (a[k] - s[k]) - 2 * omega * v[k]) * dt;
+            s[k] += v[k] * dt;
+          }
+        }
+      }
+      const at = (t) => {
+        const p = Math.max(0, Math.min(n, t * FPS));
+        const i = Math.floor(p);
+        const u = p - i;
+        const a = out[i];
+        const b = out[Math.min(n, i + 1)];
+        return { x: a.x + (b.x - a.x) * u, y: a.y + (b.y - a.y) * u, z: Math.exp(a.z + (b.z - a.z) * u) };
+      };
+      const render = (t) => {
+        const c = at(t);
+        el.style.transform = `translate(${(W / 2 - c.x * c.z).toFixed(2)}px,${(H / 2 - c.y * c.z).toFixed(2)}px) scale(${c.z.toFixed(4)})`;
+      };
+      return { at, render };
+    }
+    // Labels ride the camera and are counter-scaled to the zoom they are read at.
+    function pinLabels() {
+      document.querySelectorAll("#root .lb").forEach((el) => {
+        const [x, y] = el.dataset.at.split(",").map(Number);
+        el.style.left = x + "px";
+        el.style.top = y + "px";
+        el.firstElementChild.style.transform = `scale(${1 / Number(el.dataset.z)})`;
+      });
+    }
+    function showLabel(sel, tin, tout) {
+      const side = document.querySelector(sel).dataset.side;
+      const axis = side === "left" || side === "right" ? "scaleX" : "scaleY";
+      tl.fromTo(sel + " .lb-dot", { scale: 0 }, { scale: 1, duration: 0.3, ease: "expo.out" }, tin);
+      tl.fromTo(sel + " .lb-line", { [axis]: 0 }, { [axis]: 1, duration: 0.3, ease: "power2.out" }, tin + 0.06);
+      tl.fromTo(sel + " .lb-card", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.28, ease: "power2.out" }, tin + 0.22);
+      if (tout != null) tl.to([sel + " .lb-dot", sel + " .lb-line", sel + " .lb-card"], { opacity: 0, duration: 0.2, ease: "power2.in" }, tout);
+    }
+
+    // Shots. Recording 8 (the home screen after the scan was saved): the cursor reads the first row
+    // 2.73 and the overdue recheck 4.52, Patients 6.51, Demo patient A 8.37, the body map 8.46,
+    // marker 1 at 10.42.
+    const cam = pageCamera(document.getElementById("clinic-cam"), [
+      { t: 0, x: 760, y: 560, z: 1.7 }, // the "See first" list: Sample 1 on top
+      { t: 3.4, x: 1300, y: 470, z: 1.8 }, // rechecks
+      { t: 6.1, x: 960, y: 400, z: 1.25 }, // Patients
+      { t: 8.55, x: 564, y: 451, z: 2 }, // Demo patient A's body map
+    ], D);
+    pinLabels();
+    const clock = { t: 0 };
+    tl.to(clock, { t: D, duration: D, ease: "none", onUpdate: () => cam.render(clock.t) }, 0);
+    cam.render(0);
+
+    // match cut from 07: the lens keeps its place, the teal gives way, and it lands on the first
+    // row's photo (page 435, 476; screen 407.5, 397; d 74.8 at 1.7x)
+    tl.fromTo("#cl-lens", { x: 0, y: 0, scale: 1 }, { x: 407.5 - 510, y: 397 - 510, scale: 74.8 / 452, duration: 0.75, ease: "power4.inOut" }, 0.05);
+    tl.to("#cl-lens", { opacity: 0, duration: 0.15, ease: "power1.in" }, 0.8);
+    tl.fromTo("#cl-flood", { opacity: 1 }, { opacity: 0, duration: 0.45, ease: "power2.inOut" }, 0.2);
+
+    showLabel("#cl-lb-first", 1.05, 3.25);
+    showLabel("#cl-lb-recheck", 4.6, 6.0);
+    showLabel("#cl-lb-map", 9.05, 11.5);
+    window.__timelines["clinic"] = tl;
+  </script>
+</template>

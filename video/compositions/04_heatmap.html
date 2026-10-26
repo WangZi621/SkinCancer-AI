@@ -232,10 +232,10 @@
           <span class="win-dot" style="left: 62px"></span>
           <span class="win-url" data-layout-ignore>wangzi621.github.io/SkinCancer-AI</span>
         </div>
-        <!-- recording 2, in three speeds: the click, the 16 passes at 5x, the map landing -->
+        <!-- recording 2, in three speeds: the click, the 16 passes at 6.6x, the map landing -->
         <video id="hm-va" class="win-video clip" src="assets/capture/rec2_heatmap.mp4" data-start="0" data-duration="2.5" data-media-start="0" data-track-index="1" muted playsinline></video>
-        <video id="hm-vb" class="win-video clip" src="assets/capture/rec2_heatmap.mp4" data-start="2.5" data-duration="2.18" data-media-start="2.5" data-playback-rate="5" data-track-index="1" muted playsinline></video>
-        <video id="hm-vc" class="win-video clip" src="assets/capture/rec2_heatmap.mp4" data-start="4.68" data-duration="2.9" data-media-start="13.5" data-track-index="1" muted playsinline></video>
+        <video id="hm-vb" class="win-video clip" src="assets/capture/rec2_heatmap.mp4" data-start="2.5" data-duration="2.18" data-media-start="2.5" data-playback-rate="6.6" data-track-index="1" muted playsinline></video>
+        <video id="hm-vc" class="win-video clip" src="assets/capture/rec2_heatmap.mp4" data-start="4.68" data-duration="2.9" data-media-start="16.95" data-track-index="1" muted playsinline></video>
         <!-- before and after stills of the same frame, for the wipe (adapted from the registry's before-after-wipe) -->
         <img id="hm-before" class="still clip" src="assets/capture/03_result_card.png" alt="" data-start="4.68" data-duration="3.82" data-track-index="2" />
         <img id="hm-after" class="still clip" src="assets/capture/04_heatmap_on.png" alt="" data-start="4.68" data-duration="3.82" data-track-index="3" />
@@ -313,7 +313,7 @@
     }
 
     // Shots. Recording 2 starts on the last frame of recording 1, so this opens on 02's last framing.
-    // Heat map click 2.19 s; the 16 passes run 2.35-4.68 s (5x); the map lands at 4.68 s.
+    // Heat map click 2.4 s; the 16 passes run 2.42-4.68 s (6.6x); the map lands at 4.68 s.
     const cam = pageCamera(document.getElementById("hm-cam"), [
       { t: 0, x: 1233, y: 285, z: 2.15 }, // the verdict, as 02 left it
       { t: 0.35, x: 720, y: 440, z: 1.75 }, // the scope and "Show where it looked"
@@ -327,22 +327,22 @@
     // mapping: the red ring fills pass by pass, with the app's own status text
     const status = document.getElementById("hm-status");
     const prog = { p: 0 };
-    tl.fromTo(["#hm-track", "#hm-ring", "#hm-status"], { opacity: 0 }, { opacity: 1, duration: 0.1 }, 2.35);
+    tl.fromTo(["#hm-track", "#hm-ring", "#hm-status"], { opacity: 0 }, { opacity: 1, duration: 0.1 }, 2.42);
     tl.fromTo(
       prog,
       { p: 0 },
       {
         p: 16,
-        duration: 2.33,
+        duration: 2.26,
         ease: "none",
         onUpdate: () => {
           const n = Math.max(1, Math.min(16, Math.ceil(prog.p)));
           status.textContent = `Mapping ${n} of 16`;
         },
       },
-      2.35,
+      2.42,
     );
-    tl.fromTo("#hm-ring circle", { strokeDasharray: "0 100" }, { strokeDasharray: "100 0", duration: 2.33, ease: "none" }, 2.35);
+    tl.fromTo("#hm-ring circle", { strokeDasharray: "0 100" }, { strokeDasharray: "100 0", duration: 2.26, ease: "none" }, 2.42);
     tl.to(["#hm-track", "#hm-ring", "#hm-status"], { opacity: 0, duration: 0.08 }, 4.68);
 
     // the wipe across the scope: the plain photo gives way to where the model looked
@@ -353,10 +353,9 @@
     tl.to("#hm-divider", { x: 875, duration: 1.5, ease: "sine.inOut" }, 4.9);
     tl.to("#hm-divider", { opacity: 0, duration: 0.2 }, 6.45);
 
-    showLabel("#hm-lb", 5.6);
+    showLabel("#hm-lb", 5.6, 8.25);
 
-    // whip out to the next sample (10 lands the other half of the whip)
-    tl.to("#hm-whip", { x: -1100, duration: 0.28, ease: "power3.in" }, 8.22);
+    // no exit move: 13 (track) carries on from this frame, the same take
     window.__timelines["heatmap"] = tl;
   </script>
 </template>

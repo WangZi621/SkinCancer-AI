@@ -202,7 +202,7 @@
       object-fit: cover;
     }
   </style>
-  <div id="root" data-composition-id="scan" data-width="1920" data-height="1080" data-start="0" data-duration="14.2" data-motion-blur="on">
+  <div id="root" data-composition-id="scan" data-width="1920" data-height="1080" data-start="0" data-duration="15.6" data-motion-blur="on">
     <div id="sc-cam" class="cam" data-layout-allow-overflow>
       <div class="win">
         <div class="win-bar">
@@ -211,13 +211,16 @@
           <span class="win-dot" style="left: 62px"></span>
           <span class="win-url" data-layout-ignore>wangzi621.github.io/SkinCancer-AI</span>
         </div>
-        <video id="sc-video" class="win-video clip" src="assets/capture/rec1_scan.mp4" data-start="0" data-duration="14.2" data-media-start="1.2" data-track-index="1" muted playsinline></video>
+        <video id="sc-video" class="win-video clip" src="assets/capture/rec1_scan.mp4" data-start="0" data-duration="15.6" data-media-start="1.2" data-track-index="1" muted playsinline></video>
       </div>
       <svg id="sc-ring" class="app-ring" viewBox="0 0 400 400"><circle cx="200" cy="200" r="196" pathLength="100" transform="rotate(-90 200 200)" /></svg>
       <div id="sc-status" class="app-status">Analyzing</div>
 
       <div id="sc-lb-photo" class="lb" data-at="457.6,321.3" data-z="2" data-side="left" style="--len: 64px">
         <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Add a photo</span></div>
+      </div>
+      <div id="sc-lb-check" class="lb" data-at="417,655.5" data-z="2" data-side="left" style="--len: 64px">
+        <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Photo check</span></div>
       </div>
       <div id="sc-lb-details" class="lb" data-at="967.3,420" data-z="1.45" data-side="left" style="--len: 64px">
         <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Patient details</span></div>
@@ -234,7 +237,7 @@
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    const D = 14.2;
+    const D = 15.6;
 
     // Camera on the real page, adapted from the registry's cursor-zoom-follow: the aim steps
     // between shots and a critically damped spring (in log zoom) turns each step into a move
@@ -293,15 +296,18 @@
     }
 
     // Shots, in page coordinates. Recording times (rec1, media starts at 1.2 s):
-    // sample click 1.37, photo 1.59, analyze click 6.81, result 8.76.
+    // sample click 1.37, photo 1.56 (the photo check appears under the scope), analyze click 8.18,
+    // result 10.2. Analyze sits at the foot of the page (y 1004-1050), so its shot stops where the
+    // page ends instead of centring on it.
     const cam = pageCamera(document.getElementById("sc-cam"), [
       { t: 0, x: 657, y: 700, z: 1.9 }, // the samples
       { t: 1.45, x: 657.6, y: 330, z: 2.0 }, // the photo lands in the scope
-      { t: 3.85, x: 1233, y: 420, z: 1.45 }, // the patient details
-      { t: 6.05, x: 1110, y: 800, z: 1.9 }, // Analyze
-      { t: 6.95, x: 657.6, y: 321.3, z: 2.1 }, // the scope while the model runs
-      { t: 9.1, x: 960, y: 517, z: 0.86 }, // pull back: the whole app, on the device
-      { t: 10.7, x: 1233, y: 285, z: 2.15 }, // the verdict
+      { t: 3.6, x: 640, y: 640, z: 2.0 }, // the photo check under it
+      { t: 5.35, x: 1233, y: 420, z: 1.45 }, // the patient details
+      { t: 7.15, x: 1110, y: 796, z: 1.9 }, // Analyze
+      { t: 8.3, x: 657.6, y: 321.3, z: 2.1 }, // the scope while the model runs
+      { t: 10.55, x: 960, y: 517, z: 0.86 }, // pull back: the whole app, on the device
+      { t: 12.15, x: 1233, y: 285, z: 2.15 }, // the verdict
     ], D);
     pinLabels();
     const clock = { t: 0 };
@@ -314,15 +320,16 @@
     // colour flood: the teal ground gives way to the app around the still-moving lens
     tl.fromTo("#sc-flood", { opacity: 1 }, { opacity: 0, duration: 0.45, ease: "power2.inOut" }, 0.12);
 
-    showLabel("#sc-lb-photo", 2.15, 3.75);
-    showLabel("#sc-lb-details", 4.5, 5.95);
+    showLabel("#sc-lb-photo", 2.15, 3.5);
+    showLabel("#sc-lb-check", 4.05, 5.25);
+    showLabel("#sc-lb-details", 5.85, 7.05);
 
     // the model runs: the app's ring sweeps (22 % arc, 1.1 s a turn), then the real red ring takes over
-    tl.fromTo(["#sc-ring", "#sc-status"], { opacity: 0 }, { opacity: 1, duration: 0.12 }, 6.85);
-    tl.fromTo("#sc-ring circle", { strokeDasharray: "22 78", strokeDashoffset: 0 }, { strokeDashoffset: -100 * (1.9 / 1.1), duration: 1.9, ease: "none" }, 6.85);
-    tl.to(["#sc-ring", "#sc-status"], { opacity: 0, duration: 0.1 }, 8.76);
+    tl.fromTo(["#sc-ring", "#sc-status"], { opacity: 0 }, { opacity: 1, duration: 0.12 }, 8.22);
+    tl.fromTo("#sc-ring circle", { strokeDasharray: "22 78", strokeDashoffset: 0 }, { strokeDashoffset: -100 * (1.98 / 1.1), duration: 1.98, ease: "none" }, 8.22);
+    tl.to(["#sc-ring", "#sc-status"], { opacity: 0, duration: 0.1 }, 10.2);
 
-    showLabel("#sc-lb-result", 11.45);
+    showLabel("#sc-lb-result", 12.9, 15.3);
     window.__timelines["scan"] = tl;
   </script>
 </template>

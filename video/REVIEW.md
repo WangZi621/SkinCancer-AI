@@ -1,5 +1,33 @@
 # Review notes
 
+## Second pass: the app grew, so the film did
+
+The app went from one page to a product: profiles with an optional passcode that encrypts
+everything on the device, a home screen that sorts lesions by urgency, patients with a body map,
+a page per lesion with its scans on one chart, referral reports, a photo check before the model
+runs. The film now shows those parts on the same lesion it already followed.
+
+- **Re-recorded, signed in.** Every recording now runs inside one profile with the demo patients, so
+  the scan in 02 is for Demo patient A's left cheek and her details fill in from her record. The old
+  footage showed the one-page app.
+- **Four new scenes, one take.** 13 (save, then the lesion's history), 14 (the report), 15 (the home
+  screen and body map) and 16 (lock and passcode). 02 -> 04 -> 13 -> 14 is one recording session,
+  and 15 -> 16 another, so each scene opens on the previous one's last frame and framing.
+- **Speed ramps instead of jump cuts.** In 13 and 16 the cursor's travel between clicks plays at
+  2-4.25x and the clicks themselves near real time, as separate segments of the same recording.
+- **A third match cut.** 07's gauge lens lands on the same lesion's row at the top of the home
+  screen (15), so the clinic view opens on the patient we already met.
+- **Proof, not a claim, for encryption.** 16 shows the first 90 base64 characters of a real saved
+  scan, read from IndexedDB while the profile was locked.
+- **Re-aimed.** The photo check moves the samples down 125 px and the observations panel moves
+  Analyze down 112 px, so 02, 05 and 10 got new shots (Analyze is framed at the page's foot instead of
+  centred, so the camera never shows past the window), new ring timings and a "Photo check" label.
+- **Seams.** `snapshot --review` found three labels and a chart tooltip cut off at a seam (02 -> 04,
+  13 -> 14, 15 -> 16); each now leaves 0.2 s before the cut. It also flagged two reveal errors in 07
+  (numbers that only became visible in their from-values), fixed.
+
+## First pass
+
 ## What changed in this pass, and why
 
 The first cut was a set of separate clips: a small browser window in the middle of a flat ground,
@@ -37,7 +65,7 @@ stills of the same frame.
 - `npx hyperframes check`: passes. Warnings kept on purpose: `film_silent` (silent by request),
   `nested_media_start_basis_ambiguous` (04 plays one recording in three speeds; local times are
   intended), `duplicate_media_discovery_risk` (03 shows the same photo as four network stages).
-- `snapshot --review`: every scene's start and middle, a strip across all 11 seams, and the phone
+- `snapshot --review`: every scene's start and middle, a strip across all 15 seams, and the phone
   sheet. Found and fixed: the flood still in 03 painting over the lens, blank first frames in 06 and 11,
   a low-contrast ring on the Pi, a label covering the scores in 02.
 - Every render's `ffprobe` length matches its composition.

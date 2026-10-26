@@ -166,8 +166,16 @@
       display: inline-block;
       white-space: pre;
     }
+    #sm-dip {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      background: #000000;
+      opacity: 0;
+    }
   </style>
   <div id="root" data-composition-id="small" data-width="1920" data-height="1080" data-start="0" data-duration="10" data-motion-blur="on">
+    <div id="sm-dip" class="clip" data-start="9.85" data-duration="0.15" data-track-index="3"></div>
     <div id="sm-stage" class="clip" data-start="0" data-duration="10" data-track-index="1" style="position: absolute; inset: 0">
     <div id="sm-world" data-layout-allow-overflow data-layout-allow-overlap>
       <!-- panel 1: the file and the browser -->
@@ -283,6 +291,9 @@
     tl.fromTo("#sm-chipring", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 7.1);
     tl.fromTo("#sm-chipring-arc", { strokeDasharray: "22 78", strokeDashoffset: 0 }, { strokeDashoffset: -100, duration: 1.0, ease: "power1.inOut" }, 7.1);
     tl.to("#sm-chipring-arc", { strokeDasharray: "100 0", duration: 0.6, ease: "power2.inOut" }, 8.0);
+
+    // dip cut into 12
+    tl.fromTo("#sm-dip", { opacity: 0 }, { opacity: 0.4, duration: 0.1, ease: "none" }, 9.85);
     window.__timelines["small"] = tl;
   </script>
 </template>

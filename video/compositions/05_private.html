@@ -231,7 +231,7 @@
       <div id="pv-lb-off" class="lb lb-red" data-at="1760,0" data-z="0.86" data-side="bottom" style="--len: 70px">
         <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Works offline</span></div>
       </div>
-      <div id="pv-lb-local" class="lb" data-at="967.3,884" data-z="0.86" data-side="left" style="--len: 70px">
+      <div id="pv-lb-local" class="lb" data-at="967.3,900" data-z="0.86" data-side="left" style="--len: 70px">
         <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Nothing is uploaded</span></div>
       </div>
     </div>
@@ -297,12 +297,12 @@
     }
 
     // Shots. Recording 6 from 0.6 s: the network is cut at 0.91 (navigator.onLine is false),
-    // Analyze 3.28, result 5.0 with no network.
+    // Analyze 3.49, result 5.6 with no network.
     const cam = pageCamera(document.getElementById("pv-cam"), [
       { t: 0, x: 960, y: 517, z: 0.86 }, // the window, network and all
-      { t: 2.55, x: 1110, y: 800, z: 1.9 }, // Analyze
-      { t: 3.4, x: 657.6, y: 321.3, z: 2.1 }, // the scope while the model runs, offline
-      { t: 5.3, x: 960, y: 517, z: 0.86 }, // the result, and where it ran
+      { t: 2.75, x: 1110, y: 796, z: 1.9 }, // Analyze
+      { t: 3.6, x: 657.6, y: 321.3, z: 2.1 }, // the scope while the model runs, offline
+      { t: 5.85, x: 960, y: 517, z: 0.86 }, // the result, and where it ran
     ], D);
     pinLabels();
     const clock = { t: 0 };
@@ -316,12 +316,12 @@
     showLabel("#pv-lb-off", 1.15, 2.8);
 
     // the scan still runs (the app's ring, rebuilt; the recording drops frames while the model runs)
-    tl.fromTo(["#pv-ring", "#pv-status"], { opacity: 0 }, { opacity: 1, duration: 0.12 }, 3.3);
-    tl.fromTo("#pv-ring circle", { strokeDasharray: "22 78", strokeDashoffset: 0 }, { strokeDashoffset: -100 * (1.7 / 1.1), duration: 1.7, ease: "none" }, 3.3);
-    tl.to(["#pv-ring", "#pv-status"], { opacity: 0, duration: 0.1 }, 5.0);
+    tl.fromTo(["#pv-ring", "#pv-status"], { opacity: 0 }, { opacity: 1, duration: 0.12 }, 3.51);
+    tl.fromTo("#pv-ring circle", { strokeDasharray: "22 78", strokeDashoffset: 0 }, { strokeDashoffset: -100 * (2.09 / 1.1), duration: 2.09, ease: "none" }, 3.51);
+    tl.to(["#pv-ring", "#pv-status"], { opacity: 0, duration: 0.1 }, 5.6);
 
     // and the result says where it ran
-    showLabel("#pv-lb-local", 5.95);
+    showLabel("#pv-lb-local", 6.45);
     window.__timelines["private"] = tl;
   </script>
 </template>
