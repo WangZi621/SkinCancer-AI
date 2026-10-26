@@ -616,7 +616,7 @@ function renderResult() {
     el.truth.hidden = true;
   }
 
-  el.runInfo.textContent = `Analyzed on this device in ${(r.ms / 1000).toFixed(2)} s. Model: SkinScan v3, running with ONNX Runtime Web.`;
+  el.runInfo.textContent = `Analyzed on this device in ${(r.ms / 1000).toFixed(2)} s. Model: Stryde v3, running with ONNX Runtime Web.`;
   renderSaveState();
   el.heatBtn.hidden = false;
 

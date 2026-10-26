@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>SkinScan AI</title>
+  <title>Stryde</title>
   <meta name="description" content="Skin lesion triage that runs entirely on your device. Track patients and lesions over time, check photo quality, and print referral reports. Nothing is uploaded.">
   <meta name="theme-color" content="#ececec">
-  <meta property="og:title" content="SkinScan AI">
+  <meta property="og:title" content="Stryde">
   <meta property="og:description" content="On-device skin lesion triage from a dermoscopic photo and patient details.">
   <meta property="og:image" content="https://wangzi621.github.io/SkinCancer-AI/img/og.jpg">
   <link rel="manifest" href="manifest.webmanifest">
@@ -29,9 +29,9 @@
 
   <header class="topbar">
     <div class="topbar-inner">
-      <a class="brand" href="#/" aria-label="SkinScan AI home">
+      <a class="brand" href="#/" aria-label="Stryde home">
         <svg class="brand-mark" aria-hidden="true"><use href="#logo"/></svg>
-        <span>SkinScan AI</span>
+        <span>Stryde</span>
       </a>
       <nav class="nav" aria-label="Main">
         <a href="#/home" data-route="home" data-auth>Home</a>
@@ -85,7 +85,7 @@
       <div class="hero" id="scan-hero">
         <div>
           <h1>Scan a skin spot</h1>
-          <p>Add a dermoscopic photo and what you know about the patient. SkinScan AI scores it for melanoma, other skin cancers and benign lesions, then suggests how soon to refer.</p>
+          <p>Add a dermoscopic photo and what you know about the patient. Stryde scores it for melanoma, other skin cancers and benign lesions, then suggests how soon to refer.</p>
           <p class="hero-link"><a href="#/inside">See how the model reads a photo, one layer at a time</a></p>
         </div>
         <p class="hero-note">The photo stays on this device. Scans without a profile are not saved.</p>
@@ -302,8 +302,8 @@
     <!-- HOW IT WORKS -->
     <section class="view view-how" id="view-how" data-view="how" hidden>
       <div class="page-head">
-        <h1>How SkinScan AI works</h1>
-        <p>A dermatologist never judges a lesion from the picture alone. Age, body site, and skin type change what a spot is likely to be, so SkinScan AI reads the image and those details together.</p>
+        <h1>How Stryde works</h1>
+        <p>A dermatologist never judges a lesion from the picture alone. Age, body site, and skin type change what a spot is likely to be, so Stryde reads the image and those details together.</p>
       </div>
 
       <figure class="pipeline" aria-label="Model diagram: an image branch and a patient branch join into one head that gives three scores.">
@@ -367,7 +367,7 @@
         <article class="card">
           <h2>Privacy</h2>
           <p>The 21 MB model downloads once, and then every scan runs on your device with <a href="https://onnxruntime.ai/docs/tutorials/web/" rel="noopener">ONNX Runtime Web</a>. Photos and patient details are never uploaded. Profiles, patients and saved scans live only in this browser. With a passcode they are encrypted with AES-GCM under a key derived from it, and the key is never stored. After the first visit the app works offline.</p>
-          <p>The same trained model runs on the <a href="#/kiosk">SkinScan kiosk</a>, a Raspberry Pi device built for clinics.</p>
+          <p>The same trained model runs on the <a href="#/kiosk">Stryde kiosk</a>, a Raspberry Pi device built for clinics.</p>
         </article>
       </div>
     </section>
@@ -375,11 +375,11 @@
     <!-- KIOSK -->
     <section class="view view-kiosk" id="view-kiosk" data-view="kiosk" hidden>
       <div class="page-head">
-        <h1>The SkinScan kiosk</h1>
-        <p>Some clinics have no reliable internet and no spare computer. The kiosk is a self-contained version of SkinScan AI that costs about $300 in parts and runs with no network at all.</p>
+        <h1>The Stryde kiosk</h1>
+        <p>Some clinics have no reliable internet and no spare computer. The kiosk is a self-contained version of Stryde that costs about $300 in parts and runs with no network at all.</p>
       </div>
       <figure class="kiosk-photo">
-        <img src="img/kiosk.jpg" alt="Left: the 3D printed SkinScan case with a touchscreen on top and a Raspberry Pi inside, connected by a ribbon cable to a small camera board. Right: the camera held over a spot on a leg while the touchscreen shows the captured image." width="1600" height="376" loading="lazy">
+        <img src="img/kiosk.jpg" alt="Left: the 3D printed Stryde case with a touchscreen on top and a Raspberry Pi inside, connected by a ribbon cable to a small camera board. Right: the camera held over a spot on a leg while the touchscreen shows the captured image." width="1600" height="376" loading="lazy">
         <figcaption>The assembled kiosk and the device in use.</figcaption>
       </figure>
       <div class="cols">
@@ -417,7 +417,7 @@
     <div class="footer-inner">
       <div class="footer-brand">
         <svg class="brand-mark" aria-hidden="true"><use href="#logo-small"/></svg>
-        <p><strong>SkinScan AI is a research prototype, not a medical device.</strong> It has not been cleared by the FDA and it does not diagnose skin cancer. Clinical judgment and biopsy decide.</p>
+        <p><strong>Stryde is a research prototype, not a medical device.</strong> It has not been cleared by the FDA and it does not diagnose skin cancer. Clinical judgment and biopsy decide.</p>
       </div>
       <p>Built by Jason Xiao. <a href="https://github.com/WangZi621/SkinCancer-AI" rel="noopener">Source on GitHub</a>. Sample images from the ISIC Archive, CC BY.</p>
     </div>

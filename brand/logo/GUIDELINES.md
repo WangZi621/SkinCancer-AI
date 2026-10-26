@@ -1,4 +1,4 @@
-# SkinScan AI logo
+# Stryde logo
 
 The symbol is called **Contours**. It shows the outline of one skin spot at three visits, spreading toward the
 lower right where the spot grew. Following a lesion between visits is what the app does, and the outlines are
@@ -10,16 +10,16 @@ drawn the way a clinician traces a lesion's edge.
 
 | File | Use |
 | --- | --- |
-| `skinscan-horizontal-color.svg` | Default lockup: cobalt symbol, dress-blue wordmark |
-| `skinscan-horizontal-white.svg`, `-navy.svg`, `-black.svg` | On cobalt or dress blue; one-colour print |
-| `skinscan-stacked-color.svg`, `-white.svg` | Square spaces |
-| `skinscan-symbol-cobalt.svg`, `-navy.svg`, `-black.svg`, `-white.svg` | Symbol alone, 32 px and up |
-| `skinscan-symbol-small-cobalt.svg`, `-white.svg` | Symbol alone, 16 to 31 px |
-| `skinscan-wordmark-navy.svg`, `-white.svg` | Name alone |
-| `skinscan-app-icon.svg`, `icon-48/180/192/512.png` | App icon (rounded cobalt square) |
-| `skinscan-maskable.svg`, `icon-maskable-512.png` | Android maskable icon |
-| `skinscan-favicon.svg`, `favicon.ico` (16, 32, 48) | Browser tab |
-| `skinscan-horizontal-color-1200.png` | Documents and slides |
+| `stryde-horizontal-color.svg` | Default lockup: cobalt symbol, dress-blue wordmark |
+| `stryde-horizontal-white.svg`, `-navy.svg`, `-black.svg` | On cobalt or dress blue; one-colour print |
+| `stryde-stacked-color.svg`, `-white.svg` | Square spaces |
+| `stryde-symbol-cobalt.svg`, `-navy.svg`, `-black.svg`, `-white.svg` | Symbol alone, 32 px and up |
+| `stryde-symbol-small-cobalt.svg`, `-white.svg` | Symbol alone, 16 to 31 px |
+| `stryde-wordmark-navy.svg`, `-white.svg` | Name alone |
+| `stryde-app-icon.svg`, `icon-48/180/192/512.png` | App icon (rounded cobalt square) |
+| `stryde-maskable.svg`, `icon-maskable-512.png` | Android maskable icon |
+| `stryde-favicon.svg`, `favicon.ico` (16, 32, 48) | Browser tab |
+| `stryde-horizontal-color-1200.png` | Documents and slides |
 
 `python3 brand/logo/kit.py` rebuilds every file from the geometry in `kit.py` and copies the web icons into
 `docs/icons/` and `docs/favicon.ico`.
@@ -37,7 +37,7 @@ drawn the way a clinician traces a lesion's edge.
 
 ## Wordmark
 
-"SkinScan AI" in Archivo (SIL Open Font License, which allows logo use), width 115, weight 850,
+"Stryde" in Archivo (SIL Open Font License, which allows logo use), width 115, weight 850,
 tracking -0.01 em, converted to outlines. It matches the Stryde headlines. In the horizontal lockup the cap height is 0.40 of the symbol's
 height and the gap is 0.27 of it.
 

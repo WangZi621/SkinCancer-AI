@@ -183,7 +183,7 @@ function landing(el, profiles) {
       <section class="l-hero">
         <div>
           <h1>Which skin spot should be seen first?</h1>
-          <p class="lead">SkinScan AI reads a dermoscopic photo together with the patient's age, sex and body site, and suggests how soon to refer: urgently, for review, or at the next routine visit. It runs on your device and keeps working offline.</p>
+          <p class="lead">Stryde reads a dermoscopic photo together with the patient's age, sex and body site, and suggests how soon to refer: urgently, for review, or at the next routine visit. It runs on your device and keeps working offline.</p>
           <div class="l-actions">
             <a class="btn btn-primary btn-lg" href="#/welcome?step=create">Create a free profile</a>
             <a class="btn btn-secondary btn-lg" href="#/scan">Try a scan first</a>
@@ -254,7 +254,7 @@ function landing(el, profiles) {
 
       <section class="l-close">
         <h2>Start with four demo patients</h2>
-        <p>Create a profile, then load demo patients built from biopsy-confirmed ISIC images. Every score is computed by the model in your browser. SkinScan AI is a research prototype, not a medical device, and it does not diagnose.</p>
+        <p>Create a profile, then load demo patients built from biopsy-confirmed ISIC images. Every score is computed by the model in your browser. Stryde is a research prototype, not a medical device, and it does not diagnose.</p>
         <a class="btn btn-lg" href="#/welcome?step=create">Create a free profile</a>
       </section>
     </div>`,
@@ -304,7 +304,7 @@ function signup(el, r, profiles) {
             <label class="f"><span>Passcode <small>optional</small></span><input name="passcode" type="password" minlength="4" maxlength="64" autocomplete="new-password" placeholder="4 or more characters"></label>
             <label class="f"><span>Repeat the passcode</span><input name="passcode2" type="password" maxlength="64" autocomplete="new-password"></label>
           </div>
-          <label class="check check-block"><input type="checkbox" name="ack" required><span>I understand SkinScan AI is a research prototype, not a medical device, and that it does not diagnose.</span></label>
+          <label class="check check-block"><input type="checkbox" name="ack" required><span>I understand Stryde is a research prototype, not a medical device, and that it does not diagnose.</span></label>
           <p class="f-error" id="signup-error" role="alert" hidden></p>
           <button class="btn btn-primary btn-lg" type="submit">Create profile</button>
         </form>
@@ -321,7 +321,7 @@ function signup(el, r, profiles) {
     if (!String(fd.get('name') || '').trim()) problems.push('Enter your name.');
     if (pass && pass.length < 4) problems.push('Use at least 4 characters for the passcode.');
     if (pass !== String(fd.get('passcode2') || '')) problems.push('The two passcodes are different.');
-    if (!fd.get('ack')) problems.push('Tick the box to confirm you understand what SkinScan AI is.');
+    if (!fd.get('ack')) problems.push('Tick the box to confirm you understand what Stryde is.');
     if (problems.length) {
       err.textContent = problems.join(' ');
       err.hidden = false;
@@ -831,7 +831,7 @@ export function scans(el, r) {
             })}</tbody></table></div>`
         : html`<div class="empty"><h2>No saved scans</h2><p>Run a scan and choose <strong>Save to patient</strong> to keep it here.</p><a class="btn btn-primary" href="#/scan">${icon('scan')}Start a scan</a></div>`}`,
   );
-  $('#sc-csv', el)?.addEventListener('click', () => download(`skinscan-scans-${isoToday()}.csv`, toCSV(all), 'text/csv'));
+  $('#sc-csv', el)?.addEventListener('click', () => download(`stryde-scans-${isoToday()}.csv`, toCSV(all), 'text/csv'));
 }
 
 function toCSV(items) {
@@ -873,7 +873,7 @@ function letterText(s, p, l, me, ref = {}) {
     '',
     `Please see ${who}${desc} about a lesion on the ${site}.${clinical.length ? ` ${clinical.join(' ')}` : ''}`,
     '',
-    `SkinScan AI, a research triage tool that does not diagnose, suggests: ${s.title.toLowerCase()} (${s.finding.toLowerCase()}). Its scores were melanoma ${pct(s.probs[0])}, benign ${pct(s.probs[1])} and other skin cancer ${pct(s.probs[2])}, against a melanoma cutoff of ${pct(MELANOMA_CUTOFF, 1)}.`,
+    `Stryde, a research triage tool that does not diagnose, suggests: ${s.title.toLowerCase()} (${s.finding.toLowerCase()}). Its scores were melanoma ${pct(s.probs[0])}, benign ${pct(s.probs[1])} and other skin cancer ${pct(s.probs[2])}, against a melanoma cutoff of ${pct(MELANOMA_CUTOFF, 1)}.`,
   ];
   if (ref.question) lines.push('', `My question: ${ref.question}`);
   lines.push('', 'The dermoscopic photo and the full report are attached.', '', [me?.name, me?.role, me?.org].filter(Boolean).join(', ') || '');
@@ -903,7 +903,7 @@ export function report(el, r) {
       </div>
       <article class="report-doc" id="report-doc">
         <header class="rd-head">
-          <div class="rd-brand"><svg aria-hidden="true"><use href="#logo"/></svg><div><strong>SkinScan AI triage report</strong><span>${fmtDateTime(s.ts)}</span></div></div>
+          <div class="rd-brand"><svg aria-hidden="true"><use href="#logo"/></svg><div><strong>Stryde triage report</strong><span>${fmtDateTime(s.ts)}</span></div></div>
           <div class="rd-by">${me ? html`<strong>${me.name}</strong><span>${[me.role, me.org].filter(Boolean).join(', ')}</span>` : html`<span>Not signed in</span>`}</div>
         </header>
         <section class="rd-grid">
@@ -934,7 +934,7 @@ export function report(el, r) {
             <tbody>${hist.map((h) => html`<tr class="${h.id === s.id ? 'is-this' : ''}"><td>${fmtDate(h.ts)}</td><td>${h.title}</td><td class="num">${pct(h.probs[0])}</td><td class="num">${pct(h.probs[1])}</td><td class="num">${pct(h.probs[2])}</td></tr>`)}</tbody></table></section>`
           : ''}
         <section class="rd-letter"><h3>Referral letter</h3><pre id="rp-letter"></pre></section>
-        <footer class="rd-foot">SkinScan AI is a research prototype, not a medical device, and is not FDA-cleared. It does not diagnose skin cancer; this report supports clinical judgment and does not replace it. Model: SkinScan v3 (EfficientNet-B4 image branch, 17 patient features), run on this device with ONNX Runtime Web${s.sample ? `. Sample image ${s.sample.id}, biopsy result: ${s.sample.diagnosis}` : ''}.</footer>
+        <footer class="rd-foot">Stryde is a research prototype, not a medical device, and is not FDA-cleared. It does not diagnose skin cancer; this report supports clinical judgment and does not replace it. Model: Stryde v3 (EfficientNet-B4 image branch, 17 patient features), run on this device with ONNX Runtime Web${s.sample ? `. Sample image ${s.sample.id}, biopsy result: ${s.sample.diagnosis}` : ''}.</footer>
       </article>
       <form class="letter-form" id="rp-form">
         <h2>Write the referral letter</h2>
@@ -1019,7 +1019,7 @@ export async function settings(el) {
           <div class="set-title"><h2>Model and offline use</h2><p>Every scan runs in this browser. Nothing is uploaded.</p></div>
           <div class="set-body">
             <dl class="kv">
-              <div><dt>Model</dt><dd>SkinScan v3: an EfficientNet-B4 image branch and a 17-feature patient branch</dd></div>
+              <div><dt>Model</dt><dd>Stryde v3: an EfficientNet-B4 image branch and a 17-feature patient branch</dd></div>
               <div><dt>File</dt><dd>skinscan-v3.onnx, 21 MB</dd></div>
               <div><dt>Runtime</dt><dd>ONNX Runtime Web, WebAssembly, ${plural(st.threads, 'thread')}</dd></div>
               <div><dt>Status</dt><dd>${st.ready ? 'Loaded' : 'Not loaded yet'}</dd></div>
@@ -1045,7 +1045,7 @@ export async function settings(el) {
         </section>
         <section class="set-card card">
           <div class="set-title"><h2>About</h2></div>
-          <div class="set-body"><p class="muted">SkinScan AI is a research prototype, not a medical device. It has not been cleared by the FDA and it does not diagnose skin cancer. <a href="#/how">How it works</a>. <a href="https://github.com/WangZi621/SkinCancer-AI" rel="noopener">Source code on GitHub</a>.</p></div>
+          <div class="set-body"><p class="muted">Stryde is a research prototype, not a medical device. It has not been cleared by the FDA and it does not diagnose skin cancer. <a href="#/how">How it works</a>. <a href="https://github.com/WangZi621/SkinCancer-AI" rel="noopener">Source code on GitHub</a>.</p></div>
         </section>
       </div>`,
   );
@@ -1098,7 +1098,7 @@ export async function settings(el) {
     }
   });
   $('#st-export', el).addEventListener('click', async () => {
-    download(`skinscan-backup-${me.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${isoToday()}.json`, await store.exportBackup());
+    download(`stryde-backup-${me.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${isoToday()}.json`, await store.exportBackup());
     toast('Backup downloaded');
   });
   $('#st-import', el).addEventListener('change', async (e) => {
@@ -1109,7 +1109,7 @@ export async function settings(el) {
       await app.refreshProfiles();
       toast(`Restored "${p.name}". Open it from Switch profile.`);
     } catch {
-      toast('That file is not a SkinScan AI backup.', { tone: 'warn' });
+      toast('That file is not a Stryde backup.', { tone: 'warn' });
     }
     e.target.value = '';
   });

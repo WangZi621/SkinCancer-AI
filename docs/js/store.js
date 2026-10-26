@@ -347,7 +347,7 @@ export async function exportBackup() {
   const p = await getProfile(session.profile.id);
   const rows = await run('records', 'readonly', (s) => req2p(s.index('byProfile').getAll(p.id)));
   return JSON.stringify({
-    app: 'SkinScan AI',
+    app: 'Stryde',
     format: 1,
     exportedAt: new Date().toISOString(),
     profile: {
@@ -361,7 +361,8 @@ export async function exportBackup() {
 /** Restore a backup file as a profile on this device (a new id if one with its id exists). */
 export async function importBackup(text) {
   const data = JSON.parse(text);
-  if (data.app !== 'SkinScan AI' || data.format !== 1 || !data.profile) throw new Error('not-a-backup');
+  // backups made before the app was renamed say 'SkinScan AI'
+  if (!['Stryde', 'SkinScan AI'].includes(data.app) || data.format !== 1 || !data.profile) throw new Error('not-a-backup');
   const existing = await getProfile(data.profile.id);
   const id = existing ? newId() : data.profile.id;
   const lockInfo = data.profile.lock;

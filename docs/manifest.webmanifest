@@ -1,6 +1,6 @@
 {
-  "name": "SkinScan AI",
-  "short_name": "SkinScan",
+  "name": "Stryde",
+  "short_name": "Stryde",
   "description": "On-device skin lesion triage from a dermoscopic photo and patient details.",
   "start_url": "./",
   "scope": "./",
