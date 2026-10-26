@@ -1,16 +1,17 @@
 <template>
   <style>
     @font-face {
-      font-family: "Geist";
-      src: url("assets/fonts/geist.woff2") format("woff2");
+      font-family: "Archivo";
+      src: url("assets/fonts/archivo.woff2") format("woff2");
       font-weight: 100 900;
+      font-stretch: 62% 125%;
     }
     #root {
       position: absolute;
       inset: 0;
       overflow: hidden;
-      font-family: "Geist", sans-serif;
-      background: #f5f7f8;
+      font-family: "Archivo", sans-serif;
+      background: #ececec url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='52' viewBox='0 0 30 52'%3E%3Cpath d='M0 0H30M0 26H30M0 52H30M0 0L30 52M30 0L0 52' stroke='rgba(20,33,61,0.05)' stroke-width='1' fill='none'/%3E%3Cg fill='rgba(20,33,61,0.2)'%3E%3Ccircle cx='0' cy='0' r='1.5'/%3E%3Ccircle cx='30' cy='0' r='1.5'/%3E%3Ccircle cx='15' cy='26' r='1.5'/%3E%3Ccircle cx='0' cy='52' r='1.5'/%3E%3Ccircle cx='30' cy='52' r='1.5'/%3E%3C/g%3E%3C/svg%3E") 15px 10px / 30px 52px;
     }
     /* the camera: page coordinates (the 1920 x 1080 viewport of the recording) */
     .cam {
@@ -30,7 +31,7 @@
       border-radius: 22px;
       overflow: hidden;
       background: #ffffff;
-      box-shadow: 0 0 0 1px #e2e7eb, 0 40px 90px -30px rgba(15, 27, 36, 0.35);
+      box-shadow: 0 0 0 2px #0b0e14, 12px 12px 0 2px #0b0e14;
     }
     .win-bar {
       position: absolute;
@@ -38,7 +39,7 @@
       top: 0;
       right: 0;
       height: 46px;
-      border-bottom: 1px solid #e2e7eb;
+      border-bottom: 1px solid #d5d7dc;
     }
     .win-dot {
       position: absolute;
@@ -46,7 +47,7 @@
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background: #cfd7dd;
+      background: #c4c8d0;
     }
     .win-url {
       position: absolute;
@@ -55,8 +56,8 @@
       width: 600px;
       height: 30px;
       border-radius: 9px;
-      background: #f0f3f5;
-      color: #4a5a66;
+      background: #f2f3f5;
+      color: #4c525d;
       font-size: 17px;
       font-weight: 500;
       line-height: 30px;
@@ -73,28 +74,28 @@
        drops frames while the model runs, so this is the one part redrawn on the footage */
     .app-ring {
       position: absolute;
-      left: 457.6px;
-      top: 121.3px;
+      left: 443.1px;
+      top: 112px;
       width: 400px;
       height: 400px;
       opacity: 0;
     }
     .app-ring circle {
       fill: none;
-      stroke: #0e7c7b;
+      stroke: #1b4fd8;
       stroke-width: 4;
       stroke-linecap: round;
     }
     .app-status {
       position: absolute;
-      left: 657.6px;
-      top: 452px;
+      left: 643.1px;
+      top: 443px;
       transform: translateX(-50%);
       padding: 0 14px;
       white-space: nowrap;
       height: 33px;
       border-radius: 999px;
-      background: rgba(15, 27, 36, 0.78);
+      background: rgba(11, 14, 20, 0.82);
       color: #ffffff;
       font-size: 14px;
       font-weight: 500;
@@ -121,12 +122,12 @@
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      background: #0e7c7b;
-      box-shadow: 0 0 0 4px #ffffff, 0 4px 10px rgba(15, 27, 36, 0.3);
+      background: #1b4fd8;
+      box-shadow: 0 0 0 4px #ffffff, 0 0 0 6px #0b0e14;
     }
     .lb-line {
       position: absolute;
-      background: #0e7c7b;
+      background: #1b4fd8;
     }
     .lb-card {
       position: absolute;
@@ -134,11 +135,11 @@
       padding: 14px 26px;
       border-radius: 16px;
       background: #ffffff;
-      color: #0f1b24;
+      color: #0b0e14;
       font-size: 40px;
       font-weight: 600;
       letter-spacing: -0.02em;
-      box-shadow: 0 0 0 1px #e2e7eb, 0 14px 34px -14px rgba(15, 27, 36, 0.4);
+      box-shadow: 0 0 0 2px #0b0e14, 5px 5px 0 2px #0b0e14;
     }
     .lb[data-side="left"] .lb-line {
       right: 0;
@@ -178,14 +179,14 @@
     }
     .lb-red .lb-dot,
     .lb-red .lb-line {
-      background: #d92d20;
+      background: #b42318;
     }
     #fm-whip {
       position: absolute;
       inset: 0;
     }
   </style>
-  <div id="root" data-composition-id="form" data-width="1920" data-height="1080" data-start="0" data-duration="14" data-motion-blur="on">
+  <div id="root" data-composition-id="form" data-width="1920" data-height="1080" data-start="0" data-duration="13.2" data-motion-blur="on">
     <div id="fm-whip">
     <div id="fm-cam" class="cam" data-layout-allow-overflow>
       <div class="win">
@@ -195,18 +196,18 @@
           <span class="win-dot" style="left: 62px"></span>
           <span class="win-url" data-layout-ignore>wangzi621.github.io/SkinCancer-AI</span>
         </div>
-        <video id="fm-video" class="win-video clip" src="assets/capture/rec3_form.mp4" data-start="0" data-duration="14" data-media-start="1.6" data-playback-rate="1.5" data-track-index="1" muted playsinline></video>
+        <video id="fm-video" class="win-video clip" src="assets/capture/rec3_form.mp4" data-start="0" data-duration="13.2" data-media-start="1.4" data-playback-rate="1.4" data-track-index="1" muted playsinline></video>
       </div>
       <svg id="fm-ring" class="app-ring" viewBox="0 0 400 400"><circle cx="200" cy="200" r="196" pathLength="100" transform="rotate(-90 200 200)" /></svg>
       <div id="fm-status" class="app-status">Analyzing</div>
 
-      <div id="fm-lb-hand" class="lb" data-at="968.3,268.2" data-z="1.9" data-side="left" style="--len: 64px">
+      <div id="fm-lb-hand" class="lb" data-at="966.2,260.5" data-z="1.9" data-side="left" style="--len: 64px">
         <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Typed in by hand</span></div>
       </div>
-      <div id="fm-lb-map" class="lb" data-at="967.3,450" data-z="2.3" data-side="left" style="--len: 64px">
+      <div id="fm-lb-map" class="lb" data-at="966.2,454.5" data-z="2.3" data-side="left" style="--len: 64px">
         <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Tap where the spot is</span></div>
       </div>
-      <div id="fm-lb-skin" class="lb" data-at="967.3,630.2" data-z="1.9" data-side="left" style="--len: 64px">
+      <div id="fm-lb-skin" class="lb" data-at="966.2,646.4" data-z="1.9" data-side="left" style="--len: 64px">
         <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Skin type and size</span></div>
       </div>
     </div>
@@ -214,7 +215,7 @@
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    const D = 14;
+    const D = 13.2;
 
     // Camera on the real page, adapted from the registry's cursor-zoom-follow: the aim steps
     // between shots and a critically damped spring (in log zoom) turns each step into a move
@@ -272,17 +273,17 @@
       if (tout != null) tl.to([sel + " .lb-dot", sel + " .lb-line", sel + " .lb-card"], { opacity: 0, duration: 0.2, ease: "power2.in" }, tout);
     }
 
-    // Shots. Recording 3 at 1.5x from 1.6 s: Sample 2 click 0.54, age 2.21, sex 3.8, body map 5.23,
-    // skin type 6.73, diameter 8.06, Analyze 9.81, result 11.11.
+    // Shots. Recording 3 at 1.4x from 1.4 s: Sample 2 click 0.56, age 2.14, sex 3.6, body map 4.88,
+    // skin type 6.34, diameter 7.57, Analyze 9.18, result 10.25.
     const cam = pageCamera(document.getElementById("fm-cam"), [
-      { t: 0, x: 640, y: 640, z: 1.7 }, // the samples
-      { t: 0.8, x: 1233, y: 330, z: 1.9 }, // age and sex
-      { t: 4.6, x: 1090, y: 450, z: 2.3 }, // the body map
-      { t: 6.35, x: 1233, y: 690, z: 1.9 }, // skin type and diameter
-      { t: 9.15, x: 1110, y: 796, z: 1.9 }, // Analyze, at the foot of the page
-      { t: 9.9, x: 657.6, y: 321.3, z: 2.1 }, // the scope while the model runs
-      { t: 11.35, x: 960, y: 517, z: 0.86 }, // the whole result
-      { t: 12.85, x: 657.6, y: 321.3, z: 2.6 }, // into the scope: 03 continues from this circle
+      { t: 0, x: 625, y: 640, z: 1.7 }, // the samples
+      { t: 0.8, x: 1247, y: 322, z: 1.9 }, // age and sex
+      { t: 4.25, x: 1099, y: 455, z: 2.3 }, // the body map
+      { t: 5.95, x: 1247, y: 708, z: 1.9 }, // skin type and diameter
+      { t: 8.52, x: 1112, y: 796, z: 1.9 }, // Analyze, at the foot of the page
+      { t: 9.27, x: 643.1, y: 309, z: 2.1 }, // the scope while the model runs
+      { t: 10.5, x: 960, y: 520, z: 0.86 }, // the whole result
+      { t: 12.05, x: 643.1, y: 307, z: 2.6 }, // into the scope: 03 continues from this circle
     ], D);
     pinLabels();
     const clock = { t: 0 };
@@ -292,14 +293,14 @@
     // whip in: the second half of 04's whip, arriving blurred and settling
     tl.fromTo("#fm-whip", { x: 1100 }, { x: 0, duration: 0.32, ease: "power3.out" }, 0);
 
-    showLabel("#fm-lb-hand", 1.45, 4.3);
-    showLabel("#fm-lb-map", 5.4, 6.6);
-    showLabel("#fm-lb-skin", 6.95, 8.95);
+    showLabel("#fm-lb-hand", 1.38, 4.1);
+    showLabel("#fm-lb-map", 4.55, 6.42);
+    showLabel("#fm-lb-skin", 6.56, 8.32);
 
     // the app's scanning ring (rebuilt; the recording drops frames while the model runs)
-    tl.fromTo(["#fm-ring", "#fm-status"], { opacity: 0 }, { opacity: 1, duration: 0.12 }, 9.85);
-    tl.fromTo("#fm-ring circle", { strokeDasharray: "22 78", strokeDashoffset: 0 }, { strokeDashoffset: -100 * (1.26 / 1.1), duration: 1.26, ease: "none" }, 9.85);
-    tl.to(["#fm-ring", "#fm-status"], { opacity: 0, duration: 0.1 }, 11.11);
+    tl.fromTo(["#fm-ring", "#fm-status"], { opacity: 0 }, { opacity: 1, duration: 0.12 }, 9.22);
+    tl.fromTo("#fm-ring circle", { strokeDasharray: "22 78", strokeDashoffset: 0 }, { strokeDashoffset: -100 * (1.03 / 1.1), duration: 1.03, ease: "none" }, 9.22);
+    tl.to(["#fm-ring", "#fm-status"], { opacity: 0, duration: 0.1 }, 10.25);
     window.__timelines["form"] = tl;
   </script>
 </template>

@@ -4,7 +4,7 @@
       position: absolute;
       inset: 0;
       overflow: hidden;
-      background: #f5f7f8;
+      background: #ececec url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='52' viewBox='0 0 30 52'%3E%3Cpath d='M0 0H30M0 26H30M0 52H30M0 0L30 52M30 0L0 52' stroke='rgba(20,33,61,0.05)' stroke-width='1' fill='none'/%3E%3Cg fill='rgba(20,33,61,0.2)'%3E%3Ccircle cx='0' cy='0' r='1.5'/%3E%3Ccircle cx='30' cy='0' r='1.5'/%3E%3Ccircle cx='15' cy='26' r='1.5'/%3E%3Ccircle cx='0' cy='52' r='1.5'/%3E%3Ccircle cx='30' cy='52' r='1.5'/%3E%3C/g%3E%3C/svg%3E") 15px 10px / 30px 52px;
     }
     #mb-ring {
       position: absolute;
@@ -18,10 +18,10 @@
       stroke-width: 2.6;
     }
     #mb-track {
-      stroke: #e2e7eb;
+      stroke: #d5d7dc;
     }
     #mb-arc {
-      stroke: #0e7c7b;
+      stroke: #1b4fd8;
       stroke-linecap: round;
     }
     #mb-push {
@@ -36,8 +36,7 @@
       width: 444px;
       height: 928px;
       border-radius: 64px;
-      background: #0f1b24;
-      box-shadow: 0 2px 4px rgba(15, 27, 36, 0.08), 0 60px 110px -40px rgba(15, 27, 36, 0.55);
+      background: #0b0e14;
     }
     #mb-screen {
       position: absolute;
@@ -47,7 +46,7 @@
       height: 900px;
       border-radius: 50px;
       overflow: hidden;
-      background: #f5f7f8;
+      background: #ececec;
     }
     #mb-video,
     #mb-video-b {
@@ -65,7 +64,7 @@
       width: 120px;
       height: 34px;
       border-radius: 20px;
-      background: #0f1b24;
+      background: #0b0e14;
     }
     /* the container morph: 05's browser window (its exact last framing) narrows into the phone */
     #mb-morph {
@@ -76,7 +75,7 @@
     #mb-morph img {
       position: absolute;
       left: 134.4px;
-      top: 95.4px;
+      top: 92.8px;
       width: 1651.2px;
       height: 928.8px;
     }
@@ -109,10 +108,10 @@
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    // morph: window rect (134.4, 55.8, 1651.2 x 968.4, radius 18.9) to the phone (738, 76, 444 x 928, radius 64)
+    // morph: window rect (134.4, 53.24, 1651.2 x 968.4, radius 18.9) to the phone (738, 76, 444 x 928, radius 64)
     tl.fromTo(
       "#mb-morph",
-      { clipPath: "inset(55.8px 134.4px 55.8px 134.4px round 18.9px)", opacity: 1 },
+      { clipPath: "inset(53.24px 134.4px 58.4px 134.4px round 18.9px)", opacity: 1 },
       { clipPath: "inset(76px 738px 76px 738px round 64px)", duration: 0.75, ease: "power3.inOut" },
       0,
     );
@@ -120,13 +119,13 @@
     tl.to("#mb-morph", { opacity: 0, duration: 0.2, ease: "power1.in" }, 0.62);
     tl.fromTo("#mb-ring", { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1, duration: 1.0, ease: "expo.out" }, 0.55);
 
-    // The phone opens on the home screen; the Scan tab is tapped at 1.6 s and Sample 3 at 3.21 s.
-    // Analyze is tapped at 5.71 s, the result (Refer for review) lands at 6.94 s
-    tl.fromTo("#mb-arc", { strokeDasharray: "0 100", strokeDashoffset: 0 }, { strokeDasharray: "18 82", duration: 0.3, ease: "power2.out" }, 5.71);
-    tl.to("#mb-arc", { strokeDashoffset: -110, duration: 1.23, ease: "power1.inOut" }, 5.71);
-    tl.to("#mb-arc", { strokeDasharray: "100 0", stroke: "#c4560a", strokeWidth: 3.4, duration: 0.7, ease: "power2.inOut" }, 6.97);
+    // The phone opens on the home screen; the Scan tab is tapped at 1.6 s and Sample 3 at 3.19 s.
+    // Analyze is tapped at 5.69 s, the result (Refer for review) lands at 6.08 s
+    tl.fromTo("#mb-arc", { strokeDasharray: "0 100", strokeDashoffset: 0 }, { strokeDasharray: "18 82", duration: 0.2, ease: "power2.out" }, 5.69);
+    tl.to("#mb-arc", { strokeDashoffset: -60, duration: 0.42, ease: "power1.inOut" }, 5.69);
+    tl.to("#mb-arc", { strokeDasharray: "100 0", stroke: "#9a4a06", strokeWidth: 3.4, duration: 0.7, ease: "power2.inOut" }, 6.11);
     // push toward the verdict at the top of the phone
-    tl.fromTo("#mb-push", { scale: 1 }, { scale: 1.16, duration: 0.8, ease: "power2.inOut" }, 7.65);
+    tl.fromTo("#mb-push", { scale: 1 }, { scale: 1.16, duration: 0.8, ease: "power2.inOut" }, 7.2);
 
     // dip cut into 06
     tl.fromTo("#mb-dip", { opacity: 0 }, { opacity: 0.4, duration: 0.1, ease: "none" }, 8.85);

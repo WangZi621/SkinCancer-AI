@@ -50,7 +50,7 @@ const CURSOR_SCRIPT = `
   window.addEventListener('DOMContentLoaded', () => {
     const c = document.createElement('div');
     c.id = '__cursor';
-    c.innerHTML = '<svg width="34" height="34" viewBox="0 0 24 24"><path d="M4 2.5v17.2l4.6-4.4 2.9 6.6 2.9-1.3-2.9-6.5h6.3z" fill="#0f1b24" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+    c.innerHTML = '<svg width="34" height="34" viewBox="0 0 24 24"><path d="M4 2.5v17.2l4.6-4.4 2.9 6.6 2.9-1.3-2.9-6.5h6.3z" fill="#201a3d" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>';
     Object.assign(c.style, {
       position: 'fixed', left: '0', top: '0', zIndex: 2147483647, pointerEvents: 'none',
       transform: 'translate(-100px,-100px)', transition: 'scale 0.12s ease', filter: 'drop-shadow(0 2px 3px rgba(0,0,0,.25))',
@@ -120,7 +120,7 @@ async function startRecording(page, name, { maxWidth, maxHeight }) {
       const [w, h] = size;
       execFileSync('ffmpeg', [
         '-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', list,
-        '-vf', `scale=${w}:${h}:flags=lanczos:force_original_aspect_ratio=decrease,pad=${w}:${h}:(ow-iw)/2:(oh-ih)/2:color=0xf5f7f8,fps=30,format=yuv420p`,
+        '-vf', `scale=${w}:${h}:flags=lanczos:force_original_aspect_ratio=decrease,pad=${w}:${h}:(ow-iw)/2:(oh-ih)/2:color=0xececec,fps=30,format=yuv420p`,
         '-c:v', 'libx264', '-preset', 'slow', '-crf', w > 2000 ? '17' : '14', '-movflags', '+faststart', outFile,
       ]);
       fs.rmSync(dir, { recursive: true, force: true });
@@ -191,9 +191,14 @@ async function smoothScrollTo(page, y, ms = 1200) {
     [y, ms],
   );
 }
-// Puts the workbench just under the sticky top bar.
+// Puts the workbench just under the sticky top bar, or a little higher when that is what it takes
+// for Analyze to be on screen, so the page never jumps when the cursor reaches it.
 async function frameWorkbench(page, ms = 1100) {
-  const y = await page.evaluate(() => document.querySelector('#workbench').getBoundingClientRect().top + window.scrollY - 84);
+  const y = await page.evaluate(() => {
+    const top = document.querySelector('#workbench').getBoundingClientRect().top + window.scrollY - 84;
+    const analyze = document.querySelector('#analyze-btn').getBoundingClientRect().bottom + window.scrollY - (innerHeight - 16);
+    return Math.max(top, analyze);
+  });
   await smoothScrollTo(page, y, ms);
 }
 async function waitResult(page) {
@@ -406,9 +411,28 @@ async function sessionA(browser) {
   await smoothScrollTo(page, histY, 1500);
   r9.mark('scroll end');
   await r9.boxes('scrolled', REPORT);
+  await sleep(1400);
+  // the referral letter: answer two questions and the letter in the report rewrites itself
+  const LETTER = { letter: '#rp-letter', form: '#rp-form', onset: '#rp-form select[name=onset]', grown: '#rp-form input[name=ch_grown]', color: '#rp-form input[name=ch_color]', copy: '#rp-copy' };
+  const letterY = await page.evaluate(() => document.querySelector('.rd-letter').getBoundingClientRect().top + window.scrollY - 110);
+  r9.mark('letter scroll start');
+  await smoothScrollTo(page, letterY, 1300);
+  r9.mark('letter scroll end');
+  await r9.boxes('letter', LETTER);
+  await sleep(600);
+  await clickOn(page, page.locator('#rp-form select[name=onset]'), { label: 'onset' });
+  await page.selectOption('#rp-form select[name=onset]', '1 to 6 months');
+  await page.mouse.move(mouse.x + 1, mouse.y);
+  r9.mark('onset set');
+  await sleep(900);
+  await clickOn(page, page.locator('#rp-form label.check', { hasText: 'has grown' }), { dx: 0.12, label: 'grown' });
+  await sleep(700);
+  await clickOn(page, page.locator('#rp-form label.check', { hasText: 'changed color' }), { dx: 0.12, label: 'color' });
+  await sleep(150);
+  await r9.boxes('letter filled', LETTER);
   await page.mouse.move(1880, 1000, { steps: 10 });
   mouse = { x: 1880, y: 1000 };
-  await sleep(1800);
+  await sleep(2200);
   r9.mark('end');
   await r9.stop(path.join(OUT, 'rec9_report.mp4'), DESKTOP_OUT_2X);
   await smoothScrollTo(page, 0, 10);
@@ -421,7 +445,7 @@ async function sessionA(browser) {
   await page.mouse.move(1500, 700);
   mouse = { x: 1500, y: 700 };
   await sleep(600);
-  const HOME = { head: '#view-home .page-head', stats: '#view-home .stats', queue: '#view-home .queue', firstRow: '#view-home .q-row', rechecks: '#view-home .home-side .card:first-child', overdue: '#view-home .due-late', recent: '#view-home .home-side .card:last-child', navPatients: '.nav a[data-route=patients]' };
+  const HOME = { head: '#view-home .page-head', dateLine: '#view-home .date-line', queue: '#view-home .queue', firstRow: '#view-home .q-row', rechecks: '#view-home .home-side .card:first-child', overdue: '#view-home .due-late', recent: '#view-home .home-side .card:last-child', navPatients: '.nav a[data-route=patients]' };
   const r8 = await startRecording(page, 'rec8_clinic', DESKTOP_REC);
   await r8.boxes('home', HOME);
   await page.screenshot({ path: path.join(SHOTS, '11_home.png') });

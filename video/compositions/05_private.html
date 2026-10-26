@@ -1,16 +1,17 @@
 <template>
   <style>
     @font-face {
-      font-family: "Geist";
-      src: url("assets/fonts/geist.woff2") format("woff2");
+      font-family: "Archivo";
+      src: url("assets/fonts/archivo.woff2") format("woff2");
       font-weight: 100 900;
+      font-stretch: 62% 125%;
     }
     #root {
       position: absolute;
       inset: 0;
       overflow: hidden;
-      font-family: "Geist", sans-serif;
-      background: #f5f7f8;
+      font-family: "Archivo", sans-serif;
+      background: #ececec url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='52' viewBox='0 0 30 52'%3E%3Cpath d='M0 0H30M0 26H30M0 52H30M0 0L30 52M30 0L0 52' stroke='rgba(20,33,61,0.05)' stroke-width='1' fill='none'/%3E%3Cg fill='rgba(20,33,61,0.2)'%3E%3Ccircle cx='0' cy='0' r='1.5'/%3E%3Ccircle cx='30' cy='0' r='1.5'/%3E%3Ccircle cx='15' cy='26' r='1.5'/%3E%3Ccircle cx='0' cy='52' r='1.5'/%3E%3Ccircle cx='30' cy='52' r='1.5'/%3E%3C/g%3E%3C/svg%3E") 15px 10px / 30px 52px;
     }
     /* the camera: page coordinates (the 1920 x 1080 viewport of the recording) */
     .cam {
@@ -30,7 +31,7 @@
       border-radius: 22px;
       overflow: hidden;
       background: #ffffff;
-      box-shadow: 0 0 0 1px #e2e7eb, 0 40px 90px -30px rgba(15, 27, 36, 0.35);
+      box-shadow: 0 0 0 2px #0b0e14, 12px 12px 0 2px #0b0e14;
     }
     .win-bar {
       position: absolute;
@@ -38,7 +39,7 @@
       top: 0;
       right: 0;
       height: 46px;
-      border-bottom: 1px solid #e2e7eb;
+      border-bottom: 1px solid #d5d7dc;
     }
     .win-dot {
       position: absolute;
@@ -46,7 +47,7 @@
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background: #cfd7dd;
+      background: #c4c8d0;
     }
     .win-url {
       position: absolute;
@@ -55,8 +56,8 @@
       width: 600px;
       height: 30px;
       border-radius: 9px;
-      background: #f0f3f5;
-      color: #4a5a66;
+      background: #f2f3f5;
+      color: #4c525d;
       font-size: 17px;
       font-weight: 500;
       line-height: 30px;
@@ -73,28 +74,28 @@
        drops frames while the model runs, so this is the one part redrawn on the footage */
     .app-ring {
       position: absolute;
-      left: 457.6px;
-      top: 121.3px;
+      left: 443.1px;
+      top: 112px;
       width: 400px;
       height: 400px;
       opacity: 0;
     }
     .app-ring circle {
       fill: none;
-      stroke: #0e7c7b;
+      stroke: #1b4fd8;
       stroke-width: 4;
       stroke-linecap: round;
     }
     .app-status {
       position: absolute;
-      left: 657.6px;
-      top: 452px;
+      left: 643.1px;
+      top: 443px;
       transform: translateX(-50%);
       padding: 0 14px;
       white-space: nowrap;
       height: 33px;
       border-radius: 999px;
-      background: rgba(15, 27, 36, 0.78);
+      background: rgba(11, 14, 20, 0.82);
       color: #ffffff;
       font-size: 14px;
       font-weight: 500;
@@ -121,12 +122,12 @@
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      background: #0e7c7b;
-      box-shadow: 0 0 0 4px #ffffff, 0 4px 10px rgba(15, 27, 36, 0.3);
+      background: #1b4fd8;
+      box-shadow: 0 0 0 4px #ffffff, 0 0 0 6px #0b0e14;
     }
     .lb-line {
       position: absolute;
-      background: #0e7c7b;
+      background: #1b4fd8;
     }
     .lb-card {
       position: absolute;
@@ -134,11 +135,11 @@
       padding: 14px 26px;
       border-radius: 16px;
       background: #ffffff;
-      color: #0f1b24;
+      color: #0b0e14;
       font-size: 40px;
       font-weight: 600;
       letter-spacing: -0.02em;
-      box-shadow: 0 0 0 1px #e2e7eb, 0 14px 34px -14px rgba(15, 27, 36, 0.4);
+      box-shadow: 0 0 0 2px #0b0e14, 5px 5px 0 2px #0b0e14;
     }
     .lb[data-side="left"] .lb-line {
       right: 0;
@@ -178,7 +179,7 @@
     }
     .lb-red .lb-dot,
     .lb-red .lb-line {
-      background: #d92d20;
+      background: #b42318;
     }
     #pv-wifi {
       position: absolute;
@@ -194,20 +195,20 @@
       stroke-linecap: round;
     }
     #pv-wifi .pv-w {
-      stroke: #0e7c7b;
+      stroke: #1b4fd8;
     }
     #pv-wifi .pv-wd {
-      fill: #0e7c7b;
+      fill: #1b4fd8;
     }
     #pv-slash {
-      stroke: #d92d20;
+      stroke: #b42318;
     }
     .lb-red .lb-dot,
     .lb-red .lb-line {
-      background: #d92d20;
+      background: #b42318;
     }
   </style>
-  <div id="root" data-composition-id="private" data-width="1920" data-height="1080" data-start="0" data-duration="8" data-motion-blur="on">
+  <div id="root" data-composition-id="private" data-width="1920" data-height="1080" data-start="0" data-duration="7.1" data-motion-blur="on">
     <div id="pv-cam" class="cam" data-layout-allow-overflow>
       <div class="win">
         <div class="win-bar">
@@ -223,7 +224,7 @@
             <line id="pv-slash" x1="3.5" y1="3.5" x2="20.5" y2="20.5" pathLength="100" />
           </svg>
         </div>
-        <video id="pv-video" class="win-video clip" src="assets/capture/rec6_offline.mp4" data-start="0" data-duration="8" data-media-start="0.6" data-track-index="1" muted playsinline></video>
+        <video id="pv-video" class="win-video clip" src="assets/capture/rec6_offline.mp4" data-start="0" data-duration="7.1" data-media-start="0.6" data-track-index="1" muted playsinline></video>
       </div>
       <svg id="pv-ring" class="app-ring" viewBox="0 0 400 400"><circle cx="200" cy="200" r="196" pathLength="100" transform="rotate(-90 200 200)" /></svg>
       <div id="pv-status" class="app-status">Analyzing</div>
@@ -231,14 +232,14 @@
       <div id="pv-lb-off" class="lb lb-red" data-at="1760,0" data-z="0.86" data-side="bottom" style="--len: 70px">
         <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Works offline</span></div>
       </div>
-      <div id="pv-lb-local" class="lb" data-at="967.3,900" data-z="0.86" data-side="left" style="--len: 70px">
+      <div id="pv-lb-local" class="lb" data-at="966.2,891" data-z="0.86" data-side="left" style="--len: 70px">
         <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Nothing is uploaded</span></div>
       </div>
     </div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    const D = 8;
+    const D = 7.1;
 
     // Camera on the real page, adapted from the registry's cursor-zoom-follow: the aim steps
     // between shots and a critically damped spring (in log zoom) turns each step into a move
@@ -297,12 +298,12 @@
     }
 
     // Shots. Recording 6 from 0.6 s: the network is cut at 0.91 (navigator.onLine is false),
-    // Analyze 3.49, result 5.6 with no network.
+    // Analyze 3.2, result 4.69 with no network.
     const cam = pageCamera(document.getElementById("pv-cam"), [
-      { t: 0, x: 960, y: 517, z: 0.86 }, // the window, network and all
-      { t: 2.75, x: 1110, y: 796, z: 1.9 }, // Analyze
-      { t: 3.6, x: 657.6, y: 321.3, z: 2.1 }, // the scope while the model runs, offline
-      { t: 5.85, x: 960, y: 517, z: 0.86 }, // the result, and where it ran
+      { t: 0, x: 960, y: 520, z: 0.86 }, // the window, network and all
+      { t: 2.46, x: 1112, y: 796, z: 1.9 }, // Analyze
+      { t: 3.31, x: 643.1, y: 312, z: 2.1 }, // the scope while the model runs, offline
+      { t: 4.94, x: 960, y: 520, z: 0.86 }, // the result, and where it ran
     ], D);
     pinLabels();
     const clock = { t: 0 };
@@ -311,17 +312,17 @@
 
     // the network drops
     tl.fromTo("#pv-slash", { strokeDasharray: "0 100" }, { strokeDasharray: "100 0", duration: 0.4, ease: "power2.inOut" }, 0.91);
-    tl.to("#pv-wifi .pv-w", { stroke: "#a9b6be", duration: 0.3 }, 0.95);
-    tl.to("#pv-wifi .pv-wd", { fill: "#a9b6be", duration: 0.3 }, 0.95);
+    tl.to("#pv-wifi .pv-w", { stroke: "#a3a9b4", duration: 0.3 }, 0.95);
+    tl.to("#pv-wifi .pv-wd", { fill: "#a3a9b4", duration: 0.3 }, 0.95);
     showLabel("#pv-lb-off", 1.15, 2.8);
 
     // the scan still runs (the app's ring, rebuilt; the recording drops frames while the model runs)
-    tl.fromTo(["#pv-ring", "#pv-status"], { opacity: 0 }, { opacity: 1, duration: 0.12 }, 3.51);
-    tl.fromTo("#pv-ring circle", { strokeDasharray: "22 78", strokeDashoffset: 0 }, { strokeDashoffset: -100 * (2.09 / 1.1), duration: 2.09, ease: "none" }, 3.51);
-    tl.to(["#pv-ring", "#pv-status"], { opacity: 0, duration: 0.1 }, 5.6);
+    tl.fromTo(["#pv-ring", "#pv-status"], { opacity: 0 }, { opacity: 1, duration: 0.12 }, 3.22);
+    tl.fromTo("#pv-ring circle", { strokeDasharray: "22 78", strokeDashoffset: 0 }, { strokeDashoffset: -100 * (1.47 / 1.1), duration: 1.47, ease: "none" }, 3.22);
+    tl.to(["#pv-ring", "#pv-status"], { opacity: 0, duration: 0.1 }, 4.69);
 
     // and the result says where it ran
-    showLabel("#pv-lb-local", 6.45);
+    showLabel("#pv-lb-local", 5.54);
     window.__timelines["private"] = tl;
   </script>
 </template>

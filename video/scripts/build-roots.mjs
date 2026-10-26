@@ -8,19 +8,19 @@ import { fileURLToPath } from 'node:url';
 export const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const CLIPS = [
   { n: '01', id: 'open', dur: 8 },
-  { n: '02', id: 'scan', dur: 15.6 },
+  { n: '02', id: 'scan', dur: 14.6 },
   { n: '03', id: 'branches', file: '03_two_branches', dur: 12 },
   { n: '04', id: 'heatmap', dur: 8.5 },
-  { n: '05', id: 'private', dur: 8 },
+  { n: '05', id: 'private', dur: 7.1 },
   { n: '06', id: 'small', file: '06_small_model', dur: 10 },
   { n: '07', id: 'results', dur: 10 },
-  { n: '08', id: 'outro', dur: 5 },
+  { n: '08', id: 'outro', dur: 5.5 },
   { n: '09', id: 'mobile', dur: 9 },
-  { n: '10', id: 'form', dur: 14 },
+  { n: '10', id: 'form', dur: 13.2 },
   { n: '11', id: 'training', dur: 10 },
   { n: '12', id: 'limits', dur: 13 },
   { n: '13', id: 'track', dur: 14 },
-  { n: '14', id: 'report', dur: 8.6 },
+  { n: '14', id: 'report', dur: 13.4 },
   { n: '15', id: 'clinic', dur: 11.8 },
   { n: '16', id: 'lock', dur: 10.8 },
 ].map((c) => ({ ...c, file: c.file || `${c.n}_${c.id}` }));
@@ -54,7 +54,7 @@ export const page = (rootId, dur, hosts, title) => `<!doctype html>
     <script src="assets/vendor/gsap.min.js"></script>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
-      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #f5f7f8; }
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #ececec; }
     </style>
   </head>
   <body>

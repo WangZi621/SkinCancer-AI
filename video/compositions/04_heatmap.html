@@ -1,16 +1,17 @@
 <template>
   <style>
     @font-face {
-      font-family: "Geist";
-      src: url("assets/fonts/geist.woff2") format("woff2");
+      font-family: "Archivo";
+      src: url("assets/fonts/archivo.woff2") format("woff2");
       font-weight: 100 900;
+      font-stretch: 62% 125%;
     }
     #root {
       position: absolute;
       inset: 0;
       overflow: hidden;
-      font-family: "Geist", sans-serif;
-      background: #f5f7f8;
+      font-family: "Archivo", sans-serif;
+      background: #ececec url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='52' viewBox='0 0 30 52'%3E%3Cpath d='M0 0H30M0 26H30M0 52H30M0 0L30 52M30 0L0 52' stroke='rgba(20,33,61,0.05)' stroke-width='1' fill='none'/%3E%3Cg fill='rgba(20,33,61,0.2)'%3E%3Ccircle cx='0' cy='0' r='1.5'/%3E%3Ccircle cx='30' cy='0' r='1.5'/%3E%3Ccircle cx='15' cy='26' r='1.5'/%3E%3Ccircle cx='0' cy='52' r='1.5'/%3E%3Ccircle cx='30' cy='52' r='1.5'/%3E%3C/g%3E%3C/svg%3E") 15px 10px / 30px 52px;
     }
     /* the camera: page coordinates (the 1920 x 1080 viewport of the recording) */
     .cam {
@@ -30,7 +31,7 @@
       border-radius: 22px;
       overflow: hidden;
       background: #ffffff;
-      box-shadow: 0 0 0 1px #e2e7eb, 0 40px 90px -30px rgba(15, 27, 36, 0.35);
+      box-shadow: 0 0 0 2px #0b0e14, 12px 12px 0 2px #0b0e14;
     }
     .win-bar {
       position: absolute;
@@ -38,7 +39,7 @@
       top: 0;
       right: 0;
       height: 46px;
-      border-bottom: 1px solid #e2e7eb;
+      border-bottom: 1px solid #d5d7dc;
     }
     .win-dot {
       position: absolute;
@@ -46,7 +47,7 @@
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background: #cfd7dd;
+      background: #c4c8d0;
     }
     .win-url {
       position: absolute;
@@ -55,8 +56,8 @@
       width: 600px;
       height: 30px;
       border-radius: 9px;
-      background: #f0f3f5;
-      color: #4a5a66;
+      background: #f2f3f5;
+      color: #4c525d;
       font-size: 17px;
       font-weight: 500;
       line-height: 30px;
@@ -73,28 +74,28 @@
        drops frames while the model runs, so this is the one part redrawn on the footage */
     .app-ring {
       position: absolute;
-      left: 457.6px;
-      top: 121.3px;
+      left: 443.1px;
+      top: 91px;
       width: 400px;
       height: 400px;
       opacity: 0;
     }
     .app-ring circle {
       fill: none;
-      stroke: #0e7c7b;
+      stroke: #1b4fd8;
       stroke-width: 4;
       stroke-linecap: round;
     }
     .app-status {
       position: absolute;
-      left: 657.6px;
-      top: 452px;
+      left: 643.1px;
+      top: 422px;
       transform: translateX(-50%);
       padding: 0 14px;
       white-space: nowrap;
       height: 33px;
       border-radius: 999px;
-      background: rgba(15, 27, 36, 0.78);
+      background: rgba(11, 14, 20, 0.82);
       color: #ffffff;
       font-size: 14px;
       font-weight: 500;
@@ -121,12 +122,12 @@
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      background: #0e7c7b;
-      box-shadow: 0 0 0 4px #ffffff, 0 4px 10px rgba(15, 27, 36, 0.3);
+      background: #1b4fd8;
+      box-shadow: 0 0 0 4px #ffffff, 0 0 0 6px #0b0e14;
     }
     .lb-line {
       position: absolute;
-      background: #0e7c7b;
+      background: #1b4fd8;
     }
     .lb-card {
       position: absolute;
@@ -134,11 +135,11 @@
       padding: 14px 26px;
       border-radius: 16px;
       background: #ffffff;
-      color: #0f1b24;
+      color: #0b0e14;
       font-size: 40px;
       font-weight: 600;
       letter-spacing: -0.02em;
-      box-shadow: 0 0 0 1px #e2e7eb, 0 14px 34px -14px rgba(15, 27, 36, 0.4);
+      box-shadow: 0 0 0 2px #0b0e14, 5px 5px 0 2px #0b0e14;
     }
     .lb[data-side="left"] .lb-line {
       right: 0;
@@ -178,7 +179,7 @@
     }
     .lb-red .lb-dot,
     .lb-red .lb-line {
-      background: #d92d20;
+      background: #b42318;
     }
     .still {
       position: absolute;
@@ -188,12 +189,12 @@
       height: 1080px;
     }
     .app-track circle {
-      stroke: #e7ecef;
+      stroke: #e3e5ea;
     }
     #hm-divider {
       position: absolute;
       left: 0;
-      top: 121.3px;
+      top: 91px;
       width: 0;
       height: 400px;
       opacity: 0;
@@ -205,7 +206,7 @@
       width: 4px;
       height: 400px;
       background: #ffffff;
-      box-shadow: 0 0 10px rgba(15, 27, 36, 0.35);
+      box-shadow: none;
     }
     #hm-divider b {
       position: absolute;
@@ -215,7 +216,7 @@
       height: 30px;
       border-radius: 50%;
       background: #ffffff;
-      box-shadow: 0 0 0 3px #0e7c7b, 0 4px 10px rgba(15, 27, 36, 0.35);
+      box-shadow: 0 0 0 3px #1b4fd8, 0 0 0 5px #0b0e14;
     }
     #hm-whip {
       position: absolute;
@@ -232,21 +233,21 @@
           <span class="win-dot" style="left: 62px"></span>
           <span class="win-url" data-layout-ignore>wangzi621.github.io/SkinCancer-AI</span>
         </div>
-        <!-- recording 2, in three speeds: the click, the 16 passes at 6.6x, the map landing -->
-        <video id="hm-va" class="win-video clip" src="assets/capture/rec2_heatmap.mp4" data-start="0" data-duration="2.5" data-media-start="0" data-track-index="1" muted playsinline></video>
-        <video id="hm-vb" class="win-video clip" src="assets/capture/rec2_heatmap.mp4" data-start="2.5" data-duration="2.18" data-media-start="2.5" data-playback-rate="6.6" data-track-index="1" muted playsinline></video>
-        <video id="hm-vc" class="win-video clip" src="assets/capture/rec2_heatmap.mp4" data-start="4.68" data-duration="2.9" data-media-start="16.95" data-track-index="1" muted playsinline></video>
+        <!-- recording 2, in three speeds: the click, the 16 passes at 4.2x, the map landing -->
+        <video id="hm-va" class="win-video clip" src="assets/capture/rec2_heatmap.mp4" data-start="0" data-duration="2.2" data-media-start="0" data-track-index="1" muted playsinline></video>
+        <video id="hm-vb" class="win-video clip" src="assets/capture/rec2_heatmap.mp4" data-start="2.2" data-duration="2.48" data-media-start="2.2" data-playback-rate="4.2" data-track-index="1" muted playsinline></video>
+        <video id="hm-vc" class="win-video clip" src="assets/capture/rec2_heatmap.mp4" data-start="4.68" data-duration="2.9" data-media-start="12.67" data-track-index="1" muted playsinline></video>
         <!-- before and after stills of the same frame, for the wipe (adapted from the registry's before-after-wipe) -->
         <img id="hm-before" class="still clip" src="assets/capture/03_result_card.png" alt="" data-start="4.68" data-duration="3.82" data-track-index="2" />
         <img id="hm-after" class="still clip" src="assets/capture/04_heatmap_on.png" alt="" data-start="4.68" data-duration="3.82" data-track-index="3" />
       </div>
       <!-- the app's mapping state, rebuilt from docs/app.css (the recording drops frames while the 16 passes run) -->
       <svg id="hm-track" class="app-ring app-track" viewBox="0 0 400 400"><circle cx="200" cy="200" r="196" /></svg>
-      <svg id="hm-ring" class="app-ring" viewBox="0 0 400 400"><circle cx="200" cy="200" r="196" pathLength="100" transform="rotate(-90 200 200)" style="stroke: #d92d20" /></svg>
+      <svg id="hm-ring" class="app-ring" viewBox="0 0 400 400"><circle cx="200" cy="200" r="196" pathLength="100" transform="rotate(-90 200 200)" style="stroke: #b42318" /></svg>
       <div id="hm-status" class="app-status">Mapping 1 of 16</div>
       <div id="hm-divider"><i></i><b></b></div>
 
-      <div id="hm-lb" class="lb" data-at="457.6,321.3" data-z="2.2" data-side="left" style="--len: 64px">
+      <div id="hm-lb" class="lb" data-at="443.1,291" data-z="2.2" data-side="left" style="--len: 64px">
         <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Where the model looked</span></div>
       </div>
     </div>
@@ -313,11 +314,11 @@
     }
 
     // Shots. Recording 2 starts on the last frame of recording 1, so this opens on 02's last framing.
-    // Heat map click 2.4 s; the 16 passes run 2.42-4.68 s (6.6x); the map lands at 4.68 s.
+    // Heat map click 2.14 s; the 16 passes run 2.18-4.68 s (4.2x); the map lands at 4.68 s.
     const cam = pageCamera(document.getElementById("hm-cam"), [
-      { t: 0, x: 1233, y: 285, z: 2.15 }, // the verdict, as 02 left it
-      { t: 0.35, x: 720, y: 440, z: 1.75 }, // the scope and "Show where it looked"
-      { t: 2.25, x: 600, y: 321.3, z: 2.2 }, // the scope while it maps
+      { t: 0, x: 1247, y: 245, z: 2.15 }, // the verdict, as 02 left it
+      { t: 0.35, x: 706, y: 414, z: 1.75 }, // the scope and "Show where it looked"
+      { t: 2.05, x: 585.5, y: 291, z: 2.2 }, // the scope while it maps
     ], D);
     pinLabels();
     const clock = { t: 0 };
@@ -327,30 +328,30 @@
     // mapping: the red ring fills pass by pass, with the app's own status text
     const status = document.getElementById("hm-status");
     const prog = { p: 0 };
-    tl.fromTo(["#hm-track", "#hm-ring", "#hm-status"], { opacity: 0 }, { opacity: 1, duration: 0.1 }, 2.42);
+    tl.fromTo(["#hm-track", "#hm-ring", "#hm-status"], { opacity: 0 }, { opacity: 1, duration: 0.1 }, 2.18);
     tl.fromTo(
       prog,
       { p: 0 },
       {
         p: 16,
-        duration: 2.26,
+        duration: 2.5,
         ease: "none",
         onUpdate: () => {
           const n = Math.max(1, Math.min(16, Math.ceil(prog.p)));
           status.textContent = `Mapping ${n} of 16`;
         },
       },
-      2.42,
+      2.18,
     );
-    tl.fromTo("#hm-ring circle", { strokeDasharray: "0 100" }, { strokeDasharray: "100 0", duration: 2.26, ease: "none" }, 2.42);
+    tl.fromTo("#hm-ring circle", { strokeDasharray: "0 100" }, { strokeDasharray: "100 0", duration: 2.5, ease: "none" }, 2.18);
     tl.to(["#hm-track", "#hm-ring", "#hm-status"], { opacity: 0, duration: 0.08 }, 4.68);
 
     // the wipe across the scope: the plain photo gives way to where the model looked
     const W = 1920;
-    tl.fromTo("#hm-after", { clipPath: `inset(0px ${W - 440}px 0px 0px)` }, { clipPath: `inset(0px ${W - 875}px 0px 0px)`, duration: 1.5, ease: "sine.inOut" }, 4.9);
+    tl.fromTo("#hm-after", { clipPath: `inset(0px ${W - 425}px 0px 0px)` }, { clipPath: `inset(0px ${W - 861}px 0px 0px)`, duration: 1.5, ease: "sine.inOut" }, 4.9);
     tl.to("#hm-after", { clipPath: "inset(0px 0px 0px 0px)", duration: 0.25, ease: "power2.in" }, 6.45);
-    tl.fromTo("#hm-divider", { x: 440, opacity: 0 }, { x: 440, opacity: 1, duration: 0.15 }, 4.75);
-    tl.to("#hm-divider", { x: 875, duration: 1.5, ease: "sine.inOut" }, 4.9);
+    tl.fromTo("#hm-divider", { x: 425, opacity: 0 }, { x: 425, opacity: 1, duration: 0.15 }, 4.75);
+    tl.to("#hm-divider", { x: 861, duration: 1.5, ease: "sine.inOut" }, 4.9);
     tl.to("#hm-divider", { opacity: 0, duration: 0.2 }, 6.45);
 
     showLabel("#hm-lb", 5.6, 8.25);

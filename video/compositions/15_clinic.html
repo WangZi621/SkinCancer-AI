@@ -1,16 +1,17 @@
 <template>
   <style>
     @font-face {
-      font-family: "Geist";
-      src: url("assets/fonts/geist.woff2") format("woff2");
+      font-family: "Archivo";
+      src: url("assets/fonts/archivo.woff2") format("woff2");
       font-weight: 100 900;
+      font-stretch: 62% 125%;
     }
     #root {
       position: absolute;
       inset: 0;
       overflow: hidden;
-      font-family: "Geist", sans-serif;
-      background: #f5f7f8;
+      font-family: "Archivo", sans-serif;
+      background: #ececec url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='52' viewBox='0 0 30 52'%3E%3Cpath d='M0 0H30M0 26H30M0 52H30M0 0L30 52M30 0L0 52' stroke='rgba(20,33,61,0.05)' stroke-width='1' fill='none'/%3E%3Cg fill='rgba(20,33,61,0.2)'%3E%3Ccircle cx='0' cy='0' r='1.5'/%3E%3Ccircle cx='30' cy='0' r='1.5'/%3E%3Ccircle cx='15' cy='26' r='1.5'/%3E%3Ccircle cx='0' cy='52' r='1.5'/%3E%3Ccircle cx='30' cy='52' r='1.5'/%3E%3C/g%3E%3C/svg%3E") 15px 10px / 30px 52px;
     }
     /* the camera: page coordinates (the 1920 x 1080 viewport of the recording) */
     .cam {
@@ -30,7 +31,7 @@
       border-radius: 22px;
       overflow: hidden;
       background: #ffffff;
-      box-shadow: 0 0 0 1px #e2e7eb, 0 40px 90px -30px rgba(15, 27, 36, 0.35);
+      box-shadow: 0 0 0 2px #0b0e14, 12px 12px 0 2px #0b0e14;
     }
     .win-bar {
       position: absolute;
@@ -38,7 +39,7 @@
       top: 0;
       right: 0;
       height: 46px;
-      border-bottom: 1px solid #e2e7eb;
+      border-bottom: 1px solid #d5d7dc;
     }
     .win-dot {
       position: absolute;
@@ -46,7 +47,7 @@
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background: #cfd7dd;
+      background: #c4c8d0;
     }
     .win-url {
       position: absolute;
@@ -55,8 +56,8 @@
       width: 600px;
       height: 30px;
       border-radius: 9px;
-      background: #f0f3f5;
-      color: #4a5a66;
+      background: #f2f3f5;
+      color: #4c525d;
       font-size: 17px;
       font-weight: 500;
       line-height: 30px;
@@ -80,7 +81,7 @@
     }
     .app-ring circle {
       fill: none;
-      stroke: #0e7c7b;
+      stroke: #1b4fd8;
       stroke-width: 4;
       stroke-linecap: round;
     }
@@ -93,7 +94,7 @@
       white-space: nowrap;
       height: 33px;
       border-radius: 999px;
-      background: rgba(15, 27, 36, 0.78);
+      background: rgba(11, 14, 20, 0.82);
       color: #ffffff;
       font-size: 14px;
       font-weight: 500;
@@ -120,12 +121,12 @@
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      background: #0e7c7b;
-      box-shadow: 0 0 0 4px #ffffff, 0 4px 10px rgba(15, 27, 36, 0.3);
+      background: #1b4fd8;
+      box-shadow: 0 0 0 4px #ffffff, 0 0 0 6px #0b0e14;
     }
     .lb-line {
       position: absolute;
-      background: #0e7c7b;
+      background: #1b4fd8;
     }
     .lb-card {
       position: absolute;
@@ -133,11 +134,11 @@
       padding: 14px 26px;
       border-radius: 16px;
       background: #ffffff;
-      color: #0f1b24;
+      color: #0b0e14;
       font-size: 40px;
       font-weight: 600;
       letter-spacing: -0.02em;
-      box-shadow: 0 0 0 1px #e2e7eb, 0 14px 34px -14px rgba(15, 27, 36, 0.4);
+      box-shadow: 0 0 0 2px #0b0e14, 5px 5px 0 2px #0b0e14;
     }
     .lb[data-side="left"] .lb-line {
       right: 0;
@@ -177,7 +178,7 @@
     }
     .lb-red .lb-dot,
     .lb-red .lb-line {
-      background: #d92d20;
+      background: #b42318;
     }
     .lb[data-side="right"] .lb-line {
       left: 0;
@@ -195,11 +196,11 @@
       position: absolute;
       inset: 0;
     }
-    /* the match cut from 07: the lens leaves the teal world and lands on Sample 1's row */
+    /* the match cut from 07: the lens leaves the lattice and lands on Sample 1's row */
     #cl-flood {
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse 80% 90% at 35% 45%, #16928e 0%, #0f6f6f 46%, #093f46 100%);
+      background: #ececec url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='52' viewBox='0 0 30 52'%3E%3Cpath d='M0 0H30M0 26H30M0 52H30M0 0L30 52M30 0L0 52' stroke='rgba(20,33,61,0.05)' stroke-width='1' fill='none'/%3E%3Cg fill='rgba(20,33,61,0.2)'%3E%3Ccircle cx='0' cy='0' r='1.5'/%3E%3Ccircle cx='30' cy='0' r='1.5'/%3E%3Ccircle cx='15' cy='26' r='1.5'/%3E%3Ccircle cx='0' cy='52' r='1.5'/%3E%3Ccircle cx='30' cy='52' r='1.5'/%3E%3C/g%3E%3C/svg%3E") 15px 10px / 30px 52px;
     }
     #cl-lens {
       position: absolute;
@@ -209,7 +210,7 @@
       height: 452px;
       border-radius: 50%;
       overflow: hidden;
-      box-shadow: 0 0 0 9px #ffffff, 0 40px 80px -30px rgba(0, 0, 0, 0.55);
+      box-shadow: 0 0 0 9px #ffffff, 0 0 0 11px #0b0e14;
     }
     #cl-lens img {
       width: 100%;
@@ -226,17 +227,17 @@
           <span class="win-dot" style="left: 62px"></span>
           <span class="win-url" data-layout-ignore>wangzi621.github.io/SkinCancer-AI</span>
         </div>
-        <video id="cl-va" class="win-video clip" src="assets/capture/rec8_clinic.mp4" data-start="0" data-duration="2.6" data-media-start="0.6" data-track-index="1" muted playsinline></video>
-        <video id="cl-vb" class="win-video clip" src="assets/capture/rec8_clinic.mp4" data-start="2.6" data-duration="6.8" data-media-start="3.2" data-playback-rate="1.5" data-track-index="1" muted playsinline></video>
-        <video id="cl-vc" class="win-video clip" src="assets/capture/rec8_clinic.mp4" data-start="9.4" data-duration="2.4" data-media-start="13.4" data-track-index="1" muted playsinline></video>
+        <video id="cl-va" class="win-video clip" src="assets/capture/rec8_clinic.mp4" data-start="0" data-duration="2.6" data-media-start="0.4" data-track-index="1" muted playsinline></video>
+        <video id="cl-vb" class="win-video clip" src="assets/capture/rec8_clinic.mp4" data-start="2.6" data-duration="6.8" data-media-start="3.0" data-playback-rate="1.32" data-track-index="1" muted playsinline></video>
+        <video id="cl-vc" class="win-video clip" src="assets/capture/rec8_clinic.mp4" data-start="9.4" data-duration="2.4" data-media-start="11.94" data-track-index="1" muted playsinline></video>
       </div>
-      <div id="cl-lb-first" class="lb lb-red" data-at="1040,485" data-z="1.7" data-side="right" style="--len: 40px">
+      <div id="cl-lb-first" class="lb lb-red" data-at="1046,402.8" data-z="1.7" data-side="right" style="--len: 40px">
         <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Urgent first</span></div>
       </div>
-      <div id="cl-lb-recheck" class="lb" data-at="1090,433" data-z="1.8" data-side="left" style="--len: 64px">
+      <div id="cl-lb-recheck" class="lb" data-at="1097.4,345.2" data-z="1.8" data-side="left" style="--len: 64px">
         <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Overdue rechecks</span></div>
       </div>
-      <div id="cl-lb-map" class="lb" data-at="511,347.7" data-z="2" data-side="right" style="--len: 40px">
+      <div id="cl-lb-map" class="lb" data-at="483.6,390.8" data-z="2" data-side="right" style="--len: 40px">
         <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Every lesion on a body map</span></div>
       </div>
     </div>
@@ -306,27 +307,27 @@
     }
 
     // Shots. Recording 8 (the home screen after the scan was saved): the cursor reads the first row
-    // 2.73 and the overdue recheck 4.52, Patients 6.51, Demo patient A 8.37, the body map 8.46,
-    // marker 1 at 10.42.
+    // 2.63 and the overdue recheck 4.44, Patients 6.48, Demo patient A 8.37, the body map 8.48,
+    // marker 1 at 10.26.
     const cam = pageCamera(document.getElementById("clinic-cam"), [
-      { t: 0, x: 760, y: 560, z: 1.7 }, // the "See first" list: Sample 1 on top
-      { t: 3.4, x: 1300, y: 470, z: 1.8 }, // rechecks
-      { t: 6.1, x: 960, y: 400, z: 1.25 }, // Patients
-      { t: 8.55, x: 564, y: 451, z: 2 }, // Demo patient A's body map
+      { t: 0, x: 732.5, y: 486.5, z: 1.7 }, // the "See first" list: Sample 1 on top
+      { t: 3.35, x: 1320, y: 382, z: 1.8 }, // rechecks
+      { t: 6.05, x: 960, y: 432, z: 1.25 }, // Patients
+      { t: 8.57, x: 552, y: 500, z: 2 }, // Demo patient A's body map
     ], D);
     pinLabels();
     const clock = { t: 0 };
     tl.to(clock, { t: D, duration: D, ease: "none", onUpdate: () => cam.render(clock.t) }, 0);
     cam.render(0);
 
-    // match cut from 07: the lens keeps its place, the teal gives way, and it lands on the first
-    // row's photo (page 435, 476; screen 407.5, 397; d 74.8 at 1.7x)
-    tl.fromTo("#cl-lens", { x: 0, y: 0, scale: 1 }, { x: 407.5 - 510, y: 397 - 510, scale: 74.8 / 452, duration: 0.75, ease: "power4.inOut" }, 0.05);
+    // match cut from 07: the lens keeps its place, the lattice gives way, and it lands on the first
+    // row's photo (page 407.5, 402.5; screen 407.5, 397.2; d 81.6 at 1.7x)
+    tl.fromTo("#cl-lens", { x: 0, y: 0, scale: 1 }, { x: 407.5 - 510, y: 397.2 - 510, scale: 81.6 / 452, duration: 0.75, ease: "power4.inOut" }, 0.05);
     tl.to("#cl-lens", { opacity: 0, duration: 0.15, ease: "power1.in" }, 0.8);
     tl.fromTo("#cl-flood", { opacity: 1 }, { opacity: 0, duration: 0.45, ease: "power2.inOut" }, 0.2);
 
     showLabel("#cl-lb-first", 1.05, 3.25);
-    showLabel("#cl-lb-recheck", 4.6, 6.0);
+    showLabel("#cl-lb-recheck", 4.5, 5.95);
     showLabel("#cl-lb-map", 9.05, 11.5);
     window.__timelines["clinic"] = tl;
   </script>

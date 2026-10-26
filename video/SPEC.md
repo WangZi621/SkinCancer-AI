@@ -11,19 +11,25 @@ TIME: 168.3 s = 5,049 frames, in four acts: one lesion start to finish (01, 02, 
 what the model does (10, 03, 11, 07, 46 s), the rest of the app (15, 16, 05, 09, 39.6 s), small and
 honest (06, 12, 08, 28 s). No music clock; cuts follow the motion.
 
-LOOK
-- Two worlds and nothing else. App world: ground #f5f7f8, white cards, ink #0f1b24, muted
-  #4a5a66, the real app recordings. Model world: radial teal, #16928e at the centre to #093f46
-  at the edge (radial, never linear: H.264 bands linear gradients on dark grounds).
-- Accent: brand teal #0e7c7b. Triage colours appear only where a real result is: urgent
-  #d92d20, review #c4560a, routine #0a8456.
-- Type: Geist only. Display 650, 88-110 px (8-10% of the frame height), tracking -3.5%. Lines
-  44-64 px, 600-650. Labels 34-40 px, 500-600. Nothing read under 30 px.
-- The one object: the lens. A photo in a circle, white rim 9-10 px, a 5-6 px ring outside it
-  with a gap of 6-8% of the diameter. It sweeps (22 % arc) while something is computed and closes
-  in the triage colour when a result exists. Every scene contains it.
-- Depth: one soft shadow, 0 40 90 -30 rgba(15,27,36,.35) on windows and devices. No glow, no
-  grain, no glass.
+LOOK (the app's own system, which follows the Stryde design system; see docs/DESIGN.md)
+- One world, the app's. Ground: off-white #ececec under the fixed lattice (a triangular grid of
+  rgba(20,33,61,.2) dots and 5% struts, 30 x 52 px tile, the app's own page ground at the same
+  scale, so a full-frame recording and the scenes around it share it). It never moves with the
+  camera. White sheets carry content. No teal world, no radial or linear gradients.
+- Brand cobalt #1b4fd8: the lens arc while something is computed, label leaders and dots, links.
+  Dress blue #14213d: display type and the app's deep panels. Ink #0b0e14: text and outlines.
+  Muted ink #4c525d. Triage colours appear only where a real result is: urgent #b42318, review
+  #9a4a06, routine #1a7247.
+- Type: Archivo only. Display 850 at width 112-115 (font-stretch), 96-230 px, dress blue,
+  tracking -2 to -3%. Lines 56-64 px, 750 at width 108. Labels 34-40 px, 600. Nothing read under
+  30 px.
+- The one object: the lens. A photo in a circle, white rim 7-10 px with a 2 px ink line outside it,
+  a 5-6 px ring outside that with a gap of 6-8% of the diameter. It sweeps (22 % arc, cobalt)
+  while something is computed and closes in the triage colour when a result exists.
+- Depth: no soft shadows. Windows, devices and label cards carry the app's button line: a 2 px
+  ink outline and a hard ink offset (12 px on windows, 5 px on labels). No glow, no glass.
+- The logo is Contours (brand/logo): the outline of one spot at three visits. The outro builds it
+  out of the lens.
 
 OBJECTS
 - The real app: Playwright recordings at 3840 x 2160 (desktop) and 1290 x 2796 (phone). Never
@@ -46,7 +52,7 @@ MOTION
 - Titles: per word, blur 6 px to 0 and grey #8fa3ad to ink, 0.08 s apart; per letter for the
   name, 0.075 s apart. A landed title is still.
 - Ring sweep: 22 % arc, 1.1 s per turn, power1.inOut; close: 0.6 s power2.inOut.
-- Labels: attach to the part they name with a 2 px teal leader; leader draws (0.3 s), then the
+- Labels: attach to the part they name with a 2 px cobalt leader; leader draws (0.3 s), then the
   label blurs in (0.25 s). Labels never slide up.
 
 TRANSITIONS (5 kinds, each caused on screen)
@@ -65,7 +71,7 @@ SHOTS
 01 open      0-8 s     8 lesions already on screen; the question types per word; the lens ring
                        visits three spots and locks on Sample 1; the rest fall away; it grows to
                        the centre; the ring closes; "SkinScan AI" lands per letter.
-02 scan      0-15.6 s  teal floods to the app as the lens lands on thumbnail 1 (Demo patient A's
+02 scan      0-15.6 s  the lattice gives way to the app as the lens lands on thumbnail 1 (Demo patient A's
                        left cheek, details filled in from her record); camera follows: samples ->
                        scope (photo lands, "Add a photo") -> the check under it ("Photo check") ->
                        form ("Patient details") -> Analyze -> scope while the ring sweeps -> pull
@@ -82,7 +88,7 @@ SHOTS
                        whip out.
 10 form      0-14 s    whip in; Sample 2 typed by hand: age, sex, body map (punch-in 2.3x),
                        skin type, diameter; Analyze; routine result.
-03 branches  0-12 s    the green-ringed spot floods to teal; the typed values become chips that
+03 branches  0-12 s    the green-ringed spot leaves the app for the lattice; the typed values become chips that
                        compress into 17 dots; the photo steps down into EfficientNet-B4; both
                        merge into three bars; "It reads the photo and the patient together."
 11 training  0-10 s    45,400 cells draw in; 9,080 of them split off for validation; 218 ticks
@@ -122,7 +128,8 @@ passcode opens it.
 BANNED: everything fading and sliding up; bottom pill captions on every shot; a small browser
 window in the middle of an empty canvas; three cards in a row; the same entrance in every scene;
 hard cuts between every scene; titles that drift after landing; a dark void with things floating;
-glow, particles, glass; numbers that count through values; "$300".
+glow, particles, glass; numbers that count through values; "$300"; gradients of any kind;
+violet or teal; soft drop shadows; a colour accent on one word of a headline.
 
 QA: 01 at 0.0 (not empty), 3.0 (lock), 7.5 (name); every seam at -0.2/+0.2 s; 02 at each label;
 04 mid-wipe; 13 at the dialog and the chart; 14 on the report; 15 when the lens lands and on the

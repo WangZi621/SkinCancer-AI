@@ -908,7 +908,7 @@ export function report(el, r) {
         </header>
         <section class="rd-grid">
           <div class="rd-photo"><div class="rd-scope" data-level="${s.level}"><img src="${s.image || s.thumb}" alt="Lesion photo">${s.heat ? html`<img class="rd-heat" src="${s.heat}" alt="">` : ''}</div>
-            ${s.heat ? html`<p class="rd-cap">Highlighted: the parts of the photo that, when covered, lowered the top score the most.</p>` : ''}</div>
+            ${s.heat ? html`<p class="rd-cap">Left clear: the parts of the photo that, when covered, lowered the top score the most. Darkened: the parts that mattered least.</p>` : ''}</div>
           <div class="rd-main">
             <dl class="rd-facts">
               <div><dt>Patient</dt><dd>${p ? `${p.name}${p.ref ? ` (${p.ref})` : ''}` : 'No patient'}</dd></div>

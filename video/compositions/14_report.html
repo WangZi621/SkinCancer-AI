@@ -1,16 +1,17 @@
 <template>
   <style>
     @font-face {
-      font-family: "Geist";
-      src: url("assets/fonts/geist.woff2") format("woff2");
+      font-family: "Archivo";
+      src: url("assets/fonts/archivo.woff2") format("woff2");
       font-weight: 100 900;
+      font-stretch: 62% 125%;
     }
     #root {
       position: absolute;
       inset: 0;
       overflow: hidden;
-      font-family: "Geist", sans-serif;
-      background: #f5f7f8;
+      font-family: "Archivo", sans-serif;
+      background: #ececec url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='52' viewBox='0 0 30 52'%3E%3Cpath d='M0 0H30M0 26H30M0 52H30M0 0L30 52M30 0L0 52' stroke='rgba(20,33,61,0.05)' stroke-width='1' fill='none'/%3E%3Cg fill='rgba(20,33,61,0.2)'%3E%3Ccircle cx='0' cy='0' r='1.5'/%3E%3Ccircle cx='30' cy='0' r='1.5'/%3E%3Ccircle cx='15' cy='26' r='1.5'/%3E%3Ccircle cx='0' cy='52' r='1.5'/%3E%3Ccircle cx='30' cy='52' r='1.5'/%3E%3C/g%3E%3C/svg%3E") 15px 10px / 30px 52px;
     }
     /* the camera: page coordinates (the 1920 x 1080 viewport of the recording) */
     .cam {
@@ -30,7 +31,7 @@
       border-radius: 22px;
       overflow: hidden;
       background: #ffffff;
-      box-shadow: 0 0 0 1px #e2e7eb, 0 40px 90px -30px rgba(15, 27, 36, 0.35);
+      box-shadow: 0 0 0 2px #0b0e14, 12px 12px 0 2px #0b0e14;
     }
     .win-bar {
       position: absolute;
@@ -38,7 +39,7 @@
       top: 0;
       right: 0;
       height: 46px;
-      border-bottom: 1px solid #e2e7eb;
+      border-bottom: 1px solid #d5d7dc;
     }
     .win-dot {
       position: absolute;
@@ -46,7 +47,7 @@
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background: #cfd7dd;
+      background: #c4c8d0;
     }
     .win-url {
       position: absolute;
@@ -55,8 +56,8 @@
       width: 600px;
       height: 30px;
       border-radius: 9px;
-      background: #f0f3f5;
-      color: #4a5a66;
+      background: #f2f3f5;
+      color: #4c525d;
       font-size: 17px;
       font-weight: 500;
       line-height: 30px;
@@ -80,7 +81,7 @@
     }
     .app-ring circle {
       fill: none;
-      stroke: #0e7c7b;
+      stroke: #1b4fd8;
       stroke-width: 4;
       stroke-linecap: round;
     }
@@ -93,7 +94,7 @@
       white-space: nowrap;
       height: 33px;
       border-radius: 999px;
-      background: rgba(15, 27, 36, 0.78);
+      background: rgba(11, 14, 20, 0.82);
       color: #ffffff;
       font-size: 14px;
       font-weight: 500;
@@ -120,12 +121,12 @@
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      background: #0e7c7b;
-      box-shadow: 0 0 0 4px #ffffff, 0 4px 10px rgba(15, 27, 36, 0.3);
+      background: #1b4fd8;
+      box-shadow: 0 0 0 4px #ffffff, 0 0 0 6px #0b0e14;
     }
     .lb-line {
       position: absolute;
-      background: #0e7c7b;
+      background: #1b4fd8;
     }
     .lb-card {
       position: absolute;
@@ -133,11 +134,11 @@
       padding: 14px 26px;
       border-radius: 16px;
       background: #ffffff;
-      color: #0f1b24;
+      color: #0b0e14;
       font-size: 40px;
       font-weight: 600;
       letter-spacing: -0.02em;
-      box-shadow: 0 0 0 1px #e2e7eb, 0 14px 34px -14px rgba(15, 27, 36, 0.4);
+      box-shadow: 0 0 0 2px #0b0e14, 5px 5px 0 2px #0b0e14;
     }
     .lb[data-side="left"] .lb-line {
       right: 0;
@@ -177,7 +178,7 @@
     }
     .lb-red .lb-dot,
     .lb-red .lb-line {
-      background: #d92d20;
+      background: #b42318;
     }
     .lb[data-side="right"] .lb-line {
       left: 0;
@@ -196,7 +197,7 @@
       inset: 0;
     }
   </style>
-  <div id="root" data-composition-id="report" data-width="1920" data-height="1080" data-start="0" data-duration="8.6" data-motion-blur="on">
+  <div id="root" data-composition-id="report" data-width="1920" data-height="1080" data-start="0" data-duration="13.4" data-motion-blur="on">
     <div id="report-whip" class="whip">
     <div id="report-cam" class="cam" data-layout-allow-overflow>
       <div class="win">
@@ -206,20 +207,25 @@
           <span class="win-dot" style="left: 62px"></span>
           <span class="win-url" data-layout-ignore>wangzi621.github.io/SkinCancer-AI</span>
         </div>
-        <video id="rp-video" class="win-video clip" src="assets/capture/rec9_report.mp4" data-start="0" data-duration="8.6" data-media-start="0.6" data-track-index="1" muted playsinline></video>
+        <video id="rp-video" class="win-video clip" src="assets/capture/rec9_report.mp4" data-start="0" data-duration="7.6" data-media-start="0.45" data-track-index="1" muted playsinline></video>
+        <!-- the referral letter: two answers, and the letter in the report rewrites itself (1.6x) -->
+        <video id="rp-video-b" class="win-video clip" src="assets/capture/rec9_report.mp4" data-start="7.6" data-duration="5.8" data-media-start="8.05" data-playback-rate="1.6" data-track-index="1" muted playsinline></video>
       </div>
-      <div id="rp-lb-doc" class="lb" data-at="1400,480" data-z="0.95" data-side="right" style="--len: 40px">
+      <div id="rp-lb-doc" class="lb" data-at="1410,480" data-z="0.95" data-side="right" style="--len: 40px">
         <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Referral report</span></div>
       </div>
-      <div id="rp-lb-hist" class="lb" data-at="1359,600" data-z="1.1" data-side="right" style="--len: 40px">
+      <div id="rp-lb-hist" class="lb" data-at="1362,489" data-z="1.1" data-side="right" style="--len: 40px">
         <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">The lesion&#8217;s history</span></div>
+      </div>
+      <div id="rp-lb-letter" class="lb" data-at="1362,250" data-z="1.3" data-side="right" style="--len: 40px">
+        <div class="lb-w"><i class="lb-dot"></i><i class="lb-line"></i><span class="lb-card">Referral letter</span></div>
       </div>
     </div>
     </div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    const D = 8.6;
+    const D = 13.4;
 
     // Camera on the real page, adapted from the registry's cursor-zoom-follow: the aim steps
     // between shots and a critically damped spring (in log zoom) turns each step into a move
@@ -277,25 +283,30 @@
       if (tout != null) tl.to([sel + " .lb-dot", sel + " .lb-line", sel + " .lb-card"], { opacity: 0, duration: 0.2, ease: "power2.in" }, tout);
     }
 
-    // Shots. Recording 9 from 0.6 s, continuing 13's lesion page: Report click 1.51, the report
-    // 1.66, Print hover 4.28, the page scrolls to the lesion's history 5.29-6.79.
+    // Shots. Recording 9 starts on the last frame of recording 7 (13's last framing). Report click
+    // 1.4, the report 1.53, Print hovered 4.07, the scroll to the history 5.07-6.59. From 7.6 the
+    // recording plays at 1.6x: the scroll to the letter 7.84-8.66, the onset chosen 9.63, "It has
+    // grown" ticked 10.84 and "It has changed color" 11.94; the letter rewrites itself each time.
     const cam = pageCamera(document.getElementById("report-cam"), [
-      { t: 0, x: 1000, y: 680, z: 1.45 }, // 13's last framing: the chart
-      { t: 0.15, x: 1250, y: 300, z: 1.8 }, // the Report button
-      { t: 1.75, x: 1000, y: 560, z: 0.95 }, // the whole report
-      { t: 4.0, x: 1250, y: 300, z: 1.8 }, // Print or save as PDF
-      { t: 5.35, x: 1060, y: 640, z: 1.1 }, // the lesion history, after the scroll
+      { t: 0, x: 1000, y: 729, z: 1.45 }, // 13's last framing: the chart
+      { t: 0.15, x: 1267, y: 328, z: 1.8 }, // the Report button
+      { t: 1.65, x: 990, y: 560, z: 0.95 }, // the whole report
+      { t: 3.85, x: 1257, y: 300, z: 1.8 }, // Print or save as PDF
+      { t: 5.2, x: 1060, y: 530, z: 1.1 }, // the lesion history, after the scroll
+      { t: 7.7, x: 960, y: 560, z: 1.3 }, // the letter and the two questions under it
+      { t: 12.1, x: 960, y: 330, z: 1.75 }, // into the letter as it reads now
     ], D);
     pinLabels();
     const clock = { t: 0 };
     tl.to(clock, { t: D, duration: D, ease: "none", onUpdate: () => cam.render(clock.t) }, 0);
     cam.render(0);
 
-    showLabel("#rp-lb-doc", 2.15, 3.95);
-    showLabel("#rp-lb-hist", 6.35);
+    showLabel("#rp-lb-doc", 2.1, 3.8);
+    showLabel("#rp-lb-hist", 6.1, 7.55);
+    showLabel("#rp-lb-letter", 8.95, 11.95);
 
     // whip out to the next sample (10 lands the other half of the whip)
-    tl.to("#report-whip", { x: -1100, duration: 0.28, ease: "power3.in" }, 8.32);
+    tl.to("#report-whip", { x: -1100, duration: 0.28, ease: "power3.in" }, 13.12);
     window.__timelines["report"] = tl;
   </script>
 </template>

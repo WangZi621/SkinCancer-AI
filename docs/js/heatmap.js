@@ -54,27 +54,27 @@ export async function occlusionMap(model, tensor, size, meta, target, baseProb, 
   return { heat: sum, size, max };
 }
 
-/** Paint the strongest areas only: transparent below the median, then orange to yellow. */
+/**
+ * A dark veil over the parts of the photo that mattered least; the parts whose removal lowered the
+ * score most stay clear. A veil reads on every skin tone, where a warm overlay blends into the skin.
+ */
 export function heatToCanvas({ heat, size, max }) {
   const c = document.createElement('canvas');
   c.width = size;
   c.height = size;
   const ctx = c.getContext('2d');
+  if (max <= 0.005) return c;
+  let min = Infinity;
+  for (let i = 0; i < heat.length; i++) if (heat[i] < min) min = heat[i];
+  const span = max - min || 1;
   const img = ctx.createImageData(size, size);
-  const sorted = Float32Array.from(heat).sort();
-  const lo = Math.max(0, sorted[Math.floor(sorted.length * 0.5)]);
-  const span = max - lo;
-  if (max <= 0.005 || span <= 0) return c;
-  const a = [255, 122, 69];
-  const b = [255, 232, 102];
   for (let i = 0; i < heat.length; i++) {
-    const v = Math.max(0, Math.min(1, (heat[i] - lo) / span));
-    if (v < 0.25) continue;
-    const t = (v - 0.25) / 0.75;
-    img.data[i * 4] = a[0] + (b[0] - a[0]) * t;
-    img.data[i * 4 + 1] = a[1] + (b[1] - a[1]) * t;
-    img.data[i * 4 + 2] = a[2] + (b[2] - a[2]) * t;
-    img.data[i * 4 + 3] = 70 + 150 * t;
+    const v = Math.max(0, Math.min(1, (heat[i] - min) / span));
+    img.data[i * 4] = 20; // dress blue
+    img.data[i * 4 + 1] = 33;
+    img.data[i * 4 + 2] = 61;
+    const lit = Math.max(0, Math.min(1, (v - 0.3) / 0.45));
+    img.data[i * 4 + 3] = Math.round(230 * (1 - lit * lit * (3 - 2 * lit))); // smoothstep: clear above 0.75
   }
   ctx.putImageData(img, 0, 0);
   return c;

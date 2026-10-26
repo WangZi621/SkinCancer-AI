@@ -1,23 +1,24 @@
 <template>
   <style>
     @font-face {
-      font-family: "Geist";
-      src: url("assets/fonts/geist.woff2") format("woff2");
+      font-family: "Archivo";
+      src: url("assets/fonts/archivo.woff2") format("woff2");
       font-weight: 100 900;
+      font-stretch: 62% 125%;
     }
     #root {
       position: absolute;
       inset: 0;
       overflow: hidden;
-      font-family: "Geist", sans-serif;
-      background: radial-gradient(ellipse 80% 90% at 50% 42%, #16928e 0%, #0f6f6f 50%, #093f46 100%);
+      font-family: "Archivo", sans-serif;
+      background: #ececec url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='52' viewBox='0 0 30 52'%3E%3Cpath d='M0 0H30M0 26H30M0 52H30M0 0L30 52M30 0L0 52' stroke='rgba(20,33,61,0.05)' stroke-width='1' fill='none'/%3E%3Cg fill='rgba(20,33,61,0.2)'%3E%3Ccircle cx='0' cy='0' r='1.5'/%3E%3Ccircle cx='30' cy='0' r='1.5'/%3E%3Ccircle cx='15' cy='26' r='1.5'/%3E%3Ccircle cx='0' cy='52' r='1.5'/%3E%3Ccircle cx='30' cy='52' r='1.5'/%3E%3C/g%3E%3C/svg%3E") 15px 10px / 30px 52px;
     }
     /* each lesion is a lens: photo in a circle with a white rim */
     .op-lens {
       position: absolute;
       border-radius: 50%;
       overflow: hidden;
-      box-shadow: 0 0 0 7px #ffffff, 0 30px 60px -26px rgba(0, 0, 0, 0.55);
+      box-shadow: 0 0 0 7px #ffffff, 0 0 0 9px #0b0e14;
     }
     .op-lens img {
       width: 100%;
@@ -36,7 +37,7 @@
       stroke-width: 5;
     }
     #op-ring-arc {
-      stroke: #ffffff;
+      stroke: #1b4fd8;
       stroke-linecap: round;
     }
     #op-q {
@@ -45,10 +46,11 @@
       right: 0;
       top: 862px;
       text-align: center;
-      color: #ffffff;
+      color: #14213d;
       font-size: 60px;
-      font-weight: 650;
-      letter-spacing: -0.03em;
+      font-weight: 750;
+      font-stretch: 108%;
+      letter-spacing: -0.015em;
     }
     #op-q span,
     #op-name span {
@@ -61,10 +63,11 @@
       right: 0;
       top: 828px;
       text-align: center;
-      color: #ffffff;
+      color: #14213d;
       font-size: 110px;
-      font-weight: 650;
-      letter-spacing: -0.04em;
+      font-weight: 850;
+      font-stretch: 115%;
+      letter-spacing: -0.02em;
       line-height: 1;
     }
   </style>
@@ -106,8 +109,8 @@
     // frame 0 is already the contact sheet; the lenses settle a few px as the film starts
     tl.fromTo("#root .op-lens", { scale: 1.035 }, { scale: 1, duration: 1.2, ease: "expo.out", stagger: 0.03 }, 0);
 
-    // the question, per word, grey to white with a short blur
-    tl.fromTo("#op-q span", { opacity: 0, color: "#8fc7c3", filter: "blur(6px)" }, { opacity: 1, color: "#ffffff", filter: "blur(0px)", duration: 0.16, ease: "power2.out", stagger: 0.085 }, 0.25);
+    // the question, per word, grey to dress blue with a short blur
+    tl.fromTo("#op-q span", { opacity: 0, color: "#a3a9b4", filter: "blur(6px)" }, { opacity: 1, color: "#14213d", filter: "blur(0px)", duration: 0.16, ease: "power2.out", stagger: 0.085 }, 0.25);
 
     // the lens ring looks: visits three spots, then locks on Sample 1
     tl.set("#op-ring-arc", ringAt("op-l2"), 0);

@@ -1,24 +1,25 @@
 <template>
   <style>
     @font-face {
-      font-family: "Geist";
-      src: url("assets/fonts/geist.woff2") format("woff2");
+      font-family: "Archivo";
+      src: url("assets/fonts/archivo.woff2") format("woff2");
       font-weight: 100 900;
+      font-stretch: 62% 125%;
     }
     #root {
       position: absolute;
       inset: 0;
       overflow: hidden;
-      font-family: "Geist", sans-serif;
-      color: #ffffff;
-      background: radial-gradient(ellipse 85% 95% at 45% 45%, #16928e 0%, #0f6f6f 52%, #093f46 100%);
+      font-family: "Archivo", sans-serif;
+      color: #0b0e14;
+      background: #ececec url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='52' viewBox='0 0 30 52'%3E%3Cpath d='M0 0H30M0 26H30M0 52H30M0 0L30 52M30 0L0 52' stroke='rgba(20,33,61,0.05)' stroke-width='1' fill='none'/%3E%3Cg fill='rgba(20,33,61,0.2)'%3E%3Ccircle cx='0' cy='0' r='1.5'/%3E%3Ccircle cx='30' cy='0' r='1.5'/%3E%3Ccircle cx='15' cy='26' r='1.5'/%3E%3Ccircle cx='0' cy='52' r='1.5'/%3E%3Ccircle cx='30' cy='52' r='1.5'/%3E%3C/g%3E%3C/svg%3E") 15px 10px / 30px 52px;
     }
     /* 10's last frame (the app at 2.6x on the scope), so the cut lands on the same picture */
     #br-flood {
       position: absolute;
       inset: 0;
       overflow: hidden;
-      background: #f0f3f5;
+      background: #f2f3f5;
     }
     #br-flood img {
       position: absolute;
@@ -27,7 +28,7 @@
       width: 1920px;
       height: 1080px;
       transform-origin: 0 0;
-      transform: translate(-749.76px, -295.38px) scale(2.6);
+      transform: translate(-712.06px, -258.2px) scale(2.6);
     }
     /* the lens, sized like the app's scope: ring box 301, face 280, rim 4.5 */
     #br-lens {
@@ -42,7 +43,7 @@
       inset: 10.5px;
       border-radius: 50%;
       overflow: hidden;
-      box-shadow: 0 0 0 4.5px #ffffff, 0 24px 50px -20px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 0 4.5px #ffffff, 0 0 0 6.5px #0b0e14;
     }
     #br-face img {
       width: 100%;
@@ -60,24 +61,25 @@
       stroke-width: 4;
     }
     #br-track {
-      stroke: rgba(255, 255, 255, 0.2);
+      stroke: #d5d7dc;
     }
     #br-arc {
-      stroke: #0a8456;
+      stroke: #1a7247;
       stroke-linecap: round;
     }
     .br-muted {
       position: absolute;
-      color: rgba(255, 255, 255, 0.72);
+      color: #4c525d;
       font-size: 30px;
       font-weight: 500;
     }
     .br-big {
       position: absolute;
-      color: #ffffff;
+      color: #14213d;
       font-size: 46px;
-      font-weight: 650;
-      letter-spacing: -0.03em;
+      font-weight: 800;
+      font-stretch: 115%;
+      letter-spacing: -0.01em;
     }
     /* what was typed into the form in 10, verbatim */
     .br-chip {
@@ -87,7 +89,8 @@
       padding: 0 22px;
       border-radius: 12px;
       background: #ffffff;
-      color: #0f1b24;
+      color: #0b0e14;
+      box-shadow: 0 0 0 2px #0b0e14;
       font-size: 32px;
       font-weight: 600;
       line-height: 58px;
@@ -98,7 +101,7 @@
       position: absolute;
       border-radius: 10px;
       overflow: hidden;
-      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9), 0 18px 36px -18px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 0 0 3px #ffffff, 0 0 0 5px #0b0e14;
     }
     .br-layer img {
       width: 100%;
@@ -108,7 +111,7 @@
     .br-layer i {
       position: absolute;
       inset: 0;
-      background-image: linear-gradient(rgba(9, 63, 70, 0.55) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(9, 63, 70, 0.55) 1.5px, transparent 1.5px);
+      background-image: linear-gradient(rgba(11, 14, 20, 0.45) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(11, 14, 20, 0.45) 1.5px, transparent 1.5px);
     }
     .br-dot {
       position: absolute;
@@ -116,10 +119,10 @@
       height: 16px;
       margin: -8px 0 0 -8px;
       border-radius: 50%;
-      background: #ffffff;
+      background: #1b4fd8;
     }
     .br-dot.off {
-      background: rgba(255, 255, 255, 0.28);
+      background: rgba(20, 33, 61, 0.18);
     }
     #br-wires {
       position: absolute;
@@ -130,7 +133,7 @@
     }
     #br-wires path {
       fill: none;
-      stroke: rgba(255, 255, 255, 0.85);
+      stroke: #0b0e14;
       stroke-width: 3;
       stroke-linecap: round;
     }
@@ -143,13 +146,15 @@
       padding: 34px 38px;
       border-radius: 24px;
       background: #ffffff;
-      color: #0f1b24;
-      box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.55);
+      color: #0b0e14;
+      box-shadow: 0 0 0 2px #0b0e14, 10px 10px 0 2px #0b0e14;
     }
     #br-card h3 {
+      color: #14213d;
       font-size: 34px;
-      font-weight: 650;
-      letter-spacing: -0.02em;
+      font-weight: 800;
+      font-stretch: 115%;
+      letter-spacing: -0.01em;
     }
     .br-row {
       margin-top: 26px;
@@ -162,7 +167,7 @@
       margin-top: 12px;
       height: 14px;
       border-radius: 7px;
-      background: #e7ecef;
+      background: #e3e5ea;
       overflow: hidden;
     }
     .br-fill {
@@ -177,8 +182,9 @@
       top: 930px;
       text-align: center;
       font-size: 60px;
-      font-weight: 650;
-      letter-spacing: -0.03em;
+      font-weight: 750;
+      font-stretch: 108%;
+      letter-spacing: -0.015em;
     }
     #br-line span {
       display: inline-block;
@@ -219,15 +225,15 @@
         <h3>Three scores</h3>
         <div class="br-row">
           <p class="br-name">Melanoma</p>
-          <div class="br-bar"><div class="br-fill" style="width: 3%; background: #d92d20"></div></div>
+          <div class="br-bar"><div class="br-fill" style="width: 3%; background: #b42318"></div></div>
         </div>
         <div class="br-row">
           <p class="br-name">Benign</p>
-          <div class="br-bar"><div class="br-fill" style="width: 89%; background: #0a8456"></div></div>
+          <div class="br-bar"><div class="br-fill" style="width: 89%; background: #1a7247"></div></div>
         </div>
         <div class="br-row">
           <p class="br-name">Other skin cancer</p>
-          <div class="br-bar"><div class="br-fill" style="width: 8%; background: #c4560a"></div></div>
+          <div class="br-bar"><div class="br-fill" style="width: 8%; background: #9a4a06"></div></div>
         </div>
       </div>
 
@@ -239,7 +245,7 @@
         </svg>
       </div>
 
-      <p id="br-line" data-hold><span>It </span><span>reads </span><span>the </span><span>photo </span><span data-c="#f7cbb3">and </span><span>the </span><span>patient </span><span>together.</span></p>
+      <p id="br-line" data-hold><span>It </span><span>reads </span><span>the </span><span>photo </span><span>and </span><span>the </span><span>patient </span><span>together.</span></p>
     </div>
   </div>
   <script>
@@ -265,7 +271,7 @@
     tl.fromTo("#br-lens", { x: 660, y: 220, scale: 967 / 280 }, { x: 0, y: 0, scale: 1, duration: 1.0, ease: "power4.out" }, 0);
     // colour flood: the app falls away and the model's world comes up around the lens
     tl.fromTo("#br-flood", { opacity: 1 }, { opacity: 0, duration: 0.42, ease: "power2.inOut" }, 0.12);
-    tl.fromTo("#br-arc", { strokeDasharray: "100 0", stroke: "#0a8456" }, { strokeDasharray: "0 100", duration: 0.5, ease: "power2.in" }, 0.6);
+    tl.fromTo("#br-arc", { strokeDasharray: "100 0", stroke: "#1a7247" }, { strokeDasharray: "0 100", duration: 0.5, ease: "power2.in" }, 0.6);
 
     // what was typed in
     tl.fromTo("#br-typed", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.85);
@@ -286,17 +292,17 @@
     tl.fromTo(["#br-pt-tag", "#br-pt-name"], { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "power2.out", stagger: 0.1 }, 3.6);
 
     // the model runs: the lens ring sweeps while the branches join
-    tl.set("#br-arc", { stroke: "#ffffff", strokeDashoffset: 0 }, 1.2);
+    tl.set("#br-arc", { stroke: "#1b4fd8", strokeDashoffset: 0 }, 1.2);
     tl.to("#br-arc", { strokeDasharray: "22 78", duration: 0.3, ease: "power2.out" }, 4.0);
     tl.to("#br-arc", { strokeDashoffset: -180, duration: 2.0, ease: "power1.inOut" }, 4.0);
     tl.fromTo(["#br-w1", "#br-w2"], { strokeDasharray: "0 100" }, { strokeDasharray: "100 0", duration: 0.6, ease: "power2.inOut", stagger: 0.08 }, 4.15);
     tl.fromTo("#br-card", { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1, duration: 0.6, ease: "expo.out" }, 4.65);
     tl.fromTo(".br-fill", { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: "power3.out", stagger: 0.15 }, 5.05);
     // one strong moment: the ring closes in the result's colour (routine follow-up)
-    tl.to("#br-arc", { strokeDasharray: "100 0", stroke: "#0a8456", duration: 0.6, ease: "power2.inOut" }, 6.0);
+    tl.to("#br-arc", { strokeDasharray: "100 0", stroke: "#1a7247", duration: 0.6, ease: "power2.inOut" }, 6.0);
 
-    // the line, per word, grey to white
-    tl.fromTo("#br-line span", { opacity: 0, color: "#8fc7c3", filter: "blur(6px)" }, { opacity: 1, color: (i, el) => el.dataset.c || "#ffffff", filter: "blur(0px)", duration: 0.16, ease: "power2.out", stagger: 0.085 }, 7.2);
+    // the line, per word, grey to dress blue
+    tl.fromTo("#br-line span", { opacity: 0, color: "#a3a9b4", filter: "blur(6px)" }, { opacity: 1, color: "#14213d", filter: "blur(0px)", duration: 0.16, ease: "power2.out", stagger: 0.085 }, 7.2);
     window.__timelines["branches"] = tl;
   </script>
 </template>

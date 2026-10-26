@@ -808,7 +808,7 @@ el.heatBtn.addEventListener('click', async () => {
     el.scope.dataset.heat = 'on';
     el.heatLabel.textContent = 'Hide heat map';
     el.runInfo.textContent = map.max > 0.005
-      ? `Heat map: the bright areas are the parts of the image that, when covered up, lowered the ${CLASSES[target].short.toLowerCase()} score the most.`
+      ? `Heat map: the clear areas are the parts of the image that, when covered up, lowered the ${CLASSES[target].short.toLowerCase()} score the most. The darkened areas mattered least.`
       : 'Covering any one part of the image barely changed the score, so no single area stands out.';
     if (state.savedId) {
       const s = store.get(state.savedId);
