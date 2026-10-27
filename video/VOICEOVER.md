@@ -1,44 +1,62 @@
 # Voiceover script
 
-Read over `out/stryde_demo.mp4` (2:58). The first 11 seconds are your own footage with its own
-sound (the kiosk, "Am I gonna die?", you sitting down, "my mom doesn't actually have cancer"), so
-the voiceover starts at **0:11**, when the Stryde title comes up.
+Start talking at **0:11**, when the Stryde title comes up. Before that, your own clip plays with its sound.
+The times are rough cues so you know where you are. You don't need to hit them exactly. Talk like you're explaining it to a friend.
 
-Times are where each line starts in the film. Each line fits its scene at a calm pace (about 2.5
-words a second). If you finish a line early, pause; the edit lines it up.
+---
 
-## Over the film
+**0:11 (title)**
+So I built Stryde. It's an app that helps clinics figure out which patients need to see a dermatologist first.
 
-| Time | On screen | Say |
-| --- | --- | --- |
-| 0:00 | Your footage (kiosk, hello, mom) | Nothing. Its own sound plays. |
-| 0:11 | Eight skin spots, then the Stryde title | Clinics have to decide which skin spots see a dermatologist first. I built Stryde to help them. |
-| 0:18 | The real app: pick a photo, Analyze | This is the real app. I pick a photo, and it checks that it's sharp and well lit. The patient's details fill in from their record. I hit Analyze, and in about a second it says: refer urgently. |
-| 0:33 | Heat map | I can see where the model looked. The clear areas mattered most to its answer, and the darkened ones mattered least. |
-| 0:41 | Save, the lesion's chart | I save the scan to this patient's lesion, add a note, and set a recheck for one month. Every scan of this lesion lands on one chart, so it can be followed over time. |
-| 0:55 | Referral report and letter | One click makes a referral report with the photo, the scores, my notes and the lesion's history. It also drafts the referral letter from a few answers, like how the spot has changed. |
-| 1:08 | Second spot, typed by hand | A second spot, typed in by hand: age, sex, body site, skin type and size. The model uses all of it, because doctors don't judge a spot from the picture alone. |
-| 1:22 | Inside the model | Inside, an EfficientNet-B4 network reads the photo, a second branch reads 17 patient features, and they combine into three scores: melanoma, another skin cancer, or benign. |
-| 1:34 | Training data | I trained it in TensorFlow on 45,400 images from the ISIC archive, and held back 9,080 it never trained on. |
-| 1:42 | Results | On those held-back images it scored 93.2 percent AUC, and at a cutoff of 0.278 it catches 90 percent of melanomas. |
-| 1:52 | Home screen, body map | Back in the app, the home screen puts the most urgent lesions first and flags overdue rechecks. Every patient gets a body map of their lesions. |
-| 2:03 | Lock and passcode | Patient data stays private. With a passcode, every patient and scan is encrypted on the device, and only that passcode opens it. |
-| 2:14 | Offline scan | Nothing is ever uploaded. Even with the internet off, a scan still works. |
-| 2:21 | Phone | It runs on a phone too. It's the same app in the browser, written in JavaScript, with the model running on ONNX Runtime Web. |
-| 2:30 | 21 MB, Raspberry Pi | The whole model is 21 megabytes, small enough for a browser, or even a fifteen-dollar Raspberry Pi Zero 2 W. |
-| 2:40 | How it works page, limits | It has limits. Overall accuracy is 78.6 percent, and darker skin is under-represented in the training data. Stryde only suggests how soon to refer. A biopsy decides. |
-| 2:52 | Logo | Stryde. A research prototype, not a medical device. Thanks for watching. |
+**0:18 (taking the photo)**
+Here's how it works. You take a close-up photo of the spot, and before anything else, the app checks the photo itself: is it in focus, is it well lit, is it sharp enough to use. If the patient's already in the system, their info fills in on its own. Then you hit Analyze, and in about a second it tells you how soon they should be seen. This one says refer urgently.
 
-That covers what the competition asks for: who you are (your footage), the app's name, what it
-does and who it's for (0:11), how it works (0:18 to 2:21), and the tools you used (TensorFlow,
-EfficientNet-B4, JavaScript, ONNX Runtime Web, Raspberry Pi).
+**0:33 (heat map)**
+You can also see where the model was looking. The clear parts of the photo are what it paid the most attention to.
 
-## Recording tips
+**0:41 (saving the scan)**
+Then I save it to the patient, add a note, and set a reminder to check it again in a month. Every scan of that spot ends up on one chart, so you can see if it's changing over time.
 
-- Record the whole table as one take while the film plays on another screen, starting when the
-  title comes up at 0:11, so your pace follows the pictures. Small mistakes are fine; pause and
-  say the line again.
-- Quiet room, phone 20 to 30 cm from your mouth, no music in the background.
-- A phone voice memo or video both work. Upload the file and the edit puts it under the film.
-- Never say "diagnoses"; say "flags", "suggests how soon to refer" or "triages".
-- The app's name is Stryde, said like "stride".
+**0:55 (referral report)**
+And if they do need a dermatologist, it makes the referral report and letter for you, ready to print.
+
+**1:08 (typing in details)**
+The photo isn't the only thing it looks at. You can add the patient's age, where the spot is, their skin type and the size, because a real doctor would never judge a spot from a picture alone either.
+
+**1:22 (the model)**
+The model behind this is one I trained myself, on my own PC at home. It looks at the photo and the patient details together and decides between melanoma, another type of skin cancer, or harmless.
+
+**1:34 (training)**
+I trained it on over 45,000 real skin images, and held back about 9,000 that it never saw, just to test it.
+
+**1:42 (results)**
+On those, it caught 90 percent of melanomas.
+
+**1:52 (home screen)**
+The home screen puts the most urgent patients at the top, flags anyone who's overdue for a recheck, and every patient gets a body map of their spots.
+
+**2:03 (lock screen)**
+Patient privacy matters, so with a passcode, everything is encrypted right on the device.
+
+**2:14 (offline)**
+Nothing ever gets uploaded. It even works with the internet off.
+
+**2:21 (phone)**
+It runs on a phone too, right in the browser.
+
+**2:30 (Raspberry Pi)**
+And the whole model is only 21 megabytes, small enough to run on a fifteen-dollar Raspberry Pi.
+
+**2:40 (limits)**
+One thing I want to be clear about: Stryde isn't meant to replace dermatologists. It doesn't tell anyone they have cancer. It's a prescreening tool, to help clinics decide who should be seen first, so the people who need help get it sooner.
+
+**2:52 (logo)**
+That's Stryde. Thanks for watching.
+
+---
+
+## Tips
+
+- Do it in one take while the video plays. If you mess up a line, pause and say it again; it can be cut later.
+- Use a quiet room, with your phone close to your mouth.
+- If you're running behind, skip a sentence. Don't rush.
